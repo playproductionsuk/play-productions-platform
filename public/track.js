@@ -1,1 +1,1 @@
-import "./beat.js";import "./track-enhancements.js";import "./track-launch.js";
+import "./beat.js";import "./track-enhancements.js";import "./track-launch.js";import "./track-polish.js";

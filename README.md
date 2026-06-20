@@ -128,6 +128,12 @@ Example document shapes are in `seed-data/README.md`.
 7. Add App Check, rate limiting, spam protection and audit-log writes in Cloud Functions.
 8. Add analytics/reporting and future product types: vinyl, samples, presets, CDs, cassettes, merch and courses.
 
+## Module 1 Polish Sprint 01
+
+The Module 1 customer journeys have received a focused polish pass: streamlined homepage, basket/subtotal utility, artwork playback, persistent In Cart state, account-aware checkout preview, table-based My Music/Orders, additive social links, approved-DJ portal preview, DJ Database metrics and traffic-light Music Library.
+
+The current Green/Amber/Red launch dependency table is maintained in `MODULE-1-POLISH-SPRINT-01.md` and should be updated after every Module 1 sprint.
+
 ## Module 1 Launch Candidate
 
 Module 1 now concentrates the preview and launch path on Music Store + DJ Promo. The buyer cart, themed previews, corrected track hierarchy, dashboard inbox, DJ approval states, Music Library fallback, tabbed Settings and preview-mode data flow are implemented. See `MODULE-1-LAUNCH-CANDIDATE-CHANGES.md` for exact preview behaviour, Firebase/email setup and the remaining launch blockers.

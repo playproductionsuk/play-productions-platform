@@ -128,6 +128,14 @@ Example document shapes are in `seed-data/README.md`.
 7. Add App Check, rate limiting, spam protection and audit-log writes in Cloud Functions.
 8. Add analytics/reporting and future product types: vinyl, samples, presets, CDs, cassettes, merch and courses.
 
+## Module 1 Launch Candidate
+
+Module 1 now concentrates the preview and launch path on Music Store + DJ Promo. The buyer cart, themed previews, corrected track hierarchy, dashboard inbox, DJ approval states, Music Library fallback, tabbed Settings and preview-mode data flow are implemented. See `MODULE-1-LAUNCH-CANDIDATE-CHANGES.md` for exact preview behaviour, Firebase/email setup and the remaining launch blockers.
+
+Mixing & Mastering and Vinyl Cutting now default to hidden in fresh settings. They remain available inside the Business Dashboard and can be switched on later without restoring files.
+
+The notification function queues email for `chris@playproductions.co.uk` through the Firestore `mail` collection. Actual delivery requires the Firebase Trigger Email extension (or an equivalent SMTP integration) to be installed and configured.
+
 ## Design Sprint 01
 
 The public site now uses a centred top header with a persistent cart foundation. The owner area is the full-width **Business Dashboard**, with Music Library, mixing/vinyl project routes, DJ Access and expanded Settings. Detailed changes are recorded in `DESIGN-SPRINT-01-CHANGES.md`.

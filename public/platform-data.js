@@ -17,18 +17,18 @@ export function escapeHtml(value = "") { const element = document.createElement(
 export function normaliseTrack(raw) {
   const legacyId = raw.id || String(raw.trackNumber || "").replace(/^0+/, "");
   return {
-    id: legacyId || slugify(raw.title), slug: raw.slug || slugify(raw.title), title: raw.title || "Untitled",
+    id: legacyId || slugify(raw.title), slug: raw.slug || slugify(raw.title), title: raw.title || "Untitled", artist: raw.artist || "Play Productions", releaseTitle: raw.releaseTitle || "",
     status: raw.status || "published", productType: raw.productType || "digital-track",
     showInStore: raw.showInStore ?? raw.published ?? true, showInDjPool: raw.showInDjPool ?? raw.djPromoEnabled ?? false,
     showInLatest: raw.showInLatest ?? true, featured: raw.featured ?? false, allowExclusiveEnquiry: raw.allowExclusiveEnquiry ?? true,
     purchaseEnabled: raw.purchaseEnabled ?? true, dateTbc: raw.dateTbc ?? false,
     coverUrl: raw.coverUrl || raw.thumbnail || (raw.placeholderArtwork ? "icons/fallback.png" : ""), coverPath: raw.coverPath || "",
     previewUrl: raw.previewUrl || raw.url || "", previewPath: raw.previewPath || "", masterPath: raw.masterPath || "",
-    style: raw.style || raw.genre || "", bpm: raw.bpm || "", key: raw.key || "", moodTags: raw.moodTags || [],
+    style: raw.style || raw.genre || "", subgenre: raw.subgenre || "", bpm: raw.bpm || "", key: raw.key || "", moodTags: raw.moodTags || [],
     teaser: raw.teaser || raw.description || "", description: raw.description || raw.teaser || "",
     price: Number(raw.price ?? 1.29), releaseDate: raw.releaseDate || "", adminNotes: raw.adminNotes || "",
     seoTitle: raw.seoTitle || "", seoDescription: raw.seoDescription || "", ogImageUrl: raw.ogImageUrl || "", shareImageUrl: raw.shareImageUrl || "", featuredImageUrl: raw.featuredImageUrl || "",
-    isrc: raw.isrc || "", upc: raw.upc || "", tunecoreUrl: raw.tunecoreUrl || "", prsId: raw.prsId || "", pplId: raw.pplId || "", spotifyUrl: raw.spotifyUrl || "", appleMusicUrl: raw.appleMusicUrl || "", mp3Url: raw.mp3Url || "", wavPath: raw.wavPath || raw.masterPath || "",
+    isrc: raw.isrc || "", upc: raw.upc || "", tunecoreUrl: raw.tunecoreUrl || "", prsId: raw.prsId || "", pplId: raw.pplId || "", spotifyUrl: raw.spotifyUrl || "", appleMusicUrl: raw.appleMusicUrl || "", soundcloudUrl: raw.soundcloudUrl || "", youtubeMusicUrl: raw.youtubeMusicUrl || "", mp3Url: raw.mp3Url || "", wavPath: raw.wavPath || raw.masterPath || "", prsRegistered: raw.prsRegistered ?? false, pplRegistered: raw.pplRegistered ?? false, tunecoreUploaded: raw.tunecoreUploaded ?? false, distributedToStores: raw.distributedToStores ?? false, releaseChecklistNotes: raw.releaseChecklistNotes || "",
     sortPriority: Number(raw.sortPriority || 0), createdAt: raw.createdAt || null, updatedAt: raw.updatedAt || null
   };
 }
@@ -58,16 +58,17 @@ export function trackHealth(track) {
   const risks = [];
   if (track.status === "published" && track.showInStore && (!track.purchaseEnabled || missingRequired.length)) risks.push("Store purchase is unavailable");
   if (track.showInDjPool && !track.masterPath) risks.push("DJ download has no master file");
-  return { score: total ? Math.round(earned / total * 100) : 100, missingRequired, missingRecommended, risks, readyToBuy: track.status === "published" && track.showInStore && track.purchaseEnabled && missingRequired.length === 0 };
+  return { score: total ? Math.round(earned / total * 100) : 100, missingRequired, missingRecommended, risks, readyToBuy: track.status === "published" && track.showInStore && track.purchaseEnabled && Number(track.price) > 0 };
 }
 
 export async function loadTracks({ includeAdmin = false } = {}) {
   if (!firebaseReady) { const response = await fetch("tracks.json"); return (await response.json()).map(normaliseTrack); }
   const snapshot = includeAdmin ? await getDocs(collection(db, "tracks")) : await getDocs(query(collection(db, "tracks"), where("status", "in", ["coming-soon", "published"])));
+  if (snapshot.empty) { const response = await fetch("tracks.json"); return (await response.json()).map(normaliseTrack); }
   return snapshot.docs.map(item => normaliseTrack({ id: item.id, ...item.data() })).sort((a, b) => b.sortPriority - a.sortPriority || String(b.releaseDate).localeCompare(String(a.releaseDate)));
 }
 
 export async function createEnquiry(payload) {
-  if (!firebaseReady) { console.info("Demo enquiry", payload); return { id: "demo" }; }
+  if (!firebaseReady) { const id=`demo-${Date.now()}`,item={...payload,id,status:"new",createdAt:new Date().toISOString(),updatedAt:new Date().toISOString()};let saved=[];try{saved=JSON.parse(localStorage.getItem("playDemoEnquiries")||"[]")}catch{}saved.unshift(item);localStorage.setItem("playDemoEnquiries",JSON.stringify(saved));console.info("Demo enquiry",item);return { id }; }
   return addDoc(collection(db, "enquiries"), { ...payload, status: "new", createdAt: serverTimestamp(), updatedAt: serverTimestamp() });
 }

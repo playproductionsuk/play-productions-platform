@@ -1,4 +1,5 @@
 const { onRequest } = require("firebase-functions/v2/https");
+const { onDocumentCreated } = require("firebase-functions/v2/firestore");
 const { defineSecret } = require("firebase-functions/params");
 const admin = require("firebase-admin");
 const Stripe = require("stripe");
@@ -36,6 +37,9 @@ function routePath(req) {
 
 function licenceFor(track, key) {
   const licence = track.licences && track.licences[key];
+  if (key === "personal" && !licence && track.purchaseEnabled !== false && Number.isFinite(Number(track.price))) {
+    return { key: "personal", name: "Personal digital download", price: Number(track.price), summary: "For personal listening and private use. Commercial use is not included." };
+  }
   if (!licence || licence.enabled === false || !Number.isFinite(Number(licence.price))) {
     throw new Error("That licence is not available.");
   }
@@ -45,7 +49,7 @@ function licenceFor(track, key) {
 async function trackAndLicence(trackId, licenceKey) {
   if (!/^[a-z0-9-]{1,80}$/i.test(trackId || "")) throw new Error("Invalid track.");
   const snap = await db.collection("tracks").doc(trackId).get();
-  if (!snap.exists || snap.data().published !== true) throw new Error("Track unavailable.");
+  if (!snap.exists || !((snap.data().published === true || snap.data().status === "published") && snap.data().showInStore !== false && snap.data().purchaseEnabled !== false)) throw new Error("Track unavailable.");
   return { trackId, track: snap.data(), licence: licenceFor(snap.data(), licenceKey) };
 }
 
@@ -288,4 +292,22 @@ exports.api = onRequest({
     console.error(error);
     return json(res, 400, { error: error.message || "Something went wrong." });
   }
+});
+
+// Compatible with the Firebase Trigger Email extension. Install/configure the
+// extension to watch the `mail` collection; dashboard storage works without it.
+exports.notifyNewEnquiry = onDocumentCreated({ document: "enquiries/{enquiryId}", region: "europe-west2" }, async event => {
+  const enquiry = event.data?.data();
+  if (!enquiry) return;
+  const label = enquiry.type === "dj-access" ? "DJ access application" : enquiry.type || "Website enquiry";
+  await db.collection("mail").add({
+    to: ["chris@playproductions.co.uk"],
+    message: {
+      subject: `Play Productions: new ${label}`,
+      text: `A new ${label} from ${enquiry.name || enquiry.djName || enquiry.artistName || enquiry.email || "a website visitor"} is waiting in the Business Dashboard.`,
+      html: `<p>A new <strong>${label}</strong> is waiting in the Play Productions Business Dashboard.</p><p>Open the dashboard to review and update its status.</p>`
+    },
+    enquiryId: event.params.enquiryId,
+    createdAt: admin.firestore.FieldValue.serverTimestamp()
+  });
 });

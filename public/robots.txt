@@ -1,0 +1,8 @@
+User-agent: *
+Allow: /
+Disallow: /admin.html
+Disallow: /portal.html
+Disallow: /dj-login.html
+Disallow: /dj-promo.html
+Disallow: /success.html
+Sitemap: https://www.playproductions.co.uk/sitemap.xml

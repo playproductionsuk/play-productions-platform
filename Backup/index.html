@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Play Productions</title>
+  <link rel="icon" href="/favicon.ico" type="image/x-icon" />
+  <link rel="stylesheet" href="style.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=DM+Sans:wght@400;700&family=Inter&display=swap" rel="stylesheet">
+</head>
+<body>
+
+  <!-- Hero Section -->
+  <section class="hero">
+    <div class="hero-content">
+      <img src="logo.png" alt="Play Productions Logo" class="hero-logo" />
+      <p class="tagline">…and it’s Play, aka P L Lay</p>
+    </div>
+  </section>
+
+  <!-- Main Content -->
+  <div class="container">
+    <audio id="mainPlayer" controls></audio>
+    <div id="trackInfo">Select a track to play</div>
+    <div id="track-list" class="track-list"></div>
+  </div>
+
+  <!-- Social Footer Icons -->
+  <footer class="footer-icons">
+    <a href="https://www.instagram.com/playproductionsuk" target="_blank">
+      <img src="icons/instagram.png" alt="Instagram">
+    </a>
+    <a href="https://www.tiktok.com/@playproductionsuk" target="_blank">
+      <img src="icons/tiktok.png" alt="TikTok">
+    </a>
+    <a href="https://on.soundcloud.com/esTcUtCmxWlqXNQHna" target="_blank">
+      <img src="icons/soundcloud.png" alt="SoundCloud">
+    </a>
+    <a href="https://linktr.ee/Playproductions" target="_blank">
+      <img src="icons/linktree.png" alt="Linktree">
+    </a>
+    <a href="https://open.spotify.com/artist/1GBNSQahIk3AGMX7zOJRMJ?si=-0ivgDTxTBGwNX-cMlrojg" target="_blank">
+      <img src="icons/spotify.png" alt="Spotify">
+    </a>
+    <a href="https://music.apple.com/gb/artist/play-productions/1567918963" target="_blank">
+      <img src="icons/applemusic.png" alt="Apple Music">
+    </a>
+  </footer>
+
+  <!-- Playlist Logic -->
+  <script>
+    const trackList = document.getElementById("track-list");
+    const mainPlayer = document.getElementById("mainPlayer");
+    const trackInfo = document.getElementById("trackInfo");
+    let activeTrack = null;
+
+    const fetchTracks = async () => {
+      try {
+        const response = await fetch("tracks.json");
+        const tracks = await response.json();
+
+        tracks.sort((a, b) => Number(a.trackNumber) - Number(b.trackNumber));
+
+        tracks.forEach(track => {
+          const wrapper = document.createElement("div");
+          wrapper.className = "track";
+
+          const title = document.createElement("h3");
+          title.textContent = `${track.trackNumber}. ${track.title}`;
+          wrapper.appendChild(title);
+
+          const tag = document.createElement("span");
+          tag.className = "style-tag";
+          tag.textContent = track.style;
+          wrapper.appendChild(tag);
+
+          wrapper.addEventListener("click", () => {
+            if (activeTrack) activeTrack.classList.remove("active");
+            wrapper.classList.add("active");
+            activeTrack = wrapper;
+            mainPlayer.src = track.url;
+            mainPlayer.play();
+            trackInfo.textContent = `Now Playing: ${track.title}`;
+          });
+
+          trackList.appendChild(wrapper);
+        });
+      } catch (err) {
+        trackInfo.textContent = "Failed to load tracks.";
+      }
+    };
+
+    fetchTracks();
+  </script>
+
+</body>
+</html>

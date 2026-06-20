@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Play Productions — Independent Music & Studio Services</title>
+  <meta name="description" content="Play Productions: original underground music, stereo mixing, mastering and custom vinyl cutting from Nottingham.">
+  <link rel="canonical" href="https://www.playproductions.co.uk/">
+  <link rel="icon" href="favicon.ico">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="platform.css">
+  <link rel="stylesheet" href="multipage.css">
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="index.html" aria-label="Play Productions home"><img src="logo.png" alt="Play Productions"></a>
+    <nav aria-label="Main navigation">
+      <a href="music.html">Music</a><a href="services.html">Services</a><a href="dj-login.html">DJ promo</a><a href="portal.html">My account</a><a class="nav-cta" href="contact.html">Let’s work</a>
+    </nav>
+  </header>
+  <main id="top">
+    <section class="hero">
+      <div class="hero-shade"></div>
+      <div class="hero-content">
+        <p class="eyebrow">Independent sound · Nottingham, UK</p>
+        <h1>Music with<br><span>weight & movement.</span></h1>
+        <p class="hero-copy">Original releases, precise stereo mixing and mastering, and one-off vinyl made with care.</p>
+        <div class="hero-actions"><a href="music.html" class="button primary">Explore music ↓</a><a href="services.html" class="button ghost">Studio services →</a></div>
+      </div>
+    </section>
+
+    <section class="latest-section home-latest">
+      <div class="section-heading"><div><p class="eyebrow">Latest releases</p><h2>Fresh from Play</h2></div><a class="text-link pale" href="music.html">Enter the music store →</a></div>
+      <div id="latestGrid" class="latest-grid"><p class="loading">Loading latest releases…</p></div>
+    </section>
+
+    <section class="brand-manifesto">
+      <p class="eyebrow">Play Productions</p>
+      <h2>Underground energy.<br>Professional finish.</h2>
+      <p>Music for people who care how a record feels—not just how loud it is. From the first idea to the final master, every detail stays personal.</p>
+    </section>
+
+    <section class="services-home">
+      <div class="services-heading"><p class="eyebrow">Studio services</p><h2>Your track.<br><span>Finished properly.</span></h2><p>Stereo mixing and mastering with direct, personal communication—plus custom one-off vinyl cutting.</p><a class="button primary" href="services.html">Explore services →</a></div>
+      <div class="service-card-grid"><article><span>01</span><h3>Stereo mixing</h3><p>Balance, tone, space and movement from your multitrack stems.</p></article><article><span>02</span><h3>Stereo mastering</h3><p>Release-ready level, impact and translation from your stereo mix.</p></article><article><span>03</span><h3>Mix + master</h3><p>A joined-up finish from raw stems through to the final master.</p></article><article><span>04</span><h3>Vinyl cutting</h3><p>Custom 7, 10 and 12-inch cuts for DJs and special releases.</p></article></div>
+    </section>
+
+    <section class="dj-callout"><div><p class="eyebrow">DJs & radio</p><h2>Need promos for your sets?</h2><p>Approved DJs can preview and download selected WAVs through the private promo pool.</p></div><a class="button secondary" href="dj-login.html">DJ login →</a></section>
+    <section class="work-callout"><p class="eyebrow">Have something in mind?</p><h2>Let’s make it hit.</h2><div><a class="button primary" href="contact.html">Let’s work</a><a class="text-link pale" href="services.html#quote">Build a service quote →</a></div></section>
+  </main>
+  <footer><img src="logo.png" alt="" class="footer-logo"><div class="socials"><a href="https://www.instagram.com/playproductionsuk" target="_blank" rel="noopener">Instagram</a><a href="https://www.tiktok.com/@playproductionsuk" target="_blank" rel="noopener">TikTok</a><a href="https://on.soundcloud.com/esTcUtCmxWlqXNQHna" target="_blank" rel="noopener">SoundCloud</a><a href="https://open.spotify.com/artist/1GBNSQahIk3AGMX7zOJRMJ" target="_blank" rel="noopener">Spotify</a></div><p>© <span id="year"></span> Play Productions</p></footer>
+  <div class="player-dock" id="playerDock" hidden><img id="playerCover" src="icons/fallback.png" alt=""><div class="player-meta"><span>Now playing</span><strong id="playerTitle">—</strong></div><audio id="audioPlayer" controls controlsList="nodownload"></audio><button id="closePlayer" class="icon-button" aria-label="Close player">×</button></div>
+  <script type="module" src="home.js"></script>
+</body></html>

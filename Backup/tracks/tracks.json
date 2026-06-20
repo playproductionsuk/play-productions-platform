@@ -1,0 +1,32 @@
+[
+  {
+    "trackNumber": "01",
+    "title": "Hungarian Riddim",
+    "style": "UKG",
+    "url": "tracks/01 - Hungarian Riddim (UKG).mp3"
+  },
+  {
+    "trackNumber": "02",
+    "title": "Lonely Way To Go",
+    "style": "Hip Hop",
+    "url": "tracks/02 - Lonely Way To Go (Hip Hop).mp3"
+  },
+  {
+    "trackNumber": "04",
+    "title": "Rattlesnake Riddim",
+    "style": "Grime",
+    "url": "tracks/04 - Rattlesnake Riddim (Grime).mp3"
+  },
+  {
+    "trackNumber": "05",
+    "title": "La Di Da",
+    "style": "Grime",
+    "url": "tracks/05 - La Di Da (Grime).mp3"
+  },
+  {
+    "trackNumber": "06",
+    "title": "Ooh Yeah",
+    "style": "Grime",
+    "url": "tracks/06 - Ooh Yeah (Grime).mp3"
+  }
+]

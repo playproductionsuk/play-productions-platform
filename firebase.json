@@ -1,0 +1,12 @@
+{
+  "hosting": {
+    "public": "public",
+    "ignore": ["firebase.json", "**/.*", "**/node_modules/**"],
+    "rewrites": [
+      { "source": "/api/**", "function": { "functionId": "api", "region": "europe-west2" } }
+    ]
+  },
+  "functions": [{ "source": "functions", "codebase": "default" }],
+  "firestore": { "rules": "firestore.rules" },
+  "storage": { "rules": "storage.rules" }
+}

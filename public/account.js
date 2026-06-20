@@ -1,4 +1,4 @@
-import { firebaseApp, firebaseReady, db, escapeHtml, money } from "./platform-data.js";
+import "./portal-preview.js";import { firebaseApp, firebaseReady, db, escapeHtml, money } from "./platform-data.js";
 import { createUserWithEmailAndPassword, getAuth, onAuthStateChanged, signInWithEmailAndPassword, signOut, updateProfile } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-auth.js";
 import { collection, doc, getDocs, query, serverTimestamp, setDoc, where } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-firestore.js";
 const auth=firebaseApp?getAuth(firebaseApp):null,authPanel=document.querySelector("#authPanel"),portal=document.querySelector("#portal"),form=document.querySelector("#authForm"),status=document.querySelector("#authStatus");let mode="login";

@@ -21,3 +21,14 @@
 - Upgraded DJ access from a shared URL code to username/password and signed sessions.
 - Expanded Firebase rules and seed data for the Phase 1 collections.
 - Preserved payment foundations while documenting the remaining Phase 2 ownership work.
+# Phase 1.2 — Design and public UX refinement
+
+- Reworked the public shell into the approved desktop sidebar and mobile slide-in navigation.
+- Added a headphones-only vector mark, exact charcoal/lime palette, Oswald headings and Inter UI typography.
+- Rebuilt the homepage hero and condensed the page into clear music, DJ promo, services, vinyl and enquiry routes.
+- Added compact latest-release rows and a concise store benefits strip.
+- Expanded music browsing with mood filtering and BPM sorting while retaining search, genre and preview playback.
+- Reinforced the track sales hierarchy with Add to Cart / Buy Now actions and a secondary commercial enquiry.
+- Expanded DJ applications into separate social fields and made mailing consent optional and explicit.
+- Added page visibility settings and safe sample-data previews for the admin and customer portals.
+- Preserved the Phase 1.1 Firebase, DJ approval, track-health, SEO, project, order and payment foundations.

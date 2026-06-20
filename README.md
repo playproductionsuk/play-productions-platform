@@ -128,6 +128,16 @@ Example document shapes are in `seed-data/README.md`.
 7. Add App Check, rate limiting, spam protection and audit-log writes in Cloud Functions.
 8. Add analytics/reporting and future product types: vinyl, samples, presets, CDs, cassettes, merch and courses.
 
+## Phase 1.2 design preview and page visibility
+
+The public site now uses a fixed left-hand navigation on desktop and a contained slide-in menu on mobile. The headphones-only mark is in `public/headphones.svg`; colours and responsive refinements are in `public/design-v3.css`.
+
+If Firebase is not configured, open `/admin.html` and choose **Preview dashboard layout**, or open `/portal.html` and choose **Preview customer portal**. Both use labelled sample data and cannot perform live account or admin actions.
+
+Page visibility is managed in Admin → Settings. In local preview it is stored in the browser; for a signed-in owner it is also saved to `settings/site` in Firestore. Hidden pages disappear from navigation and homepage paths, while direct visits show a polite unavailable screen.
+
+To create the owner account, enable Email/Password Authentication, create the user in Firebase Authentication, copy its UID, and create an empty Firestore document at `admins/{uid}`. Customer and DJ accounts require Firebase Authentication; approved DJs are created from the admin enquiry action rather than sharing one password.
+
 ## Important launch checks
 
 - Test all Firebase rules with the Emulator Suite.

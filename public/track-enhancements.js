@@ -1,0 +1,1 @@
+const buy=document.querySelector("#buyButton");if(buy){buy.textContent="Add to cart";const now=document.createElement("button");now.type="button";now.className="button ghost";now.textContent="Buy now";now.addEventListener("click",()=>buy.click());buy.insertAdjacentElement("afterend",now)}

@@ -1,5 +1,11 @@
 # Phase 1 changes
 
+- Phase 1.1 redesigned the public site around three clear offers: digital music, mixing/mastering and custom vinyl cutting.
+- Added responsive hamburger navigation with visually separate customer and DJ portal links.
+- Compactified homepage releases and rebuilt the music catalogue with genre, BPM, search and sorting controls.
+- Separated custom vinyl cutting from studio services and added its own format, FAQ, pricing-guide and enquiry page.
+- Replaced shared DJ credentials with applications, admin approval and individual Firebase accounts.
+
 - Refactored the public experience into dedicated homepage, music store, track, services, DJ, customer portal, admin and contact pages.
 - Reduced the homepage to a premium brand introduction with selected latest releases and clear routes into the wider platform.
 

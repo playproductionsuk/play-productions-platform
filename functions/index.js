@@ -12,8 +12,6 @@ const STRIPE_SECRET_KEY = defineSecret("STRIPE_SECRET_KEY");
 const STRIPE_WEBHOOK_SECRET = defineSecret("STRIPE_WEBHOOK_SECRET");
 const PAYPAL_CLIENT_ID = defineSecret("PAYPAL_CLIENT_ID");
 const PAYPAL_CLIENT_SECRET = defineSecret("PAYPAL_CLIENT_SECRET");
-const DJ_ACCESS_CODE = defineSecret("DJ_ACCESS_CODE");
-const DJ_ACCESS_USERNAME = defineSecret("DJ_ACCESS_USERNAME");
 const PAYPAL_ENVIRONMENT = process.env.PAYPAL_ENVIRONMENT || "sandbox";
 
 const allowedOrigins = new Set([
@@ -224,9 +222,11 @@ async function download(req, res) {
 
 async function djDownload(req, res) {
   const trackId = String(req.query.track || "");
-  if (!verifyDjToken(String(req.query.token || ""))) {
-    return res.status(403).send("This DJ download link is not valid.");
-  }
+  const bearer = String(req.get("authorization") || "").replace(/^Bearer\s+/i, "");
+  if (!bearer) return json(res, 401, { error: "DJ sign-in required." });
+  const decoded = await admin.auth().verifyIdToken(bearer);
+  const profile = await db.collection("users").doc(decoded.uid).get();
+  if (!profile.exists || profile.data().djAccess !== true) return json(res, 403, { error: "DJ access has not been approved." });
   const track = await db.collection("tracks").doc(trackId).get();
   if (!track.exists || !["published", "coming-soon"].includes(track.data().status) || (track.data().showInDjPool !== true && track.data().djPromoEnabled !== true) || !track.data().masterPath) {
     return res.status(404).send("This promo download is not available.");
@@ -237,38 +237,39 @@ async function djDownload(req, res) {
     expires: Date.now() + 15 * 60 * 1000,
     responseDisposition: `attachment; filename="${track.data().slug || "play-productions-promo"}.wav"`
   });
-  res.redirect(302, url);
+  json(res, 200, { url });
 }
 
-function makeDjToken() {
-  const payload = Buffer.from(JSON.stringify({ exp: Date.now() + 12 * 60 * 60 * 1000 })).toString("base64url");
-  const signature = crypto.createHmac("sha256", DJ_ACCESS_CODE.value()).update(payload).digest("base64url");
-  return `${payload}.${signature}`;
-}
-
-function verifyDjToken(token) {
-  try {
-    const [payload, signature] = token.split(".");
-    const expected = crypto.createHmac("sha256", DJ_ACCESS_CODE.value()).update(payload).digest("base64url");
-    if (!signature || signature.length !== expected.length || !crypto.timingSafeEqual(Buffer.from(signature), Buffer.from(expected))) return false;
-    return JSON.parse(Buffer.from(payload, "base64url").toString()).exp > Date.now();
-  } catch { return false; }
-}
-
-async function djLogin(req, res) {
-  const username = Buffer.from(String(req.body?.username || ""));
-  const password = Buffer.from(String(req.body?.password || ""));
-  const expectedUser = Buffer.from(DJ_ACCESS_USERNAME.value());
-  const expectedPass = Buffer.from(DJ_ACCESS_CODE.value());
-  const userOk = username.length === expectedUser.length && crypto.timingSafeEqual(username, expectedUser);
-  const passOk = password.length === expectedPass.length && crypto.timingSafeEqual(password, expectedPass);
-  if (!userOk || !passOk) return json(res, 401, { error: "Incorrect DJ username or password." });
-  json(res, 200, { token: makeDjToken() });
+async function createDjUser(req, res) {
+  const bearer = String(req.get("authorization") || "").replace(/^Bearer\s+/i, "");
+  const decoded = await admin.auth().verifyIdToken(bearer);
+  const adminDoc = await db.collection("admins").doc(decoded.uid).get();
+  if (!adminDoc.exists) return json(res, 403, { error: "Admin permission required." });
+  const enquiryId = String(req.body?.enquiryId || "");
+  const enquiry = await db.collection("enquiries").doc(enquiryId).get();
+  if (!enquiry.exists || enquiry.data().type !== "dj-access") return json(res, 404, { error: "DJ request not found." });
+  const details = enquiry.data();
+  const temporaryPassword = `${crypto.randomBytes(12).toString("base64url")}Aa1!`;
+  let user;
+  try { user = await admin.auth().createUser({ email: details.email, password: temporaryPassword, displayName: details.djName || details.name }); }
+  catch (error) {
+    if (error.code !== "auth/email-already-exists") throw error;
+    user = await admin.auth().getUserByEmail(details.email);
+    await admin.auth().updateUser(user.uid, { password: temporaryPassword, displayName: details.djName || details.name });
+  }
+  await db.collection("users").doc(user.uid).set({
+    name: details.name || "", djName: details.djName || "", email: details.email,
+    socialLinks: details.socialLinks || "", djAccess: true,
+    mailingList: details.mailingConsent === true, tags: ["DJ"],
+    updatedAt: admin.firestore.FieldValue.serverTimestamp()
+  }, { merge: true });
+  await enquiry.ref.update({ status: "approved", customerUid: user.uid, approvedAt: admin.firestore.FieldValue.serverTimestamp() });
+  json(res, 200, { email: details.email, temporaryPassword });
 }
 
 exports.api = onRequest({
   region: "europe-west2",
-  secrets: [STRIPE_SECRET_KEY, STRIPE_WEBHOOK_SECRET, PAYPAL_CLIENT_ID, PAYPAL_CLIENT_SECRET, DJ_ACCESS_CODE, DJ_ACCESS_USERNAME],
+  secrets: [STRIPE_SECRET_KEY, STRIPE_WEBHOOK_SECRET, PAYPAL_CLIENT_ID, PAYPAL_CLIENT_SECRET],
   cors: false,
   maxInstances: 10
 }, async (req, res) => {
@@ -281,7 +282,7 @@ exports.api = onRequest({
     if (path === "/purchase-status" && req.method === "POST") return await purchaseStatus(req, res);
     if (path === "/download" && req.method === "GET") return await download(req, res);
     if (path === "/dj-download" && req.method === "GET") return await djDownload(req, res);
-    if (path === "/dj-login" && req.method === "POST") return await djLogin(req, res);
+    if (path === "/admin/create-dj-user" && req.method === "POST") return await createDjUser(req, res);
     return json(res, 404, { error: "Not found" });
   } catch (error) {
     console.error(error);

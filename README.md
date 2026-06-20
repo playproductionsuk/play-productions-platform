@@ -7,8 +7,8 @@ This is the modular Firebase foundation for Play Productions: public music store
 - Premium brand-led homepage with selected latest releases, service highlights, DJ promo and a Let’s Work callout.
 - Dedicated multi-page public architecture rather than a single-page platform.
 - Track pages for listener downloads, with a separate exclusive/commercial enquiry form for artists.
-- Private DJ username/password login with 12-hour signed access and protected WAV downloads.
-- Studio Services page for stereo mixing, stereo mastering, mix + master and 7/10/12-inch vinyl enquiries.
+- Individual approved DJ accounts with protected WAV downloads and an admin approval workflow.
+- Dedicated Mixing & Mastering page plus a separate Custom Vinyl Cutting service page.
 - Live guide quote based on service, track count and stem count, plus demo upload, references and notes.
 - Customer portal with My Music, My Projects and Order History modules.
 - Admin dashboard with daily action counts, track health, expanded track editor, enquiries, projects, orders and case-study foundation.
@@ -26,8 +26,10 @@ Serve the `public` directory from a local web server. ES modules will not run co
 - `index.html` — premium landing page only
 - `music.html` — latest releases, searchable/filterable public catalogue
 - `track.html?id=...` — dynamic individual release page and artist enquiry
-- `services.html` — mixing, mastering, mix + master, vinyl and case studies
-- `dj-login.html` / `dj-promo.html` — private DJ access and downloads
+- `services.html` — stereo mixing, mastering, mix + master and case studies
+- `vinyl.html` — 7, 10 and 12-inch custom vinyl cutting, FAQ and quote request
+- `dj-access.html` — DJ access application and mailing consent
+- `dj-login.html` / `dj-promo.html` — individual private DJ account and downloads
 - `portal.html` — customer My Music, My Projects and orders
 - `admin.html` — private business dashboard and management tools
 - `contact.html` — general enquiry and contact route
@@ -55,15 +57,13 @@ firebase deploy
 ## Required function secrets
 
 ```text
-firebase functions:secrets:set DJ_ACCESS_USERNAME
-firebase functions:secrets:set DJ_ACCESS_CODE
 firebase functions:secrets:set STRIPE_SECRET_KEY
 firebase functions:secrets:set STRIPE_WEBHOOK_SECRET
 firebase functions:secrets:set PAYPAL_CLIENT_ID
 firebase functions:secrets:set PAYPAL_CLIENT_SECRET
 ```
 
-`DJ_ACCESS_CODE` is the DJ password and also signs temporary sessions. Use a long password. The DJ login is `/dj-login.html`; the old access code in a URL is no longer used.
+DJ access now uses individual Firebase Authentication accounts rather than shared credentials. A DJ applies at `/dj-access.html`; the request appears in the admin Enquiries area. The admin approval control creates a Firebase user, marks `users/{uid}.djAccess` as approved and displays a one-time temporary password to send securely. Mailing consent is recorded on the user profile for later mailing-platform integration.
 
 Stripe webhook endpoint: `https://www.playproductions.co.uk/api/stripe-webhook` with event `checkout.session.completed`.
 

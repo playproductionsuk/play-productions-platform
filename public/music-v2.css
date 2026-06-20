@@ -1,0 +1,1 @@
+.store-art{width:66px;height:66px;position:relative}.store-art img{width:66px;height:66px;object-fit:cover}.store-play{position:absolute;inset:0;border:0;background:rgba(0,0,0,.48);color:white;opacity:0;cursor:pointer}.store-art:hover .store-play,.store-play:focus{opacity:1}@media(max-width:520px){.store-art,.store-art img{width:52px;height:52px}}

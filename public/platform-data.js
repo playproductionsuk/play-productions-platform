@@ -27,7 +27,7 @@ export function normaliseTrack(raw) {
     style: raw.style || raw.genre || "", bpm: raw.bpm || "", key: raw.key || "", moodTags: raw.moodTags || [],
     teaser: raw.teaser || raw.description || "", description: raw.description || raw.teaser || "",
     price: Number(raw.price ?? 1.29), releaseDate: raw.releaseDate || "", adminNotes: raw.adminNotes || "",
-    seoTitle: raw.seoTitle || "", seoDescription: raw.seoDescription || "", ogImageUrl: raw.ogImageUrl || "",
+    seoTitle: raw.seoTitle || "", seoDescription: raw.seoDescription || "", ogImageUrl: raw.ogImageUrl || "", shareImageUrl: raw.shareImageUrl || "", featuredImageUrl: raw.featuredImageUrl || "",
     sortPriority: Number(raw.sortPriority || 0), createdAt: raw.createdAt || null, updatedAt: raw.updatedAt || null
   };
 }

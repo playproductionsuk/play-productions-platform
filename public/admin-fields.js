@@ -1,0 +1,1 @@
+const ogField=document.querySelector("#ogImageUrl")?.closest(".field");if(ogField){ogField.insertAdjacentHTML("afterend",'<div class="field"><label>Share image URL<input id="shareImageUrl"></label></div><div class="field"><label>Featured image URL<input id="featuredImageUrl"></label></div>')}

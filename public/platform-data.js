@@ -28,6 +28,7 @@ export function normaliseTrack(raw) {
     teaser: raw.teaser || raw.description || "", description: raw.description || raw.teaser || "",
     price: Number(raw.price ?? 1.29), releaseDate: raw.releaseDate || "", adminNotes: raw.adminNotes || "",
     seoTitle: raw.seoTitle || "", seoDescription: raw.seoDescription || "", ogImageUrl: raw.ogImageUrl || "", shareImageUrl: raw.shareImageUrl || "", featuredImageUrl: raw.featuredImageUrl || "",
+    isrc: raw.isrc || "", upc: raw.upc || "", tunecoreUrl: raw.tunecoreUrl || "", prsId: raw.prsId || "", pplId: raw.pplId || "", spotifyUrl: raw.spotifyUrl || "", appleMusicUrl: raw.appleMusicUrl || "", mp3Url: raw.mp3Url || "", wavPath: raw.wavPath || raw.masterPath || "",
     sortPriority: Number(raw.sortPriority || 0), createdAt: raw.createdAt || null, updatedAt: raw.updatedAt || null
   };
 }

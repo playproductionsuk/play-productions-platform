@@ -128,6 +128,14 @@ Example document shapes are in `seed-data/README.md`.
 7. Add App Check, rate limiting, spam protection and audit-log writes in Cloud Functions.
 8. Add analytics/reporting and future product types: vinyl, samples, presets, CDs, cassettes, merch and courses.
 
+## Design Sprint 01
+
+The public site now uses a centred top header with a persistent cart foundation. The owner area is the full-width **Business Dashboard**, with Music Library, mixing/vinyl project routes, DJ Access and expanded Settings. Detailed changes are recorded in `DESIGN-SPRINT-01-CHANGES.md`.
+
+Editable business values are stored in `settings/business` when an authenticated owner saves them; local preview values use `playBusinessSettings` in browser storage. Final replacement imagery belongs in the documented `public/assets/` folders.
+
+The cart is deliberately a foundation in this sprint. Live service/vinyl checkout, mixed-product fulfilment and email/payment automation still require the payment workflow phase before launch.
+
 ## Phase 1.2 design preview and page visibility
 
 The public site now uses a fixed left-hand navigation on desktop and a contained slide-in menu on mobile. The headphones-only mark is in `public/headphones.svg`; colours and responsive refinements are in `public/design-v3.css`.

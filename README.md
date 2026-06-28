@@ -26,6 +26,10 @@ RC6 prevents fallback-layout painting, corrects the desktop Music/DJ grid schema
 
 RC7 fixes the admin startup crash, restores the top admin header, preserves cart state on track pages and completes DJ context/filter/application parity. See `MODULE-1-RC7-LIVE-READINESS.md`.
 
+## Module 1 RC8 stabilisation
+
+RC8 adds bounded Firebase/admin loading, null-safe homepage behaviour, track loading fallbacks, isolated admin login rendering and a clean-deployment audit. See `MODULE-1-RC8-STABILISATION.md`.
+
 ## What is included
 
 - Premium brand-led homepage with selected latest releases, service highlights, DJ promo and a Let’s Work callout.

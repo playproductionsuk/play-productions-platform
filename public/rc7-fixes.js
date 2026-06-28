@@ -6,9 +6,10 @@ document.querySelectorAll(".cart-menu-link").forEach(link=>link.textContent="Che
 if(page==="music.html"){
   const updateHeader=()=>document.querySelectorAll(".store-column-head").forEach(head=>{
     const spans=head.querySelectorAll("span");
-    if(spans.length===7)spans[6].textContent="";
+    if(spans.length===7&&spans[6].textContent!=="")spans[6].textContent="";
   });
-  new MutationObserver(updateHeader).observe(document.querySelector("#trackGrid"),{childList:true,subtree:true});
+  const trackGrid=document.querySelector("#trackGrid");
+  if(trackGrid)new MutationObserver(updateHeader).observe(trackGrid,{childList:true,subtree:true});
   updateHeader();
 }
 
@@ -17,24 +18,26 @@ if(page==="track.html"){
   const update=()=>{
     const button=document.querySelector("#buyButton");
     const id=new URLSearchParams(location.search).get("id")||new URLSearchParams(location.search).get("track");
-    if(button&&getCart().some(item=>String(item.id)===String(id))){button.textContent="In Cart ✓";button.disabled=true}
+    if(button&&getCart().some(item=>String(item.id)===String(id))&&button.textContent!=="In Cart ✓"){button.textContent="In Cart ✓";button.disabled=true}
     if(promo){
       const back=document.querySelector(".back-link");
-      if(back){back.href="dj-promo.html";back.textContent="← Back to Promo Crate"}
+      if(back&&back.getAttribute("href")!=="dj-promo.html"){back.href="dj-promo.html";back.textContent="← Back to Promo Crate"}
       const crumbs=document.querySelectorAll(".breadcrumb-bar a");
       crumbs.forEach(link=>{if(link.getAttribute("href")==="music.html"){link.href="dj-promo.html";link.textContent="DJ Promo Pool"}});
     }
   };
-  new MutationObserver(update).observe(document.querySelector("#beatContent"),{childList:true,subtree:true});
+  const beatContent=document.querySelector("#beatContent");
+  if(beatContent)new MutationObserver(update).observe(beatContent,{childList:true,subtree:true});
   update();
 }
 
 if(page==="dj-promo.html"){
   const label=()=>document.querySelectorAll(".dj-column-head").forEach(head=>{
     const spans=head.querySelectorAll("span");
-    if(spans.length===6)spans[5].textContent="Actions / Downloads";
+    if(spans.length===6&&spans[5].textContent!=="Actions / Downloads")spans[5].textContent="Actions / Downloads";
   });
-  new MutationObserver(label).observe(document.querySelector("#djTrackList"),{childList:true,subtree:true});
+  const djTrackList=document.querySelector("#djTrackList");
+  if(djTrackList)new MutationObserver(label).observe(djTrackList,{childList:true,subtree:true});
   label();
 }
 

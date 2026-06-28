@@ -30,6 +30,10 @@ RC7 fixes the admin startup crash, restores the top admin header, preserves cart
 
 The reverted RC8 layer has been removed. `RC7-SURGICAL-FIXES.md` documents the small admin, track-loading, hamburger and homepage safety fixes retained without changing the Music Store layout.
 
+## Module 1 critical fixes
+
+`MODULE-1-CRITICAL-FIXES.md` documents the admin observer/startup fixes and track-detail observer-loop correction. Working store, player, portal and filter layouts remain unchanged.
+
 
 ## What is included
 

@@ -37,7 +37,8 @@ function ensureLateDjStatusEditor(){
   const improve=()=>list.querySelectorAll("tbody tr").forEach(row=>{
     const email=row.children[2]?.textContent.trim(),record=djRecords.find(item=>item.email===email);
     const badge=row.querySelector(".dj-status-pill"),raw=(record?.status||badge?.textContent||"new").toLowerCase(),current=raw==="new"?"pending":raw;
-    if(badge)badge.textContent=current[0].toUpperCase()+current.slice(1);
+    const label=current[0].toUpperCase()+current.slice(1);
+    if(badge&&badge.textContent!==label)badge.textContent=label;
     const action=row.lastElementChild;
     if(action&&!action.querySelector("[data-rc7-dj-status]"))action.innerHTML=`<select class="change-status-small" data-rc7-dj-status="${record?.id||""}" data-email="${email}"><option value="new" ${current==="pending"?"selected":""}>Pending</option><option value="approved" ${current==="approved"?"selected":""}>Approved</option><option value="rejected" ${current==="rejected"?"selected":""}>Rejected</option></select>`;
   });

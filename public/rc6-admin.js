@@ -28,7 +28,8 @@ function enhanceStatuses(){
     const badge=row.querySelector(".dj-status-pill");
     const raw=(record?.status||badge?.textContent||"new").toLowerCase();
     const current=raw==="new"?"pending":raw;
-    if(badge)badge.textContent=current[0].toUpperCase()+current.slice(1);
+    const label=current[0].toUpperCase()+current.slice(1);
+    if(badge&&badge.textContent!==label)badge.textContent=label;
     const action=row.lastElementChild;
     if(!action||action.querySelector("[data-rc6-status]"))return;
     action.innerHTML=`<label class="status-editor"><span class="sr-only">Change status</span><select data-rc6-status="${record?.id||""}" data-email="${email}"><option value="new" ${current==="pending"?"selected":""}>Pending</option><option value="approved" ${current==="approved"?"selected":""}>Approved</option><option value="rejected" ${current==="rejected"?"selected":""}>Rejected</option></select></label>`;

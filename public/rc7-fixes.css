@@ -28,6 +28,9 @@
 .social-brand-links.rc4-socials a{width:100%!important}
 
 .portal-table th:nth-child(9),.portal-table th:nth-child(10),.portal-table td:nth-child(9),.portal-table td:nth-child(10){text-align:center!important}
+.dj-column-head span:last-child{text-align:center!important}
+.footer-column img,.social-brand-links.rc4-socials img,.dj-public-links img{filter:brightness(0) saturate(100%) invert(83%) sepia(92%) saturate(1260%) hue-rotate(34deg) brightness(104%) contrast(105%)!important}
+.footer-column img{width:17px!important;height:17px!important}.social-brand-links.rc4-socials img,.dj-public-links img{width:20px!important;height:20px!important}
 
 .admin-page .simple-header{position:sticky!important;top:0!important;z-index:80!important;display:grid!important;grid-template-columns:auto minmax(0,1fr) auto!important;gap:16px!important;height:auto!important;min-height:72px!important;background:#0d0d0d!important}
 .admin-page .simple-header>.admin-nav{position:static!important;display:flex!important;min-height:0!important;width:auto!important;padding:0!important;border:0!important;background:transparent!important;overflow-x:auto!important}

@@ -1,4 +1,11 @@
 const rc4Page=location.pathname.split("/").pop()||"index.html";
+if(!document.body.classList.contains("admin-page")){
+  const bundled=new Set(["design-v3.css","sprint-01.css","launch-candidate.css","polish-01.css","polish-02.css","rc1-followup.css","rc2-fixes.css","rc3-fixes.css","rc4-fixes.css"]);
+  document.querySelectorAll('link[rel="stylesheet"][href]').forEach(link=>{
+    const file=(link.getAttribute("href")||"").split(/[?#]/)[0].split("/").pop();
+    if(bundled.has(file))link.remove();
+  });
+}
 
 // Remove the optional latest block in Module 1 before it can remain in a loading state.
 if(rc4Page==="music.html"){

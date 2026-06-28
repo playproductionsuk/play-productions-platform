@@ -1,8 +1,3 @@
-const rc3Style=document.createElement("link");
-rc3Style.rel="stylesheet";
-rc3Style.href="rc3-fixes.css";
-document.head.appendChild(rc3Style);
-
 const rc3Page=location.pathname.split("/").pop()||"index.html";
 const iconPaths=[
   '<path d="M12 3v12m0 0 5-5m-5 5-5-5"/><path d="M5 19h14"/>',

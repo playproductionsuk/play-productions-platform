@@ -10,6 +10,10 @@ RC3 is the final Module 1 refinement for the Music Store, track pages, DJ Promo,
 
 RC4 tightens initial rendering, responsive layouts, active-module visibility, Music/DJ playback, portal mapping and admin settings. See `MODULE-1-RC4-FINAL-POLISH.md` for the changelog, preview status, Chris’s content tasks and launch blockers.
 
+## Refresh/cache punch-list fix
+
+The public UI now loads through one ordered, versioned stylesheet bundle and Firebase revalidates current HTML/CSS/JS assets. See `MODULE-1-REFRESH-CACHE-FIX.md` for the investigation and deployment note.
+
 ## What is included
 
 - Premium brand-led homepage with selected latest releases, service highlights, DJ promo and a Let’s Work callout.

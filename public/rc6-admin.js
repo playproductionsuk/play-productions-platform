@@ -32,8 +32,10 @@ function enhanceStatuses(){
     action.innerHTML=`<label class="status-editor"><span class="sr-only">Change status</span><select data-rc6-status="${record?.id||""}" data-email="${email}"><option value="new" ${current==="pending"?"selected":""}>Pending</option><option value="approved" ${current==="approved"?"selected":""}>Approved</option><option value="rejected" ${current==="rejected"?"selected":""}>Rejected</option></select></label>`;
   });
 }
-new MutationObserver(enhanceStatuses).observe(list,{childList:true,subtree:true});
-enhanceStatuses();
+if(list){
+  new MutationObserver(enhanceStatuses).observe(list,{childList:true,subtree:true});
+  enhanceStatuses();
+}
 
 list?.addEventListener("change",async event=>{
   const select=event.target.closest("[data-rc6-status]");
@@ -51,3 +53,5 @@ list?.addEventListener("change",async event=>{
   const badge=select.closest("tr")?.querySelector(".dj-status-pill");
   if(badge)badge.textContent=select.options[select.selectedIndex].text;
 });
+
+await import("./rc7-admin.js");

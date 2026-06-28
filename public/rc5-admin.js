@@ -2,6 +2,7 @@ const css=document.createElement("link");
 css.rel="stylesheet";
 css.href="rc5-fixes.css";
 document.head.appendChild(css);
+await import("./rc6-admin.js");
 
 document.querySelectorAll('[data-view="projects"],[data-view="cases"],[data-module-view="vinylProjects"]').forEach(item=>item.hidden=true);
 document.querySelectorAll('[data-inbox-filter="service-quote"],[data-inbox-filter="vinyl"]').forEach(item=>item.hidden=true);

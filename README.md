@@ -18,6 +18,10 @@ The public UI now loads through one ordered, versioned stylesheet bundle and Fir
 
 RC5 completes the remaining preview-side buyer, DJ, commercial enquiry, portal and settings blockers. See `MODULE-1-RC5-LAUNCH-BLOCKERS.md` for preview capabilities and the live setup blocker table.
 
+## Module 1 RC6 bug fixes
+
+RC6 prevents fallback-layout painting, corrects the desktop Music/DJ grid schema and fixes the remaining header, portal and admin status regressions. See `MODULE-1-RC6-BUG-FIXES.md`.
+
 ## What is included
 
 - Premium brand-led homepage with selected latest releases, service highlights, DJ promo and a Let’s Work callout.

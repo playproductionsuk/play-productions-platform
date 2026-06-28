@@ -1,0 +1,64 @@
+/* Hold the first paint until the current ordered UI bundle is available. */
+html:not(.ui-ready){visibility:hidden}
+.store-art:after,.store-track.is-playing .store-art:after,.store-track.is-playing .store-art:before{display:none!important;background:none!important;opacity:0!important}
+
+.store-column-head{
+  display:grid!important;
+  grid-template-columns:58px minmax(180px,2fr) 110px 72px minmax(120px,1fr) 80px 250px!important;
+  gap:12px!important;
+}
+.store-column-head span:first-child{grid-column:auto!important}
+.store-track{
+  display:grid!important;
+  grid-template-columns:58px minmax(180px,2fr) 110px 72px minmax(120px,1fr) 80px 250px!important;
+  gap:12px!important;
+}
+.store-track .bpm-cell{font:600 11px Inter,sans-serif;color:#ddd}
+.store-track .price{display:block!important;visibility:visible!important;min-width:80px!important;white-space:nowrap;text-align:left!important}
+.store-track-actions{width:250px!important;min-width:250px!important;display:flex!important;flex-wrap:nowrap!important}
+.store-track-actions>*{white-space:nowrap}
+
+.dj-column-head{
+  grid-template-columns:58px minmax(180px,2fr) 110px 72px minmax(120px,1fr) 340px!important;
+}
+.dj-column-head span:first-child{grid-column:auto!important}
+.dj-track.store-track{
+  grid-template-columns:58px minmax(180px,2fr) 110px 72px minmax(120px,1fr) 340px!important;
+}
+.dj-track .format-actions{min-width:340px!important;width:340px!important}
+
+.portal-actions .cart-menu-link{order:2}
+.portal-actions .cart-menu-link::before{content:"";display:none}
+.portal-actions .cart-link{order:1}
+.portal-actions>a[href="portal.html"]{order:3;border-left:1px solid #444!important;margin-left:7px!important}
+.portal-actions>a[href="dj-login.html"]{order:4}
+
+.social-brand-links.rc4-socials{grid-template-columns:repeat(6,minmax(0,1fr))!important}
+.social-brand-links.rc4-socials a{justify-content:center!important}
+#contactForm button[type="submit"]{margin-left:auto!important}
+
+.portal-table th:nth-last-child(-n+2),.portal-table td:nth-last-child(-n+2){text-align:center!important}
+
+.admin-platform{display:block!important}
+.admin-nav{position:sticky!important;top:0!important;margin:0!important}
+.system-status-card{display:block!important;width:100%!important}
+.setup-status-grid{display:grid!important;grid-template-columns:repeat(5,minmax(130px,1fr))!important}
+
+@media(max-width:1050px){
+ .store-column-head,.dj-column-head{display:none!important}
+ .store-track,.dj-track.store-track{grid-template-columns:52px minmax(0,1fr) auto!important}
+ .store-track .genre-cell,.store-track .bpm-cell,.store-track .tags{display:none!important}
+ .store-track-actions,.dj-track .format-actions{grid-column:2/-1!important;width:auto!important;min-width:0!important;flex-wrap:wrap!important}
+ .portal-actions>a[href="portal.html"]{border-left:0!important;margin-left:0!important}
+ .setup-status-grid{grid-template-columns:1fr 1fr!important}
+}
+@media(max-width:600px){
+ .social-brand-links.rc4-socials{grid-template-columns:repeat(2,1fr)!important}
+ .portal-table,.portal-table thead,.portal-table tbody,.portal-table tr,.portal-table th,.portal-table td{display:block!important;width:100%!important}
+ .portal-table thead{position:absolute!important;left:-9999px!important}
+ .portal-table tr{margin-bottom:12px!important;padding:10px!important;border:1px solid #303030!important;background:#111!important}
+ .portal-table td{white-space:normal!important;border:0!important;padding:5px 7px 5px 42%!important;position:relative!important;text-align:left!important;min-height:30px}
+ .portal-table td::before{position:absolute;left:7px;top:5px;width:38%;color:#a6f000;font-weight:700}
+ .portal-table td:nth-child(1)::before{content:"Artwork"}.portal-table td:nth-child(2)::before{content:"Track"}.portal-table td:nth-child(3)::before{content:"Genre"}.portal-table td:nth-child(4)::before{content:"BPM"}.portal-table td:nth-child(5)::before{content:"Key"}.portal-table td:nth-child(6)::before{content:"Mood"}.portal-table td:nth-child(7)::before{content:"Purchase Date"}.portal-table td:nth-child(8)::before{content:"Purchase Type"}.portal-table td:nth-child(9)::before{content:"MP3"}.portal-table td:nth-child(10)::before{content:"WAV"}
+ .setup-status-grid{grid-template-columns:1fr!important}
+}

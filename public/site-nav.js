@@ -1,8 +1,10 @@
-const assetVersion = "m1-rc5-20260628";
+const assetVersion = "m1-rc6-20260628";
 const uiStyles = document.createElement("link");
 uiStyles.rel = "stylesheet";
 uiStyles.href = `current-ui.css?v=${assetVersion}`;
+uiStyles.addEventListener("load",()=>document.documentElement.classList.add("ui-ready"));
 document.head.appendChild(uiStyles);
+setTimeout(()=>document.documentElement.classList.add("ui-ready"),1500);
 
 const page = location.pathname.split("/").pop() || "index.html";
 const header = document.querySelector(".premium-nav");

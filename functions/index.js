@@ -253,22 +253,37 @@ async function createDjUser(req, res) {
   const enquiry = await db.collection("enquiries").doc(enquiryId).get();
   if (!enquiry.exists || enquiry.data().type !== "dj-access") return json(res, 404, { error: "DJ request not found." });
   const details = enquiry.data();
-  const temporaryPassword = `${crypto.randomBytes(12).toString("base64url")}Aa1!`;
   let user;
-  try { user = await admin.auth().createUser({ email: details.email, password: temporaryPassword, displayName: details.djName || details.name }); }
+  try { user = await admin.auth().createUser({ email: details.email, displayName: details.djName || details.name, emailVerified: false }); }
   catch (error) {
     if (error.code !== "auth/email-already-exists") throw error;
     user = await admin.auth().getUserByEmail(details.email);
-    await admin.auth().updateUser(user.uid, { password: temporaryPassword, displayName: details.djName || details.name });
+    await admin.auth().updateUser(user.uid, { displayName: details.djName || details.name, disabled: false });
   }
+  const setupLink = await admin.auth().generatePasswordResetLink(details.email, {
+    url: "https://www.playproductions.co.uk/dj-login.html",
+    handleCodeInApp: false
+  });
   await db.collection("users").doc(user.uid).set({
     name: details.name || "", djName: details.djName || "", email: details.email,
     socialLinks: details.socialLinks || "", djAccess: true,
     mailingList: details.mailingConsent === true, tags: ["DJ"],
+    accountStatus: "invited", invitationSentAt: admin.firestore.FieldValue.serverTimestamp(),
     updatedAt: admin.firestore.FieldValue.serverTimestamp()
   }, { merge: true });
   await enquiry.ref.update({ status: "approved", customerUid: user.uid, approvedAt: admin.firestore.FieldValue.serverTimestamp() });
-  json(res, 200, { email: details.email, temporaryPassword });
+  await db.collection("mail").add({
+    to: [details.email],
+    message: {
+      subject: "Your Play Productions DJ promo access",
+      text: `Your DJ promo access has been approved. Create your password using this secure link: ${setupLink}`,
+      html: `<p>Your Play Productions DJ promo access has been approved.</p><p><a href="${setupLink}">Create your password securely</a></p><p>This link is private and time-limited.</p>`
+    },
+    userUid: user.uid,
+    type: "dj-password-setup",
+    createdAt: admin.firestore.FieldValue.serverTimestamp()
+  });
+  json(res, 200, { email: details.email, uid: user.uid, invitationQueued: true });
 }
 
 exports.api = onRequest({

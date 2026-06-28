@@ -128,6 +128,12 @@ Example document shapes are in `seed-data/README.md`.
 7. Add App Check, rate limiting, spam protection and audit-log writes in Cloud Functions.
 8. Add analytics/reporting and future product types: vinyl, samples, presets, CDs, cassettes, merch and courses.
 
+## Module 1 RC1 Review Follow-Up
+
+RC1 follow-up completes the responsive menu, shared DJ/public header, breadcrumbs, white playback treatment, explicit Preview action, wider portal tables, clickable dashboard attention workflow, enquiry export and secure DJ password-setup/reset flow.
+
+The exact preview behaviour, secure DJ invitation design, remaining integrations and Chris to-do list are documented in `MODULE-1-RC1-FOLLOWUP.md`.
+
 ## Module 1 Polish Sprint 02
 
 Sprint 02 installs the final transparent headphones/waveform logo, adds playback-responsive logo animation, aligns the DJ portal with the Music Store, improves store hierarchy, adds dashboard CSV exports and calculated KPIs, and adds required-field navigation to Music Library editing.

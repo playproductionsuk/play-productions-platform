@@ -128,6 +128,12 @@ Example document shapes are in `seed-data/README.md`.
 7. Add App Check, rate limiting, spam protection and audit-log writes in Cloud Functions.
 8. Add analytics/reporting and future product types: vinyl, samples, presets, CDs, cassettes, merch and courses.
 
+## Module 1 Polish Sprint 02
+
+Sprint 02 installs the final transparent headphones/waveform logo, adds playback-responsive logo animation, aligns the DJ portal with the Music Store, improves store hierarchy, adds dashboard CSV exports and calculated KPIs, and adds required-field navigation to Music Library editing.
+
+The current launch checklist and explicitly deferred future features are maintained in `MODULE-1-POLISH-SPRINT-02.md`.
+
 ## Module 1 Polish Sprint 01
 
 The Module 1 customer journeys have received a focused polish pass: streamlined homepage, basket/subtotal utility, artwork playback, persistent In Cart state, account-aware checkout preview, table-based My Music/Orders, additive social links, approved-DJ portal preview, DJ Database metrics and traffic-light Music Library.

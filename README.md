@@ -128,6 +128,12 @@ Example document shapes are in `seed-data/README.md`.
 7. Add App Check, rate limiting, spam protection and audit-log writes in Cloud Functions.
 8. Add analytics/reporting and future product types: vinyl, samples, presets, CDs, cassettes, merch and courses.
 
+## Module 1 RC2 Review Fixes
+
+RC2 completes the active-only compact footer, hardened mobile menu, Music mini-player, full DJ filter/playback parity, wider customer tables, labelled contact icons, real MP3/WAV DJ file selection and reliable missing-field mapping.
+
+See `MODULE-1-RC2-REVIEW-FIXES.md` for preview functionality, external setup requirements, launch blockers and the exact replace-in-place logo asset path.
+
 ## Module 1 RC1 Review Follow-Up
 
 RC1 follow-up completes the responsive menu, shared DJ/public header, breadcrumbs, white playback treatment, explicit Preview action, wider portal tables, clickable dashboard attention workflow, enquiry export and secure DJ password-setup/reset flow.

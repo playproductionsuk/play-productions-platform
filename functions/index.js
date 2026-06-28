@@ -226,20 +226,23 @@ async function download(req, res) {
 
 async function djDownload(req, res) {
   const trackId = String(req.query.track || "");
+  const format = String(req.query.format || "wav").toLowerCase();
   const bearer = String(req.get("authorization") || "").replace(/^Bearer\s+/i, "");
   if (!bearer) return json(res, 401, { error: "DJ sign-in required." });
   const decoded = await admin.auth().verifyIdToken(bearer);
   const profile = await db.collection("users").doc(decoded.uid).get();
   if (!profile.exists || profile.data().djAccess !== true) return json(res, 403, { error: "DJ access has not been approved." });
   const track = await db.collection("tracks").doc(trackId).get();
-  if (!track.exists || !["published", "coming-soon"].includes(track.data().status) || (track.data().showInDjPool !== true && track.data().djPromoEnabled !== true) || !track.data().masterPath) {
+  const data = track.exists ? track.data() : {};
+  const filePath = format === "mp3" ? (data.mp3Path || data.previewPath) : data.masterPath;
+  if (!track.exists || !["published", "coming-soon"].includes(data.status) || (data.showInDjPool !== true && data.djPromoEnabled !== true) || !filePath) {
     return res.status(404).send("This promo download is not available.");
   }
-  const [url] = await bucket.file(track.data().masterPath).getSignedUrl({
+  const [url] = await bucket.file(filePath).getSignedUrl({
     version: "v4",
     action: "read",
     expires: Date.now() + 15 * 60 * 1000,
-    responseDisposition: `attachment; filename="${track.data().slug || "play-productions-promo"}.wav"`
+    responseDisposition: `attachment; filename="${data.slug || "play-productions-promo"}.${format === "mp3" ? "mp3" : "wav"}"`
   });
   json(res, 200, { url });
 }

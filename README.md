@@ -6,6 +6,10 @@ This is the modular Firebase foundation for Play Productions: public music store
 
 RC3 is the final Module 1 refinement for the Music Store, track pages, DJ Promo, customer portal and business dashboard. See `MODULE-1-RC3-FINAL-FIXES.md` for preview capabilities, live setup requirements, asset replacement paths and the launch blocker table.
 
+## Module 1 RC4 final polish
+
+RC4 tightens initial rendering, responsive layouts, active-module visibility, Music/DJ playback, portal mapping and admin settings. See `MODULE-1-RC4-FINAL-POLISH.md` for the changelog, preview status, Chris’s content tasks and launch blockers.
+
 ## What is included
 
 - Premium brand-led homepage with selected latest releases, service highlights, DJ promo and a Let’s Work callout.

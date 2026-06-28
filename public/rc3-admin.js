@@ -80,3 +80,5 @@ document.addEventListener("click",async event=>{
   link.click();
   URL.revokeObjectURL(link.href);
 });
+
+await import("./rc4-admin.js");

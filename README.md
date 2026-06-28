@@ -26,6 +26,11 @@ RC6 prevents fallback-layout painting, corrects the desktop Music/DJ grid schema
 
 RC7 fixes the admin startup crash, restores the top admin header, preserves cart state on track pages and completes DJ context/filter/application parity. See `MODULE-1-RC7-LIVE-READINESS.md`.
 
+## RC7 surgical fixes
+
+The reverted RC8 layer has been removed. `RC7-SURGICAL-FIXES.md` documents the small admin, track-loading, hamburger and homepage safety fixes retained without changing the Music Store layout.
+
+
 ## What is included
 
 - Premium brand-led homepage with selected latest releases, service highlights, DJ promo and a Let’s Work callout.

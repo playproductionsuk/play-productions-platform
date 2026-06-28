@@ -10,8 +10,10 @@ document.documentElement.classList.add("ui-ready");
 let records=[];
 async function loadDjRecords(){
   if(firebaseReady){
-    const snapshot=await getDocs(collection(db,"enquiries"));
-    records=snapshot.docs.map(item=>({id:item.id,...item.data()})).filter(item=>item.type==="dj-access");
+    try{
+      const snapshot=await Promise.race([getDocs(collection(db,"enquiries")),new Promise((_,reject)=>setTimeout(()=>reject(new Error("DJ records timed out.")),5000))]);
+      records=snapshot.docs.map(item=>({id:item.id,...item.data()})).filter(item=>item.type==="dj-access");
+    }catch(error){console.warn(error);records=[]}
   }else{
     try{records=JSON.parse(localStorage.getItem("playDemoEnquiries")||"[]").filter(item=>item.type==="dj-access")}catch{records=[]}
   }

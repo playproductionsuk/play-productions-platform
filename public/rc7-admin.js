@@ -23,8 +23,10 @@ const adminMain=document.querySelector(".admin-main");
 let djRecords=[];
 async function refreshDjRecords(){
   if(firebaseReady){
-    const snapshot=await getDocs(collection(db,"enquiries"));
-    djRecords=snapshot.docs.map(item=>({id:item.id,...item.data()})).filter(item=>item.type==="dj-access");
+    try{
+      const snapshot=await Promise.race([getDocs(collection(db,"enquiries")),new Promise((_,reject)=>setTimeout(()=>reject(new Error("DJ records timed out.")),5000))]);
+      djRecords=snapshot.docs.map(item=>({id:item.id,...item.data()})).filter(item=>item.type==="dj-access");
+    }catch(error){console.warn(error);djRecords=[]}
   }else try{djRecords=JSON.parse(localStorage.getItem("playDemoEnquiries")||"[]").filter(item=>item.type==="dj-access")}catch{djRecords=[]}
 }
 await refreshDjRecords();

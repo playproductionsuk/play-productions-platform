@@ -61,11 +61,27 @@ export function trackHealth(track) {
   return { score: total ? Math.round(earned / total * 100) : 100, missingRequired, missingRecommended, risks, readyToBuy: track.status === "published" && track.showInStore && track.purchaseEnabled && Number(track.price) > 0 };
 }
 
+function timed(promise, milliseconds = 6500) {
+  return Promise.race([promise, new Promise((_, reject) => setTimeout(() => reject(new Error("The data request timed out.")), milliseconds))]);
+}
+
+async function localTracks() {
+  const response = await timed(fetch("tracks.json"), 5000);
+  if (!response.ok) throw new Error("The local music catalogue could not be loaded.");
+  return (await response.json()).map(normaliseTrack);
+}
+
 export async function loadTracks({ includeAdmin = false } = {}) {
-  if (!firebaseReady) { const response = await fetch("tracks.json"); return (await response.json()).map(normaliseTrack); }
-  const snapshot = includeAdmin ? await getDocs(collection(db, "tracks")) : await getDocs(query(collection(db, "tracks"), where("status", "in", ["coming-soon", "published"])));
-  if (snapshot.empty) { const response = await fetch("tracks.json"); return (await response.json()).map(normaliseTrack); }
-  return snapshot.docs.map(item => normaliseTrack({ id: item.id, ...item.data() })).sort((a, b) => b.sortPriority - a.sortPriority || String(b.releaseDate).localeCompare(String(a.releaseDate)));
+  if (!firebaseReady) return localTracks();
+  try {
+    const request = includeAdmin ? getDocs(collection(db, "tracks")) : getDocs(query(collection(db, "tracks"), where("status", "in", ["coming-soon", "published"])));
+    const snapshot = await timed(request);
+    if (snapshot.empty) return localTracks();
+    return snapshot.docs.map(item => normaliseTrack({ id: item.id, ...item.data() })).sort((a, b) => b.sortPriority - a.sortPriority || String(b.releaseDate).localeCompare(String(a.releaseDate)));
+  } catch (error) {
+    console.warn("Firebase tracks unavailable; using local catalogue.", error);
+    return localTracks();
+  }
 }
 
 export async function createEnquiry(payload) {

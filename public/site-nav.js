@@ -1,4 +1,4 @@
-const assetVersion = "m1-rc7-20260628";
+const assetVersion = "m1-rc7-surgical-20260628";
 const uiStyles = document.createElement("link");
 uiStyles.rel = "stylesheet";
 uiStyles.href = `current-ui.css?v=${assetVersion}`;
@@ -13,8 +13,6 @@ if (header) {
   const links = [
     ["index.html", "Home"],
     ["music.html", "Music"],
-    ["services.html", "Mixing & Mastering"],
-    ["vinyl.html", "Vinyl Cutting"],
     ["dj-access.html", "DJ Promo"],
     ["contact.html", "Let’s Work"],
   ];

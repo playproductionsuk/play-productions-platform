@@ -70,3 +70,5 @@ addOrderNotes();
 orderList?.addEventListener("input",event=>{
   if(event.target.matches(".order-note"))localStorage.setItem(event.target.dataset.noteKey,event.target.value);
 });
+
+await import("./rc5-admin.js");

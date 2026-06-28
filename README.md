@@ -14,6 +14,10 @@ RC4 tightens initial rendering, responsive layouts, active-module visibility, Mu
 
 The public UI now loads through one ordered, versioned stylesheet bundle and Firebase revalidates current HTML/CSS/JS assets. See `MODULE-1-REFRESH-CACHE-FIX.md` for the investigation and deployment note.
 
+## Module 1 RC5 launch blockers
+
+RC5 completes the remaining preview-side buyer, DJ, commercial enquiry, portal and settings blockers. See `MODULE-1-RC5-LAUNCH-BLOCKERS.md` for preview capabilities and the live setup blocker table.
+
 ## What is included
 
 - Premium brand-led homepage with selected latest releases, service highlights, DJ promo and a Let’s Work callout.

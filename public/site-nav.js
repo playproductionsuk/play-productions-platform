@@ -1,4 +1,4 @@
-const assetVersion = "m1-punch-20260628";
+const assetVersion = "m1-rc5-20260628";
 const uiStyles = document.createElement("link");
 uiStyles.rel = "stylesheet";
 uiStyles.href = `current-ui.css?v=${assetVersion}`;

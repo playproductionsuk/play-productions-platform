@@ -1,11 +1,10 @@
-<!doctype html>
+﻿<!doctype html>
 <html lang="en">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>Business Dashboard — Play Productions</title>
+  <title>Business Dashboard â€” Play Productions</title>
   <link rel="stylesheet" href="current-ui.css">
-  <link rel="stylesheet" href="admin-platform.css">
   <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
     :root{--play-lime:#a6f000;--play-bg:#070908;--play-panel:#101410;--play-panel-2:#151a15;--play-border:rgba(166,240,0,.22);--play-text:#f6f8f2;--play-muted:#aeb8a8;--play-danger:#ff6b6b;}
@@ -21,10 +20,42 @@
     .admin-dashboard{display:none;min-height:100vh}.admin-dashboard.is-active{display:block}.admin-topbar{position:sticky;top:0;z-index:20;display:flex;align-items:center;gap:1rem;justify-content:space-between;padding:.8rem clamp(1rem,3vw,2rem);border-bottom:1px solid var(--play-border);background:rgba(7,9,8,.92);backdrop-filter:blur(16px)}.admin-topbar-left{display:flex;align-items:center;gap:1rem;min-width:0}.admin-topbar img{width:52px;height:52px;object-fit:contain}.admin-nav{display:flex;align-items:center;gap:.35rem;flex-wrap:wrap}.admin-nav button,.admin-topbar a{border:1px solid transparent;background:transparent;color:var(--play-text);border-radius:999px;padding:.65rem .82rem;font:inherit;font-weight:800;text-decoration:none;cursor:pointer}.admin-nav button.active,.admin-nav button:hover,.admin-topbar a:hover{border-color:var(--play-border);color:var(--play-lime);background:rgba(166,240,0,.06)}.admin-topbar-right{display:flex;align-items:center;gap:.5rem;flex-wrap:wrap;justify-content:flex-end}.admin-main{width:min(1240px,100%);margin:0 auto;padding:clamp(1rem,3vw,2rem)}.admin-view{display:none}.admin-view.active{display:block}.admin-section-head{display:flex;justify-content:space-between;gap:1rem;align-items:end;margin:0 0 1.25rem}.admin-page-title{font-size:clamp(2rem,5vw,4rem)}.admin-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:1rem}.admin-card,.admin-panel,.admin-row{background:rgba(18,22,18,.92);border:1px solid var(--play-border);border-radius:22px;padding:1rem}.admin-card strong{display:block;font-size:2rem;color:var(--play-lime)}.admin-card span{color:var(--play-muted);font-weight:700}.admin-columns{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-top:1rem}.admin-list{display:grid;gap:.75rem}.admin-row{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,1fr) auto;gap:1rem;align-items:center}.admin-row strong{display:block}.admin-row p{margin:.25rem 0 0;color:var(--play-muted)}.admin-muted{color:var(--play-muted)}.admin-empty{color:var(--play-muted);border:1px dashed var(--play-border);border-radius:18px;padding:1rem}.admin-table{width:100%;border-collapse:collapse;background:rgba(18,22,18,.86);border:1px solid var(--play-border);border-radius:22px;overflow:hidden}.admin-table th,.admin-table td{text-align:left;padding:.85rem;border-bottom:1px solid rgba(166,240,0,.12);vertical-align:top}.admin-table th{color:var(--play-lime);font-size:.84rem;text-transform:uppercase;letter-spacing:.08em}.admin-table tr:last-child td{border-bottom:0}.admin-settings-tabs{display:flex;gap:.5rem;flex-wrap:wrap;margin-bottom:1rem}.admin-settings-tabs button{border:1px solid var(--play-border);background:rgba(166,240,0,.05);color:var(--play-text);border-radius:999px;padding:.7rem .9rem;font-weight:800;cursor:pointer}.admin-settings-tabs button.active{background:var(--play-lime);color:#050705}.settings-panel{display:none}.settings-panel.active{display:block}.settings-actions{display:flex;justify-content:flex-end;margin-top:1rem}.admin-form-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1rem}.full{grid-column:1/-1}.admin-error-box{border:1px solid rgba(255,107,107,.4);background:rgba(255,107,107,.08);border-radius:18px;padding:1rem;margin:1rem 0;color:#ffd2d2}
     [hidden]{display:none!important}@media(max-width:880px){.admin-topbar,.admin-topbar-left,.admin-topbar-right{align-items:flex-start}.admin-topbar{display:grid}.admin-grid,.admin-columns,.admin-form-grid{grid-template-columns:1fr}.admin-row{grid-template-columns:1fr}.admin-nav{width:100%;overflow-x:auto;flex-wrap:nowrap;padding-bottom:.25rem}.admin-nav button{white-space:nowrap}.admin-section-head{align-items:start;display:grid}.admin-table{display:block;overflow-x:auto}.admin-login-card{padding:1.4rem}}
   </style>
+<style id="play-admin-visibility-safety">
+  body.admin-page {
+    display: block !important;
+    min-height: 100vh !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+  }
+
+  #adminLoading[hidden] {
+    display: none !important;
+  }
+
+  #adminLogin:not([hidden]) {
+    display: grid !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+  }
+
+  #adminLogin[hidden] {
+    display: none !important;
+  }
+
+  #adminDashboard[hidden] {
+    display: none !important;
+  }
+
+  #adminDashboard.is-active:not([hidden]) {
+    display: block !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+  }
+</style>
 </head>
 <body class="admin-page">
   <div id="adminLoading" class="admin-loading" aria-live="polite" hidden>
-    <div><div class="admin-spinner" aria-hidden="true"></div><p class="eyebrow">Play admin</p><h1 class="admin-page-title">Preparing admin…</h1><p class="admin-muted">Loading the Module 1 business dashboard.</p></div>
+    <div><div class="admin-spinner" aria-hidden="true"></div><p class="eyebrow">Play admin</p><h1 class="admin-page-title">Preparing adminâ€¦</h1><p class="admin-muted">Loading the Module 1 business dashboard.</p></div>
   </div>
 
   <main id="adminLogin" class="admin-login-wrap">
@@ -71,9 +102,537 @@
     </div>
   </section>
 
-  <!-- admin script disabled for visibility test -->
+  <script>
+    (() => {
+      'use strict';
+
+      const $ = (selector, root = document) => root.querySelector(selector);
+      const $$ = (selector, root = document) => Array.from(root.querySelectorAll(selector));
+
+      const els = {
+        loading: $('#adminLoading'),
+        login: $('#adminLogin'),
+        dashboard: $('#adminDashboard'),
+        loginForm: $('#adminLoginForm'),
+        loginStatus: $('#adminLoginStatus'),
+        previewButton: $('#previewAdminButton'),
+        signOut: $('#adminSignOut'),
+        mode: $('#adminMode'),
+        error: $('#adminError'),
+        overviewGrid: $('#overviewGrid'),
+        attentionList: $('#attentionList'),
+        setupStatus: $('#setupStatus'),
+        musicLibrary: $('#musicLibrary'),
+        enquiriesList: $('#enquiriesList'),
+        ordersList: $('#ordersList'),
+        djList: $('#djList'),
+        settingsArea: $('#settingsArea'),
+        exportTracks: $('#exportTracks'),
+        exportDjs: $('#exportDjs')
+      };
+
+      const fallbackTracks = [
+        { title: 'Ooh Yeah', genre: 'UK Garage', bpm: 99, status: 'Ready for promo', price: 'Â£24.99' },
+        { title: 'Late Night Bounce', genre: 'Garage / 2-Step', bpm: 132, status: 'Draft listing', price: 'Â£24.99' },
+        { title: '140 Dub Plate', genre: 'Grime', bpm: 140, status: 'Needs artwork', price: 'Â£19.99' }
+      ];
+
+      const state = {
+        mode: 'preview',
+        tracks: fallbackTracks,
+        enquiries: [
+          { name: 'Website enquiry', detail: 'Contact form wiring to Firebase/Email pending', status: 'Setup required' }
+        ],
+        orders: [
+          { order: 'No live orders yet', detail: 'Connect Stripe/payment provider to activate', status: 'Pending' }
+        ],
+        djs: [
+          { name: 'Promo list placeholder', email: 'Add DJ contacts once database is connected', status: 'Preview' }
+        ]
+      };
+
+      function escapeHtml(value) {
+        return String(value ?? '').replace(/[&<>'"]/g, (char) => ({
+          '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;'
+        }[char]));
+      }
+
+      function setStatus(message = '', isError = false) {
+        if (!els.loginStatus) return;
+        els.loginStatus.textContent = message;
+        els.loginStatus.classList.toggle('error', Boolean(isError));
+      }
+
+      function showLogin(message = '') {
+        if (els.loading) els.loading.hidden = true;
+        if (els.dashboard) {
+          els.dashboard.hidden = true;
+          els.dashboard.classList.remove('is-active');
+        }
+        if (els.login) els.login.hidden = false;
+        setStatus(message);
+      }
+
+      function showDashboard(mode = 'preview') {
+        state.mode = mode;
+        if (els.loading) els.loading.hidden = true;
+        if (els.login) els.login.hidden = true;
+        if (els.dashboard) {
+          els.dashboard.hidden = false;
+          els.dashboard.classList.add('is-active');
+        }
+        if (els.mode) els.mode.textContent = mode === 'signed-in' ? 'Signed in' : 'Preview mode';
+        renderAll();
+      }
+
+      function showError(message) {
+        if (!els.error) return;
+        els.error.hidden = false;
+        els.error.innerHTML = `<div class="admin-error-box"><strong>Admin notice</strong><p>${escapeHtml(message)}</p></div>`;
+      }
+
+      function handleRuntimeFailure(reason) {
+        const message = reason instanceof Error ? reason.message : String(reason || 'Unknown admin error');
+        console.error('Play admin runtime error:', reason);
+        if (els.loading) els.loading.hidden = true;
+        if (els.dashboard?.classList.contains('is-active')) {
+          showError(`A dashboard feature could not load: ${message}. Preview mode remains available.`);
+        } else {
+          showLogin('Admin could not connect to Firebase/Auth. Preview dashboard is still available.');
+          setStatus('Admin could not connect to Firebase/Auth. Preview dashboard is still available.', true);
+        }
+      }
+
+      window.addEventListener('error', event => handleRuntimeFailure(event.error || event.message));
+      window.addEventListener('unhandledrejection', event => {
+        event.preventDefault();
+        handleRuntimeFailure(event.reason);
+      });
+
+      function normaliseTracks(payload) {
+        const list = Array.isArray(payload) ? payload : Array.isArray(payload?.tracks) ? payload.tracks : [];
+        return list.map((track, index) => ({
+          title: track.title || track.name || `Track ${index + 1}`,
+          genre: track.genre || track.style || 'Uncategorised',
+          bpm: track.bpm || track.tempo || 'â€”',
+          status: track.status || (track.featured ? 'Featured' : 'Loaded'),
+          price: track.price || track.licensePrice || track.licencePrice || 'â€”'
+        }));
+      }
+
+      async function loadTracks() {
+        const controller = new AbortController();
+        const timeout = window.setTimeout(() => controller.abort(), 4000);
+        try {
+          const response = await fetch('tracks.json', { cache: 'no-store', signal: controller.signal });
+          if (!response.ok) throw new Error(`tracks.json returned ${response.status}`);
+          const payload = await response.json();
+          const tracks = normaliseTracks(payload);
+          if (tracks.length) state.tracks = tracks;
+        } catch (error) {
+          console.info('Play admin running with fallback preview data:', error.message);
+        } finally {
+          window.clearTimeout(timeout);
+        }
+      }
+
+      function card(label, value, note = '') {
+        return `<article class="admin-card"><strong>${escapeHtml(value)}</strong><span>${escapeHtml(label)}</span>${note ? `<p class="admin-muted">${escapeHtml(note)}</p>` : ''}</article>`;
+      }
+
+      function row(title, meta, action = '') {
+        return `<article class="admin-row"><div><strong>${escapeHtml(title)}</strong><p>${escapeHtml(meta)}</p></div><div class="admin-muted">${escapeHtml(action)}</div></article>`;
+      }
+
+      function renderOverview() {
+        if (els.overviewGrid) {
+          els.overviewGrid.innerHTML = [
+            card('Tracks loaded', state.tracks.length, 'Pulled from tracks.json when available'),
+            card('Open enquiries', state.enquiries.length, 'Preview/setup placeholder'),
+            card('Orders', state.orders.length, 'Payment connection pending'),
+            card('DJ contacts', state.djs.length, 'Promo database placeholder')
+          ].join('');
+        }
+
+        if (els.attentionList) {
+          els.attentionList.innerHTML = [
+            row('Admin shell', 'The login and preview dashboard remain available if connected services fail.', 'Ready'),
+            row('Connect Firebase Auth', 'The sign-in button currently opens preview mode until Auth is wired.', 'Next'),
+            row('Connect orders/payments', 'Orders area is ready for real payment data.', 'Next')
+          ].join('');
+        }
+
+        if (els.setupStatus) {
+          els.setupStatus.innerHTML = [
+            row('HTML shell', 'Loaded successfully from admin.html', 'OK'),
+            row('Dashboard navigation', 'Tabs switch without reloading the page', 'OK'),
+            row('tracks.json import', 'Uses live tracks.json if present, otherwise fallback data', 'Safe'),
+            row('Firebase/Auth', 'Not connected in this standalone file', 'Pending')
+          ].join('');
+        }
+      }
+
+      function table(headers, rows) {
+        if (!rows.length) return '<p class="admin-empty">No records to show yet.</p>';
+        return `<table class="admin-table"><thead><tr>${headers.map(h => `<th>${escapeHtml(h)}</th>`).join('')}</tr></thead><tbody>${rows.join('')}</tbody></table>`;
+      }
+
+      function renderMusic() {
+        if (!els.musicLibrary) return;
+        const rows = state.tracks.map(track => `<tr><td><strong>${escapeHtml(track.title)}</strong></td><td>${escapeHtml(track.genre)}</td><td>${escapeHtml(track.bpm)}</td><td>${escapeHtml(track.status)}</td><td>${escapeHtml(track.price)}</td></tr>`);
+        els.musicLibrary.innerHTML = table(['Track', 'Genre', 'BPM', 'Status', 'Price'], rows);
+      }
+
+      function renderEnquiries() {
+        if (!els.enquiriesList) return;
+        const rows = state.enquiries.map(item => `<tr><td><strong>${escapeHtml(item.name)}</strong></td><td>${escapeHtml(item.detail)}</td><td>${escapeHtml(item.status)}</td></tr>`);
+        els.enquiriesList.innerHTML = table(['Name', 'Details', 'Status'], rows);
+      }
+
+      function renderOrders() {
+        if (!els.ordersList) return;
+        const rows = state.orders.map(item => `<tr><td><strong>${escapeHtml(item.order)}</strong></td><td>${escapeHtml(item.detail)}</td><td>${escapeHtml(item.status)}</td></tr>`);
+        els.ordersList.innerHTML = table(['Order', 'Details', 'Status'], rows);
+      }
+
+      function renderDjs() {
+        if (!els.djList) return;
+        const rows = state.djs.map(item => `<tr><td><strong>${escapeHtml(item.name)}</strong></td><td>${escapeHtml(item.email)}</td><td>${escapeHtml(item.status)}</td></tr>`);
+        els.djList.innerHTML = table(['Name', 'Email / note', 'Status'], rows);
+      }
+
+      function renderSettings() {
+        if (!els.settingsArea) return;
+        els.settingsArea.innerHTML = `
+          <div class="admin-panel">
+            <h2>Admin setup</h2>
+            <p class="admin-muted">Preview mode uses the current catalogue where available and safe sample data for services that are not connected yet.</p>
+            <div class="admin-list">
+              ${row('Mode', state.mode === 'signed-in' ? 'Signed in' : 'Preview mode', 'Active')}
+              ${row('Auth', 'Firebase Auth connection is pending. Preview mode remains available.', 'Pending')}
+              ${row('Data source', 'tracks.json is loaded when present, with fallback preview data otherwise.', 'Safe')}
+            </div>
+          </div>`;
+      }
+
+      function renderAll() {
+        if (els.error) els.error.hidden = true;
+        renderOverview();
+        renderMusic();
+        renderEnquiries();
+        renderOrders();
+        renderDjs();
+        renderSettings();
+      }
+
+      function switchView(viewName) {
+        $$('.admin-nav button').forEach(button => {
+          button.classList.toggle('active', button.dataset.adminView === viewName);
+        });
+        $$('.admin-view').forEach(section => {
+          section.classList.toggle('active', section.dataset.adminPage === viewName);
+        });
+      }
+
+      function exportCsv(filename, rows) {
+        if (!rows.length) return;
+        const keys = Object.keys(rows[0]);
+        const csv = [keys.join(','), ...rows.map(row => keys.map(key => `"${String(row[key] ?? '').replace(/"/g, '""')}"`).join(','))].join('\n');
+        const blob = new Blob([csv], { type: 'text/csv;charset=utf-8' });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = filename;
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+        URL.revokeObjectURL(url);
+      }
+
+      function bindEvents() {
+        els.previewButton?.addEventListener('click', () => showDashboard('preview'));
+
+        els.loginForm?.addEventListener('submit', (event) => {
+          event.preventDefault();
+          setStatus('Firebase/Auth is not connected in this recovery file, so opening preview mode instead.');
+          showDashboard('preview');
+          showError('Sign-in is currently running in preview mode. Once Firebase Auth is connected, this form can be switched back to real authentication.');
+        });
+
+        els.signOut?.addEventListener('click', () => showLogin('Signed out of preview mode.'));
+
+        $$('.admin-nav button').forEach(button => {
+          button.addEventListener('click', () => switchView(button.dataset.adminView));
+        });
+
+        els.exportTracks?.addEventListener('click', () => exportCsv('play-productions-tracks.csv', state.tracks));
+        els.exportDjs?.addEventListener('click', () => exportCsv('play-productions-djs.csv', state.djs));
+      }
+
+      async function init() {
+        try {
+          bindEvents();
+          await loadTracks();
+          showLogin('Admin page loaded. Use Preview dashboard while live auth is connected.');
+        } catch (error) {
+          handleRuntimeFailure(error);
+        }
+      }
+
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', init);
+      } else {
+        init();
+      }
+    })();
+  </script>
+<script id="play-admin-black-screen-guard">
+(function () {
+  'use strict';
+
+  function byId(id) {
+    return document.getElementById(id);
+  }
+
+  function escapeHtml(value) {
+    return String(value == null ? '' : value).replace(/[&<>'"]/g, function (char) {
+      return {
+        '&': '&amp;',
+        '<': '&lt;',
+        '>': '&gt;',
+        "'": '&#39;',
+        '"': '&quot;'
+      }[char];
+    });
+  }
+
+  function hideLoading() {
+    var loading = byId('adminLoading');
+    if (loading) {
+      loading.hidden = true;
+      loading.style.display = 'none';
+    }
+  }
+
+  function showLogin(message) {
+    hideLoading();
+
+    var login = byId('adminLogin');
+    var dashboard = byId('adminDashboard');
+    var status = byId('adminLoginStatus');
+
+    if (dashboard) {
+      dashboard.hidden = true;
+      dashboard.classList.remove('is-active');
+      dashboard.style.display = 'none';
+    }
+
+    if (login) {
+      login.hidden = false;
+      login.removeAttribute('hidden');
+      login.style.display = 'grid';
+      login.style.opacity = '1';
+      login.style.visibility = 'visible';
+    }
+
+    if (status && message) {
+      status.textContent = message;
+      status.classList.remove('error');
+    }
+  }
+
+  function fillFallbackDashboard() {
+    var overviewGrid = byId('overviewGrid');
+    var attentionList = byId('attentionList');
+    var setupStatus = byId('setupStatus');
+    var musicLibrary = byId('musicLibrary');
+    var enquiriesList = byId('enquiriesList');
+    var ordersList = byId('ordersList');
+    var djList = byId('djList');
+    var settingsArea = byId('settingsArea');
+
+    if (overviewGrid && !overviewGrid.innerHTML.trim()) {
+      overviewGrid.innerHTML = [
+        '<article class="admin-card"><strong>3</strong><span>Tracks loaded</span><p class="admin-muted">Preview fallback data</p></article>',
+        '<article class="admin-card"><strong>1</strong><span>Open enquiries</span><p class="admin-muted">Preview/setup placeholder</p></article>',
+        '<article class="admin-card"><strong>1</strong><span>Orders</span><p class="admin-muted">Payment connection pending</p></article>',
+        '<article class="admin-card"><strong>1</strong><span>DJ contacts</span><p class="admin-muted">Promo database placeholder</p></article>'
+      ].join('');
+    }
+
+    if (attentionList && !attentionList.innerHTML.trim()) {
+      attentionList.innerHTML = '<article class="admin-row"><div><strong>Admin preview loaded</strong><p>The dashboard is visible and running in preview mode.</p></div><div class="admin-muted">OK</div></article>';
+    }
+
+    if (setupStatus && !setupStatus.innerHTML.trim()) {
+      setupStatus.innerHTML = '<article class="admin-row"><div><strong>No black screen guard</strong><p>If auth or catalogue loading fails, the admin page stays visible.</p></div><div class="admin-muted">Active</div></article>';
+    }
+
+    if (musicLibrary && !musicLibrary.innerHTML.trim()) {
+      musicLibrary.innerHTML = '<p class="admin-empty">Music catalogue preview is available once track data loads.</p>';
+    }
+
+    if (enquiriesList && !enquiriesList.innerHTML.trim()) {
+      enquiriesList.innerHTML = '<p class="admin-empty">No live enquiries loaded in preview mode.</p>';
+    }
+
+    if (ordersList && !ordersList.innerHTML.trim()) {
+      ordersList.innerHTML = '<p class="admin-empty">No live orders loaded in preview mode.</p>';
+    }
+
+    if (djList && !djList.innerHTML.trim()) {
+      djList.innerHTML = '<p class="admin-empty">No DJ contacts loaded in preview mode.</p>';
+    }
+
+    if (settingsArea && !settingsArea.innerHTML.trim()) {
+      settingsArea.innerHTML = '<div class="admin-panel"><h2>Preview mode</h2><p class="admin-muted">Firebase Auth is bypassed while the admin dashboard is being tested.</p></div>';
+    }
+  }
+
+  function openPreviewDashboard() {
+    hideLoading();
+
+    var login = byId('adminLogin');
+    var dashboard = byId('adminDashboard');
+    var mode = byId('adminMode');
+
+    if (login) {
+      login.hidden = true;
+      login.setAttribute('hidden', '');
+      login.style.display = 'none';
+      login.style.opacity = '0';
+      login.style.visibility = 'hidden';
+    }
+
+    if (dashboard) {
+      dashboard.hidden = false;
+      dashboard.removeAttribute('hidden');
+      dashboard.classList.add('is-active');
+      dashboard.style.display = 'block';
+      dashboard.style.opacity = '1';
+      dashboard.style.visibility = 'visible';
+    }
+
+    if (mode) {
+      mode.textContent = 'Preview mode';
+    }
+
+    fillFallbackDashboard();
+
+    console.log('Play admin preview dashboard opened safely.');
+  }
+
+  function bindPreviewControls() {
+    var previewButton = byId('previewAdminButton');
+    var loginForm = byId('adminLoginForm');
+    var signOut = byId('adminSignOut');
+
+    if (previewButton && !previewButton.dataset.guardBound) {
+      previewButton.dataset.guardBound = 'true';
+      previewButton.addEventListener('click', function (event) {
+        event.preventDefault();
+        event.stopImmediatePropagation();
+        openPreviewDashboard();
+      }, true);
+    }
+
+    if (loginForm && !loginForm.dataset.guardBound) {
+      loginForm.dataset.guardBound = 'true';
+      loginForm.addEventListener('submit', function (event) {
+        event.preventDefault();
+        openPreviewDashboard();
+      }, true);
+    }
+
+    if (signOut && !signOut.dataset.guardBound) {
+      signOut.dataset.guardBound = 'true';
+      signOut.addEventListener('click', function () {
+        showLogin('Signed out of preview mode.');
+      });
+    }
+
+    Array.prototype.forEach.call(document.querySelectorAll('.admin-nav button'), function (button) {
+      if (button.dataset.guardBound) return;
+      button.dataset.guardBound = 'true';
+
+      button.addEventListener('click', function () {
+        var viewName = button.dataset.adminView;
+
+        Array.prototype.forEach.call(document.querySelectorAll('.admin-nav button'), function (navButton) {
+          navButton.classList.toggle('active', navButton.dataset.adminView === viewName);
+        });
+
+        Array.prototype.forEach.call(document.querySelectorAll('.admin-view'), function (section) {
+          section.classList.toggle('active', section.dataset.adminPage === viewName);
+        });
+      });
+    });
+  }
+
+  function ensureSomethingVisible() {
+    hideLoading();
+    bindPreviewControls();
+
+    var login = byId('adminLogin');
+    var dashboard = byId('adminDashboard');
+
+    var dashboardActive = dashboard && !dashboard.hidden && dashboard.classList.contains('is-active');
+    var loginVisible = login && !login.hidden;
+
+    if (!dashboardActive && !loginVisible) {
+      showLogin('Admin page recovered from a hidden state. Use Preview dashboard.');
+    }
+
+    if (!dashboardActive && login) {
+      login.hidden = false;
+      login.removeAttribute('hidden');
+    }
+  }
+
+  window.playAdminOpenPreviewDashboard = openPreviewDashboard;
+
+  if (!window.showDashboard) {
+    window.showDashboard = openPreviewDashboard;
+  }
+
+  window.addEventListener('error', function (event) {
+    console.error('Play admin runtime error caught by guard:', event.error || event.message);
+    setTimeout(function () {
+      var dashboard = byId('adminDashboard');
+      if (!dashboard || !dashboard.classList.contains('is-active')) {
+        showLogin('Admin script error caught. Preview mode is still available.');
+      }
+    }, 0);
+  });
+
+  window.addEventListener('unhandledrejection', function (event) {
+    console.error('Play admin promise rejection caught by guard:', event.reason);
+    setTimeout(function () {
+      var dashboard = byId('adminDashboard');
+      if (!dashboard || !dashboard.classList.contains('is-active')) {
+        showLogin('Admin loading issue caught. Preview mode is still available.');
+      }
+    }, 0);
+  });
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', function () {
+      ensureSomethingVisible();
+      setTimeout(ensureSomethingVisible, 500);
+      setTimeout(ensureSomethingVisible, 2000);
+    });
+  } else {
+    ensureSomethingVisible();
+    setTimeout(ensureSomethingVisible, 500);
+    setTimeout(ensureSomethingVisible, 2000);
+  }
+})();
+</script>
 </body>
 </html>
+
+
+
 
 
 

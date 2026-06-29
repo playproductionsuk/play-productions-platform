@@ -1,12 +1,12 @@
 // Copy these public values from Firebase Console > Project settings > Your apps.
 // They identify your Firebase project; they are not passwords.
 export const firebaseConfig = {
-  apiKey: "PASTE_FIREBASE_API_KEY",
+  apiKey: "AIzaSyBdLHiLylKy2bud8PGBrxB9_PyUrHd3rH0",
   authDomain: "play-productions.firebaseapp.com",
   projectId: "play-productions",
-  storageBucket: "PASTE_FIREBASE_STORAGE_BUCKET",
-  messagingSenderId: "PASTE_MESSAGING_SENDER_ID",
-  appId: "PASTE_FIREBASE_APP_ID"
+  storageBucket: "play-productions.firebasestorage.app",
+  messagingSenderId: "749628978077",
+  appId: "1:749628978077:web:1fb70343c20ae7ba70f574"
 };
 
 // PayPal calls this a client ID. It is safe to use in the browser.

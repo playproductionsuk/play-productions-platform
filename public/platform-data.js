@@ -6,7 +6,11 @@ const visibilityStyle = document.createElement("style");
 visibilityStyle.textContent = "[hidden]{display:none!important}";
 document.head.appendChild(visibilityStyle);
 
-export const firebaseReady = !Object.values(firebaseConfig).some(value => String(value).startsWith("PASTE_"));
+const firebaseAppKeys = ["apiKey", "authDomain", "projectId", "appId"];
+export const firebaseReady = firebaseAppKeys.every(key => {
+  const value = String(firebaseConfig[key] || "").trim();
+  return value && !value.startsWith("PASTE_");
+});
 export const firebaseApp = firebaseReady ? initializeApp(firebaseConfig) : null;
 export const db = firebaseApp ? getFirestore(firebaseApp) : null;
 

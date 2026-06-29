@@ -49,8 +49,9 @@ const enhanceDjExport=()=>{
   if(!view||view.querySelector("[data-export-djs]"))return;
   view.querySelector(".admin-section-title")?.insertAdjacentHTML("beforeend",'<button type="button" data-export-djs>Export DJs + notes</button>');
 };
-new MutationObserver(enhanceDjExport).observe(document.querySelector(".admin-main"),{childList:true,subtree:true});
 enhanceDjExport();
+window.addEventListener("play-admin-module-ready",enhanceDjExport);
+[250,750,1500].forEach(delay=>setTimeout(enhanceDjExport,delay));
 
 document.addEventListener("click",event=>{
   if(!event.target.closest("[data-export-djs]"))return;

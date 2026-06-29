@@ -65,8 +65,9 @@ const addOrderNotes=()=>{
     row.insertAdjacentHTML("beforeend",`<label>Internal notes<textarea class="order-note" data-note-key="${key}" placeholder="Add order notes…">${localStorage.getItem(key)||""}</textarea></label>`);
   });
 };
-new MutationObserver(addOrderNotes).observe(orderList,{childList:true,subtree:true});
 addOrderNotes();
+window.addEventListener("play-admin-orders-rendered",addOrderNotes);
+[250,750,1500].forEach(delay=>setTimeout(addOrderNotes,delay));
 orderList?.addEventListener("input",event=>{
   if(event.target.matches(".order-note"))localStorage.setItem(event.target.dataset.noteKey,event.target.value);
 });

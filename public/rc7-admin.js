@@ -13,7 +13,11 @@ function positionAdminNav(){
   nav.hidden=portal.hidden;
 }
 positionAdminNav();
-if(portal)new MutationObserver(positionAdminNav).observe(portal,{attributes:true,attributeFilter:["hidden"]});
+document.addEventListener("click",event=>{
+  if(event.target.closest("#previewAdminButton,#loginForm,#signOutButton"))setTimeout(positionAdminNav,0);
+});
+window.addEventListener("play-admin-preview-request",positionAdminNav);
+window.addEventListener("play-admin-visibility-change",positionAdminNav);
 
 const statusCard=document.querySelector("#systemStatus");
 statusCard?.classList.add("dashboard-status-restored");
@@ -22,7 +26,7 @@ statusCard?.classList.add("dashboard-status-restored");
 const adminMain=document.querySelector(".admin-main");
 let djRecords=[];
 async function refreshDjRecords(){
-  if(firebaseReady){
+  if(firebaseReady&&!globalThis.playAdminPreviewOnly){
     try{
       const snapshot=await Promise.race([getDocs(collection(db,"enquiries")),new Promise((_,reject)=>setTimeout(()=>reject(new Error("DJ records timed out.")),5000))]);
       djRecords=snapshot.docs.map(item=>({id:item.id,...item.data()})).filter(item=>item.type==="dj-access");
@@ -42,8 +46,9 @@ function ensureLateDjStatusEditor(){
     const action=row.lastElementChild;
     if(action&&!action.querySelector("[data-rc7-dj-status]"))action.innerHTML=`<select class="change-status-small" data-rc7-dj-status="${record?.id||""}" data-email="${email}"><option value="new" ${current==="pending"?"selected":""}>Pending</option><option value="approved" ${current==="approved"?"selected":""}>Approved</option><option value="rejected" ${current==="rejected"?"selected":""}>Rejected</option></select>`;
   });
-  new MutationObserver(improve).observe(list,{childList:true,subtree:true});
   improve();
+  window.addEventListener("play-admin-dj-rendered",improve);
+  [250,750,1500].forEach(delay=>setTimeout(improve,delay));
   list.addEventListener("change",async event=>{
     const select=event.target.closest("[data-rc7-dj-status]");
     if(!select)return;
@@ -61,8 +66,9 @@ function ensureLateDjStatusEditor(){
   });
 }
 if(adminMain){
-  new MutationObserver(ensureLateDjStatusEditor).observe(adminMain,{childList:true,subtree:true});
   ensureLateDjStatusEditor();
+  window.addEventListener("play-admin-module-ready",ensureLateDjStatusEditor);
+  [250,750,1500].forEach(delay=>setTimeout(ensureLateDjStatusEditor,delay));
 }
 import { firebaseReady, db } from "./platform-data.js";
 import { collection, getDocs, doc, updateDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-firestore.js";

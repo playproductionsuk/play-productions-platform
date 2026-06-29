@@ -236,7 +236,7 @@ async function djDownload(req, res) {
   const data = track.exists ? track.data() : {};
   const filePath = format === "mp3" ? (data.mp3Path || data.previewPath) : data.masterPath;
   if (!track.exists || !["published", "coming-soon"].includes(data.status) || (data.showInDjPool !== true && data.djPromoEnabled !== true) || !filePath) {
-    return res.status(404).send("This promo download is not available.");
+    return json(res, 404, { error: "This promo download is not available for that format." });
   }
   const [url] = await bucket.file(filePath).getSignedUrl({
     version: "v4",

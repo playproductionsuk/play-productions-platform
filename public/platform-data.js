@@ -72,7 +72,7 @@ async function localTracks() {
 }
 
 export async function loadTracks({ includeAdmin = false } = {}) {
-  if (!firebaseReady) return localTracks();
+  if (!firebaseReady || globalThis.playAdminPreviewOnly) return localTracks();
   try {
     const request = includeAdmin ? getDocs(collection(db, "tracks")) : getDocs(query(collection(db, "tracks"), where("status", "in", ["coming-soon", "published"])));
     const snapshot = await timed(request);
@@ -85,6 +85,6 @@ export async function loadTracks({ includeAdmin = false } = {}) {
 }
 
 export async function createEnquiry(payload) {
-  if (!firebaseReady) { const id=`demo-${Date.now()}`,item={...payload,id,status:"new",createdAt:new Date().toISOString(),updatedAt:new Date().toISOString()};let saved=[];try{saved=JSON.parse(localStorage.getItem("playDemoEnquiries")||"[]")}catch{}saved.unshift(item);localStorage.setItem("playDemoEnquiries",JSON.stringify(saved));console.info("Demo enquiry",item);return { id }; }
+  if (!firebaseReady || globalThis.playAdminPreviewOnly) { const id=`demo-${Date.now()}`,item={...payload,id,status:"new",createdAt:new Date().toISOString(),updatedAt:new Date().toISOString()};let saved=[];try{saved=JSON.parse(localStorage.getItem("playDemoEnquiries")||"[]")}catch{}saved.unshift(item);localStorage.setItem("playDemoEnquiries",JSON.stringify(saved));console.info("Demo enquiry",item);return { id }; }
   return addDoc(collection(db, "enquiries"), { ...payload, status: "new", createdAt: serverTimestamp(), updatedAt: serverTimestamp() });
 }

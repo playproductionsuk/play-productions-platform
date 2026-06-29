@@ -1,0 +1,10 @@
+.music-library-table{min-width:1500px}
+.music-library-table td>small{display:block;margin-top:4px;color:#888}
+.music-library-table td:last-child{white-space:nowrap}
+.missing-chips button{padding:3px 6px;border:1px solid;font-size:10px;cursor:pointer}
+.missing-chips button[data-kind="required"]{background:#321414;border-color:#8b3434;color:#ffb0b0}
+.missing-chips button[data-kind="recommended"]{background:#2a2210;border-color:#755f24;color:#ffe099}
+.traffic{white-space:nowrap}
+.traffic.red{color:#ff8e8e}
+.traffic.amber{color:#f0c45b}
+.traffic.green{color:#98e66d}

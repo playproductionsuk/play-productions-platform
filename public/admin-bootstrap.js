@@ -1,3 +1,4 @@
+const ADMIN_TIMEOUT_MS = 5000;
 const STORAGE_KEYS = {
   settings: "play-admin-settings-v1",
   djs: "play-admin-djs-v1",
@@ -442,3 +443,4 @@ if (document.readyState === "loading") {
 } else {
   boot();
 }
+

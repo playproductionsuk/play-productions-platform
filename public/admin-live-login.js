@@ -23,7 +23,6 @@ portal.hidden = true;
 
 function showError(message) {
   retainedError = message;
-  document.documentElement.classList.remove("admin-starting");
   login.hidden = false;
   portal.hidden = true;
   if (status) status.textContent = message;
@@ -39,7 +38,6 @@ function showAuthenticatedDashboard(account) {
   login.setAttribute("hidden", "");
   portal.hidden = false;
   portal.removeAttribute("hidden");
-  document.documentElement.classList.remove("admin-starting");
 }
 
 if (!form) throw new Error("The live admin login form is missing.");
@@ -98,9 +96,18 @@ if (!firebaseReady || !firebaseApp || !db) {
         document.body.appendChild(previewBlocker);
       }
       globalThis.playAdminLiveAuthenticated = true;
-      document.documentElement.classList.add("admin-starting");
-      status.textContent = "Loading admin dashboard…";
+      showAuthenticatedDashboard(account);
+      const dashboardReady = new Promise(resolve => {
+        window.addEventListener("play-admin-live-authenticated", () => {
+          showAuthenticatedDashboard(account);
+          resolve();
+        }, { once: true });
+      });
       await loadAdminDashboardModules();
+      await Promise.race([
+        dashboardReady,
+        new Promise(resolve => setTimeout(resolve, 2000))
+      ]);
       showAuthenticatedDashboard(account);
       await new Promise(resolve => requestAnimationFrame(resolve));
       showAuthenticatedDashboard(account);

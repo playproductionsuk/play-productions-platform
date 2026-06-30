@@ -252,49 +252,83 @@ async function createDjUser(req, res) {
   const bearer = String(req.get("authorization") || "").replace(/^Bearer\s+/i, "");
   const decoded = await admin.auth().verifyIdToken(bearer);
   const adminDoc = await db.collection("admins").doc(decoded.uid).get();
-  if (!adminDoc.exists) return json(res, 403, { error: "Admin permission required." });
+  if (!adminDoc.exists || adminDoc.data().active === false) return json(res, 403, { error: "Active admin permission required." });
   const enquiryId = String(req.body?.enquiryId || "");
   const enquiry = await db.collection("enquiries").doc(enquiryId).get();
   if (!enquiry.exists || enquiry.data().type !== "dj-access") return json(res, 404, { error: "DJ request not found." });
   const details = enquiry.data();
+  const email = String(details.email || "").trim().toLowerCase();
+  if (!email) return json(res, 400, { error: "The DJ request does not contain an email address." });
+  const displayName = details.djName || details.name || "";
   let user;
-  try { user = await admin.auth().createUser({ email: details.email, displayName: details.djName || details.name, emailVerified: false }); }
+  try {
+    const createDetails = { email, emailVerified: false, disabled: false };
+    if (displayName) createDetails.displayName = displayName;
+    user = await admin.auth().createUser(createDetails);
+  }
   catch (error) {
     if (error.code !== "auth/email-already-exists") throw error;
-    user = await admin.auth().getUserByEmail(details.email);
-    await admin.auth().updateUser(user.uid, { displayName: details.djName || details.name, disabled: false });
+    user = await admin.auth().getUserByEmail(email);
+    const updates = { disabled: false };
+    if (displayName) updates.displayName = displayName;
+    user = await admin.auth().updateUser(user.uid, updates);
   }
-  const setupLink = await admin.auth().generatePasswordResetLink(details.email, {
-    url: "https://www.playproductions.co.uk/dj-login.html",
+
+  const loginUrl = "https://www.playproductions.co.uk/dj-login.html";
+  const setupLink = await admin.auth().generatePasswordResetLink(email, {
+    url: loginUrl,
     handleCodeInApp: false
   });
-  await db.collection("users").doc(user.uid).set({
-    name: details.name || "", djName: details.djName || "", email: details.email,
-    displayName: details.djName || details.name || "", socialLinks: details.socialLinks || "", djAccess: true,
+
+  const now = admin.firestore.FieldValue.serverTimestamp();
+  const mailRef = db.collection("mail").doc();
+  const batch = db.batch();
+  batch.set(db.collection("users").doc(user.uid), {
+    name: details.name || "", djName: details.djName || "", email,
+    displayName, socialLinks: details.socialLinks || "", djAccess: true,
     role: "dj", status: "approved",
     mailingList: details.mailingConsent === true, tags: ["DJ"],
-    accountStatus: "approved", invitationSentAt: admin.firestore.FieldValue.serverTimestamp(),
-    updatedAt: admin.firestore.FieldValue.serverTimestamp()
+    accountStatus: "approved", invitationQueuedAt: now,
+    updatedAt: now
   }, { merge: true });
-  await enquiry.ref.update({
-    status: "approved",
-    accountStatus: "approved",
-    customerUid: user.uid,
-    approvedAt: admin.firestore.FieldValue.serverTimestamp(),
-    updatedAt: admin.firestore.FieldValue.serverTimestamp()
-  });
-  await db.collection("mail").add({
-    to: [details.email],
+  batch.set(mailRef, {
+    to: [email],
     message: {
-      subject: "Your Play Productions DJ promo access",
-      text: `Your DJ promo access has been approved. Create your password using this secure link: ${setupLink}`,
-      html: `<p>Your Play Productions DJ promo access has been approved.</p><p><a href="${setupLink}">Create your password securely</a></p><p>This link is private and time-limited.</p>`
+      subject: "Your Play Productions DJ promo access is approved",
+      text: [
+        "Your DJ promo access has been approved.",
+        "Use the secure link below to set your password, then sign in to the Play Productions DJ promo crate.",
+        "",
+        `Set your password: ${setupLink}`,
+        `DJ login: ${loginUrl}`,
+        "",
+        "This private access is for the Play Productions DJ promo crate."
+      ].join("\n"),
+      html: `<p>Your DJ promo access has been approved.</p><p>Use the secure link below to set your password, then sign in to the Play Productions DJ promo crate.</p><p><a href="${setupLink}">Set your password securely</a></p><p><a href="${loginUrl}">Open the DJ login page</a></p><p>This private access is for the Play Productions DJ promo crate.</p>`
     },
     userUid: user.uid,
+    enquiryId,
     type: "dj-password-setup",
-    createdAt: admin.firestore.FieldValue.serverTimestamp()
+    createdAt: now
   });
-  json(res, 200, { email: details.email, uid: user.uid, invitationQueued: true });
+  batch.update(enquiry.ref, {
+    status: "approved",
+    accountStatus: "approved",
+    invitationQueued: true,
+    invitationQueuedAt: now,
+    customerUid: user.uid,
+    approvedAt: now,
+    updatedAt: now
+  });
+  await batch.commit();
+
+  json(res, 200, {
+    email,
+    uid: user.uid,
+    invitationQueued: true,
+    mailId: mailRef.id,
+    loginUrl
+  });
 }
 
 async function updateDjApplication(req, res) {

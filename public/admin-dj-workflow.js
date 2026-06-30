@@ -15,11 +15,6 @@ let requests = [];
 let message = "";
 let messageKind = "success";
 
-const style = document.createElement("link");
-style.rel = "stylesheet";
-style.href = "admin-dj-workflow.css";
-document.head.appendChild(style);
-
 function statusOf(request) {
   const values = [request.status, request.accountStatus]
     .map(value => String(value || "").trim().toLowerCase());
@@ -219,12 +214,14 @@ async function approve(id) {
     const request = requests.find(item => item.id === id);
     Object.assign(request, { status: "approved", accountStatus: "approved", customerUid: "preview-dj-account" });
     savePreview();
+    message = "Preview approval complete. A live approval would queue the DJ invitation email.";
   } else {
-    await adminApi("/api/admin/create-dj-user", { enquiryId: id });
+    const result = await adminApi("/api/admin/create-dj-user", { enquiryId: id });
+    if (!result.invitationQueued) throw new Error("DJ access was created, but the invitation email was not queued.");
     await loadRequests();
+    message = `Approved and invitation email queued for ${result.email}.`;
   }
   messageKind = "success";
-  message = "DJ approved. Access is enabled and the secure account setup email has been queued.";
   activeFilter = "pending";
   render();
 }

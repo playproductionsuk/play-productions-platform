@@ -29,6 +29,17 @@ function showError(message) {
   if (submit) submit.disabled = false;
 }
 
+function showAuthenticatedDashboard(account) {
+  document.querySelector(".admin-preview-note")?.remove();
+  if (status) status.textContent = "";
+  const adminUser = document.querySelector("#adminUser");
+  if (adminUser) adminUser.textContent = account.email || "Authorised admin";
+  login.hidden = true;
+  login.setAttribute("hidden", "");
+  portal.hidden = false;
+  portal.removeAttribute("hidden");
+}
+
 if (!form) throw new Error("The live admin login form is missing.");
 
 if (!firebaseReady || !firebaseApp || !db) {
@@ -76,8 +87,6 @@ if (!firebaseReady || !firebaseApp || !db) {
         showError(retainedError);
         return;
       }
-      document.querySelector(".admin-preview-note")?.remove();
-      document.querySelector("#adminUser").textContent = account.email || "Authorised admin";
       if (!document.querySelector("#previewAdminButton")) {
         const previewBlocker = document.createElement("button");
         previewBlocker.id = "previewAdminButton";
@@ -87,9 +96,21 @@ if (!firebaseReady || !firebaseApp || !db) {
         document.body.appendChild(previewBlocker);
       }
       globalThis.playAdminLiveAuthenticated = true;
-      login.hidden = true;
-      portal.hidden = false;
+      showAuthenticatedDashboard(account);
+      const dashboardReady = new Promise(resolve => {
+        window.addEventListener("play-admin-live-authenticated", () => {
+          showAuthenticatedDashboard(account);
+          resolve();
+        }, { once: true });
+      });
       await loadAdminDashboardModules();
+      await Promise.race([
+        dashboardReady,
+        new Promise(resolve => setTimeout(resolve, 2000))
+      ]);
+      showAuthenticatedDashboard(account);
+      await new Promise(resolve => requestAnimationFrame(resolve));
+      showAuthenticatedDashboard(account);
       window.dispatchEvent(new Event("play-admin-visibility-change"));
     } catch (error) {
       retainedError = `Admin permission check failed: ${error.message}`;

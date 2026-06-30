@@ -3,6 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
+  <script>if(new URLSearchParams(location.search).get("live")==="1")document.documentElement.classList.add("live-admin")</script>
   <title>Business Dashboard — Play Productions</title>
   <link rel="stylesheet" href="style.css">
   <link rel="stylesheet" href="platform.css">
@@ -16,6 +17,8 @@
     #loginPanel:not([hidden]){display:block!important;opacity:1!important;visibility:visible!important}
     #loginPanel[hidden],#adminPortal[hidden],.admin-view[hidden]{display:none!important}
     #adminPortal:not([hidden]){opacity:1!important;visibility:visible!important}
+    .live-admin #previewAdminButton{display:none!important}
+    .live-admin-status{display:none}.live-admin .preview-admin-status{display:none}.live-admin .live-admin-status{display:inline}
     .admin-preview-note{padding:12px 15px;border:1px solid #5c7d16;background:#172208;color:#dfffa2;margin:0 0 20px}
     .admin-preview-note strong{color:#a6f000}.row-actions{align-items:center;flex-wrap:wrap}
     .row-actions input{min-width:180px;background:#111;border:1px solid #444;color:#eee;padding:8px}
@@ -34,7 +37,7 @@
         <div class="field"><label>Email<input id="email" name="email" type="email" autocomplete="email" required></label></div>
         <div class="field"><label>Password<input id="password" name="password" type="password" autocomplete="current-password" required></label></div>
         <div class="form-actions"><button class="button primary" type="submit">Sign in</button><button id="previewAdminButton" class="button ghost" type="button">Preview dashboard</button></div>
-        <p id="loginStatus" class="status-message">Firebase/Auth is pending. Preview mode remains available.</p>
+        <p id="loginStatus" class="status-message"><span class="preview-admin-status">Firebase/Auth is pending. Preview mode remains available.</span><span class="live-admin-status">Loading live admin sign-in…</span></p>
       </form>
       </div>
     </section>
@@ -73,7 +76,7 @@
     </section>
   </main>
   <script id="play-admin-live-login-safety">
-    (()=>{if(new URLSearchParams(location.search).get("live")!=="1")return;document.querySelector("#previewAdminButton")?.remove();const report=message=>{const login=document.querySelector("#loginPanel"),portal=document.querySelector("#adminPortal"),status=document.querySelector("#loginStatus");if(login)login.hidden=false;if(portal)portal.hidden=true;if(status)status.textContent=message};window.addEventListener("error",event=>{if(globalThis.playAdminLiveAuthenticated)return;event.stopImmediatePropagation();report(`Admin error: ${event.message}`)},true);window.addEventListener("unhandledrejection",event=>{if(globalThis.playAdminLiveAuthenticated)return;event.preventDefault();event.stopImmediatePropagation();report(`Admin loading error: ${event.reason?.message||event.reason||"Unknown error"}`)},true)})();
+    (()=>{if(new URLSearchParams(location.search).get("live")!=="1")return;document.querySelector("#previewAdminButton")?.remove();const initial=document.querySelector("#loginStatus");if(initial)initial.textContent="Loading live admin sign-in…";const report=message=>{const login=document.querySelector("#loginPanel"),portal=document.querySelector("#adminPortal"),status=document.querySelector("#loginStatus");if(login)login.hidden=false;if(portal)portal.hidden=true;if(status)status.textContent=message};window.addEventListener("error",event=>{if(globalThis.playAdminLiveAuthenticated)return;event.stopImmediatePropagation();report(`Admin error: ${event.message}`)},true);window.addEventListener("unhandledrejection",event=>{if(globalThis.playAdminLiveAuthenticated)return;event.preventDefault();event.stopImmediatePropagation();report(`Admin loading error: ${event.reason?.message||event.reason||"Unknown error"}`)},true)})();
   </script>
   <script id="play-admin-black-screen-guard">
     (()=>{window.playAdminPreviewOnly=new URLSearchParams(location.search).get("live")!=="1";document.documentElement.classList.add("ui-ready");const login=document.querySelector("#loginPanel"),portal=document.querySelector("#adminPortal"),loading=document.querySelector("#adminLoading"),preview=document.querySelector("#previewAdminButton"),form=document.querySelector("#loginForm");function recover(message){if(loading)loading.hidden=true;if(portal&&!portal.hidden){const note=document.querySelector(".admin-preview-note");if(note&&message)note.textContent=message;return}if(login){login.hidden=false;const status=document.querySelector("#loginStatus");if(status&&message)status.textContent=message}}window.playAdminOpenPreviewDashboard=()=>{window.playAdminPreviewOnly=true;if(login)login.hidden=true;if(portal)portal.hidden=false;window.dispatchEvent(new CustomEvent("play-admin-preview-request"));window.dispatchEvent(new Event("play-admin-visibility-change"))};preview?.addEventListener("click",window.playAdminOpenPreviewDashboard);if(window.playAdminPreviewOnly)form?.addEventListener("submit",event=>{event.preventDefault();window.playAdminOpenPreviewDashboard()});window.addEventListener("error",event=>recover(`Admin issue caught: ${event.message}. Preview remains available.`));window.addEventListener("unhandledrejection",event=>{event.preventDefault();recover("Admin loading issue caught. Preview remains available.")});setTimeout(()=>{if((!login||login.hidden)&&(!portal||portal.hidden))recover("Admin recovered from a hidden state. Preview remains available.")},800)})();
@@ -87,6 +90,6 @@
     });
   </script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/lamejs/1.2.1/lame.min.js"></script>
-  <script type="module" src="admin-entry.js"></script>
+  <script type="module" src="admin-entry.js?v=m1-live-status-20260630"></script>
 </body>
 </html>

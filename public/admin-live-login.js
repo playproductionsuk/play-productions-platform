@@ -14,6 +14,7 @@ const portal = document.querySelector("#adminPortal");
 const status = document.querySelector("#loginStatus");
 const preview = document.querySelector("#previewAdminButton");
 const submit = form?.querySelector('button[type="submit"]');
+let retainedError = "";
 
 globalThis.firebaseReady = firebaseReady;
 preview?.remove();
@@ -21,6 +22,7 @@ login.hidden = false;
 portal.hidden = true;
 
 function showError(message) {
+  retainedError = message;
   login.hidden = false;
   portal.hidden = true;
   if (status) status.textContent = message;
@@ -39,6 +41,7 @@ if (!firebaseReady || !firebaseApp || !db) {
   form.addEventListener("submit", async event => {
     event.preventDefault();
     event.stopPropagation();
+    retainedError = "";
     submit.disabled = true;
     status.textContent = "Signing in…";
     try {
@@ -54,7 +57,13 @@ if (!firebaseReady || !firebaseApp || !db) {
 
   onAuthStateChanged(auth, async account => {
     if (!account) {
-      showError("Sign in with an authorised Play Productions admin account.");
+      if (retainedError) showError(retainedError);
+      else {
+        login.hidden = false;
+        portal.hidden = true;
+        status.textContent = "Sign in with an authorised Play Productions admin account.";
+        submit.disabled = false;
+      }
       return;
     }
     submit.disabled = true;
@@ -62,8 +71,9 @@ if (!firebaseReady || !firebaseApp || !db) {
     try {
       const adminRecord = await getDoc(doc(db, "admins", account.uid));
       if (!adminRecord.exists() || adminRecord.data().active === false) {
+        retainedError = "This account does not have active admin permission.";
         await signOut(auth);
-        showError("This account does not have active admin permission.");
+        showError(retainedError);
         return;
       }
       document.querySelector(".admin-preview-note")?.remove();
@@ -82,8 +92,9 @@ if (!firebaseReady || !firebaseApp || !db) {
       await loadAdminDashboardModules();
       window.dispatchEvent(new Event("play-admin-visibility-change"));
     } catch (error) {
+      retainedError = `Admin permission check failed: ${error.message}`;
       if (auth.currentUser) await signOut(auth).catch(() => {});
-      showError(`Admin permission check failed: ${error.message}`);
+      showError(retainedError);
     }
   });
 }

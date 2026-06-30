@@ -226,7 +226,8 @@ async function download(req, res) {
 
 async function djDownload(req, res) {
   const trackId = String(req.query.track || "");
-  const format = String(req.query.format || "wav").toLowerCase();
+  const format = String(req.query.format || "mp3").toLowerCase();
+  if (format !== "mp3") return json(res, 400, { error: "DJ promo downloads are available as MP3 only." });
   const bearer = String(req.get("authorization") || "").replace(/^Bearer\s+/i, "");
   if (!bearer) return json(res, 401, { error: "DJ sign-in required." });
   const decoded = await admin.auth().verifyIdToken(bearer);
@@ -234,7 +235,7 @@ async function djDownload(req, res) {
   if (!profile.exists || profile.data().djAccess !== true) return json(res, 403, { error: "DJ access has not been approved." });
   const track = await db.collection("tracks").doc(trackId).get();
   const data = track.exists ? track.data() : {};
-  const filePath = format === "mp3" ? (data.mp3Path || data.previewPath) : data.masterPath;
+  const filePath = data.mp3Path || data.previewPath;
   if (!track.exists || !["published", "coming-soon"].includes(data.status) || (data.showInDjPool !== true && data.djPromoEnabled !== true) || !filePath) {
     return json(res, 404, { error: "This promo download is not available for that format." });
   }
@@ -242,7 +243,7 @@ async function djDownload(req, res) {
     version: "v4",
     action: "read",
     expires: Date.now() + 15 * 60 * 1000,
-    responseDisposition: `attachment; filename="${data.slug || "play-productions-promo"}.${format === "mp3" ? "mp3" : "wav"}"`
+    responseDisposition: `attachment; filename="${data.slug || "play-productions-promo"}.mp3"`
   });
   json(res, 200, { url });
 }

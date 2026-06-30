@@ -29,12 +29,14 @@
   <main>
     <section id="loginPanel" class="login-box panel">
       <p class="eyebrow">Business control centre</p><h1>Admin sign in</h1>
-      <form id="loginForm">
+      <div id="loginForm">
+      <form id="adminLoginForm">
         <div class="field"><label>Email<input id="email" name="email" type="email" autocomplete="email" required></label></div>
         <div class="field"><label>Password<input id="password" name="password" type="password" autocomplete="current-password" required></label></div>
         <div class="form-actions"><button class="button primary" type="submit">Sign in</button><button id="previewAdminButton" class="button ghost" type="button">Preview dashboard</button></div>
         <p id="loginStatus" class="status-message">Firebase/Auth is pending. Preview mode remains available.</p>
       </form>
+      </div>
     </section>
     <section id="adminPortal" class="admin-platform" hidden>
       <aside class="admin-nav"><p class="eyebrow">Play admin</p><button class="active" type="button" data-view="dashboard">Overview</button><button type="button" data-view="tracks">Tracks</button><button type="button" data-view="enquiries">Enquiries</button><button type="button" data-view="projects">Projects</button><button type="button" data-view="orders">Orders</button><button type="button" data-view="cases">Case studies</button><button type="button" data-view="settings">Settings</button><button id="signOutButton" type="button">Sign out</button></aside>
@@ -70,6 +72,9 @@
       </div>
     </section>
   </main>
+  <script id="play-admin-live-login-safety">
+    (()=>{if(new URLSearchParams(location.search).get("live")!=="1")return;document.querySelector("#previewAdminButton")?.remove();const report=message=>{const login=document.querySelector("#loginPanel"),portal=document.querySelector("#adminPortal"),status=document.querySelector("#loginStatus");if(login)login.hidden=false;if(portal)portal.hidden=true;if(status)status.textContent=message};window.addEventListener("error",event=>{if(globalThis.playAdminLiveAuthenticated)return;event.stopImmediatePropagation();report(`Admin error: ${event.message}`)},true);window.addEventListener("unhandledrejection",event=>{if(globalThis.playAdminLiveAuthenticated)return;event.preventDefault();event.stopImmediatePropagation();report(`Admin loading error: ${event.reason?.message||event.reason||"Unknown error"}`)},true)})();
+  </script>
   <script id="play-admin-black-screen-guard">
     (()=>{window.playAdminPreviewOnly=new URLSearchParams(location.search).get("live")!=="1";document.documentElement.classList.add("ui-ready");const login=document.querySelector("#loginPanel"),portal=document.querySelector("#adminPortal"),loading=document.querySelector("#adminLoading"),preview=document.querySelector("#previewAdminButton"),form=document.querySelector("#loginForm");function recover(message){if(loading)loading.hidden=true;if(portal&&!portal.hidden){const note=document.querySelector(".admin-preview-note");if(note&&message)note.textContent=message;return}if(login){login.hidden=false;const status=document.querySelector("#loginStatus");if(status&&message)status.textContent=message}}window.playAdminOpenPreviewDashboard=()=>{window.playAdminPreviewOnly=true;if(login)login.hidden=true;if(portal)portal.hidden=false;window.dispatchEvent(new CustomEvent("play-admin-preview-request"));window.dispatchEvent(new Event("play-admin-visibility-change"))};preview?.addEventListener("click",window.playAdminOpenPreviewDashboard);if(window.playAdminPreviewOnly)form?.addEventListener("submit",event=>{event.preventDefault();window.playAdminOpenPreviewDashboard()});window.addEventListener("error",event=>recover(`Admin issue caught: ${event.message}. Preview remains available.`));window.addEventListener("unhandledrejection",event=>{event.preventDefault();recover("Admin loading issue caught. Preview remains available.")});setTimeout(()=>{if((!login||login.hidden)&&(!portal||portal.hidden))recover("Admin recovered from a hidden state. Preview remains available.")},800)})();
   </script>
@@ -82,12 +87,6 @@
     });
   </script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/lamejs/1.2.1/lame.min.js"></script>
-  <script src="admin-fields.js"></script>
-  <script type="module" src="rc1-admin-fields.js"></script>
-  <script type="module" src="admin-platform.js"></script>
-  <script type="module" src="rc1-admin-loader.js"></script>
-  <script type="module" src="rc2-admin-loader.js"></script>
-  <script type="module" src="rc3-admin.js"></script>
-  <script type="module" src="admin-dj-workflow.js"></script>
+  <script type="module" src="admin-entry.js"></script>
 </body>
 </html>

@@ -27,12 +27,12 @@ export function normaliseTrack(raw) {
     showInLatest: raw.showInLatest ?? true, featured: raw.featured ?? false, allowExclusiveEnquiry: raw.allowExclusiveEnquiry ?? true,
     purchaseEnabled: raw.purchaseEnabled ?? true, dateTbc: raw.dateTbc ?? false,
     coverUrl: raw.coverUrl || raw.thumbnail || (raw.placeholderArtwork ? "icons/fallback.png" : ""), coverPath: raw.coverPath || "",
-    previewUrl: raw.previewUrl || raw.url || "", previewPath: raw.previewPath || "", masterPath: raw.masterPath || "",
+    previewUrl: raw.previewUrl || raw.url || "", previewPath: raw.previewPath || "", mp3Path: raw.mp3Path || raw.previewPath || "", masterPath: raw.masterPath || raw.wavPath || "",
     style: raw.style || raw.genre || "", subgenre: raw.subgenre || "", bpm: raw.bpm || "", key: raw.key || "", moodTags: raw.moodTags || [],
     teaser: raw.teaser || raw.description || "", description: raw.description || raw.teaser || "",
     price: Number(raw.price ?? 1.29), releaseDate: raw.releaseDate || "", adminNotes: raw.adminNotes || "",
     seoTitle: raw.seoTitle || "", seoDescription: raw.seoDescription || "", ogImageUrl: raw.ogImageUrl || "", shareImageUrl: raw.shareImageUrl || "", featuredImageUrl: raw.featuredImageUrl || "",
-    isrc: raw.isrc || "", upc: raw.upc || "", tunecoreUrl: raw.tunecoreUrl || "", distributionReleaseId: raw.distributionReleaseId || "", hyperfollowUrl: raw.hyperfollowUrl || "", prsId: raw.prsId || "", pplId: raw.pplId || "", spotifyUrl: raw.spotifyUrl || "", appleMusicUrl: raw.appleMusicUrl || "", soundcloudUrl: raw.soundcloudUrl || "", youtubeMusicUrl: raw.youtubeMusicUrl || "", mp3Url: raw.mp3Url || "", wavPath: raw.wavPath || raw.masterPath || "", composerDetails: raw.composerDetails || "", producerDetails: raw.producerDetails || "", publisherDetails: raw.publisherDetails || "", distributionDate: raw.distributionDate || "", copyrightNotes: raw.copyrightNotes || "", prsRegistered: raw.prsRegistered ?? false, pplRegistered: raw.pplRegistered ?? false, tunecoreUploaded: raw.tunecoreUploaded ?? false, distributedToStores: raw.distributedToStores ?? false, releaseChecklistNotes: raw.releaseChecklistNotes || "",
+    isrc: raw.isrc || "", upc: raw.upc || "", tunecoreUrl: raw.tunecoreUrl || "", distributionReleaseId: raw.distributionReleaseId || "", hyperfollowUrl: raw.hyperfollowUrl || "", prsId: raw.prsId || "", pplId: raw.pplId || "", spotifyUrl: raw.spotifyUrl || "", appleMusicUrl: raw.appleMusicUrl || "", soundcloudUrl: raw.soundcloudUrl || "", youtubeMusicUrl: raw.youtubeMusicUrl || "", mp3Url: raw.mp3Url || "", wavPath: raw.wavPath || raw.masterPath || "", composerDetails: raw.composerDetails || "", producerDetails: raw.producerDetails || "", publisherDetails: raw.publisherDetails || "", distributionDate: raw.distributionDate || "", copyrightNotes: raw.copyrightNotes || "", prsRegistered: raw.prsRegistered ?? false, pplRegistered: raw.pplRegistered ?? false, tunecoreUploaded: raw.tunecoreUploaded ?? false, distributedToStores: raw.distributedToStores ?? false, samplesChecked: raw.samplesChecked ?? false, tracklibChecked: raw.tracklibChecked ?? false, distributionUploaded: raw.distributionUploaded ?? raw.tunecoreUploaded ?? raw.distributedToStores ?? false, releaseDateConfirmed: raw.releaseDateConfirmed ?? false, publicWebsiteUpdated: raw.publicWebsiteUpdated ?? false, newTrackNotificationSent: raw.newTrackNotificationSent ?? false, newTrackNotificationSentAt: raw.newTrackNotificationSentAt || "", notificationNotes: raw.notificationNotes || "", socialPromoStatus: raw.socialPromoStatus || "", socialPromoNotes: raw.socialPromoNotes || "", releaseChecklistNotes: raw.releaseChecklistNotes || "",
     sortPriority: Number(raw.sortPriority || 0), createdAt: raw.createdAt || null, updatedAt: raw.updatedAt || null
   };
 }
@@ -42,10 +42,11 @@ export const requirements = {
   "coming-soon": { required: ["title", "coverUrl", "teaser", "releaseTiming"], recommended: ["previewUrl", "style", "seoDescription"] },
   published: { required: ["title", "slug", "coverUrl", "previewUrl", "masterPath", "price", "style", "description", "releaseDate"], recommended: ["bpm", "key", "moodTags", "seoTitle", "seoDescription", "ogImageUrl"] },
   archived: { required: ["title"], recommended: [] },
-  "dj-only": { required: ["title", "coverUrl", "masterPath"], recommended: ["description", "previewUrl", "style", "moodTags"] }
+  "dj-only": { required: ["title", "coverUrl", "mainMp3"], recommended: ["description", "style", "moodTags"] }
 };
 
 function present(track, field) {
+  if (field === "mainMp3") return Boolean(track.mp3Path || track.previewPath || track.previewUrl || track.url);
   if (field === "releaseTiming") return Boolean(track.releaseDate || track.dateTbc);
   if (field === "price") return Number(track.price) > 0;
   if (field === "moodTags") return Array.isArray(track.moodTags) ? track.moodTags.length > 0 : Boolean(track.moodTags);
@@ -61,8 +62,72 @@ export function trackHealth(track) {
   const earned = (config.required.length - missingRequired.length) * 3 + (config.recommended.length - missingRecommended.length);
   const risks = [];
   if (track.status === "published" && track.showInStore && (!track.purchaseEnabled || missingRequired.length)) risks.push("Store purchase is unavailable");
-  if (track.showInDjPool && !track.masterPath) risks.push("DJ download has no master file");
+  if (track.showInDjPool && !present(track, "mainMp3")) risks.push("DJ promo has no MP3 file");
   return { score: total ? Math.round(earned / total * 100) : 100, missingRequired, missingRecommended, risks, readyToBuy: track.status === "published" && track.showInStore && track.purchaseEnabled && Number(track.price) > 0 };
+}
+
+export function resolveMainMp3(track = {}) {
+  return track.mp3Path || track.previewPath || track.previewUrl || track.url || "";
+}
+
+export function resolveMainMaster(track = {}) {
+  return track.masterPath || track.wavPath || "";
+}
+
+export function trackReadiness(track = {}) {
+  const mp3 = Boolean(resolveMainMp3(track));
+  const master = Boolean(resolveMainMaster(track));
+  const releaseTiming = Boolean(track.releaseDate || track.dateTbc);
+  const websiteChecks = {
+    title: Boolean(track.title),
+    slug: Boolean(track.slug),
+    style: Boolean(track.style),
+    bpm: Boolean(track.bpm),
+    artwork: Boolean(track.coverUrl),
+    mp3,
+    master,
+    teaser: Boolean(track.teaser || track.description),
+    status: Boolean(track.status),
+    showInStore: track.showInStore === true,
+    showInDjPoolDecision: typeof track.showInDjPool === "boolean",
+    releaseTiming
+  };
+  const saleChecks = {
+    purchaseEnabled: track.purchaseEnabled === true,
+    price: Number(track.price) > 0,
+    mp3,
+    master
+  };
+  const djEnabled = track.showInDjPool === true;
+  const djChecks = {
+    showInDjPool: djEnabled,
+    mp3,
+    compatibleStatus: ["published", "coming-soon"].includes(track.status)
+  };
+  const releaseChecks = {
+    prsRegistered: track.prsRegistered === true,
+    samplesChecked: track.samplesChecked === true,
+    tracklibChecked: track.tracklibChecked === true,
+    distributionUploaded: track.distributionUploaded === true || track.tunecoreUploaded === true || track.distributedToStores === true,
+    isrc: Boolean(track.isrc),
+    upc: Boolean(track.upc),
+    distributionId: Boolean(track.distributionReleaseId || track.tunecoreUrl),
+    releaseDateConfirmed: track.releaseDateConfirmed === true,
+    publicWebsiteUpdated: track.publicWebsiteUpdated === true,
+    notificationTracked: track.newTrackNotificationSent === true,
+    socialPromo: Boolean(track.socialPromoStatus)
+  };
+  const group = (checks, enabled = true) => {
+    const entries = Object.entries(checks);
+    const complete = entries.filter(([, value]) => value).length;
+    return { enabled, checks, complete, total: entries.length, ready: enabled && complete === entries.length };
+  };
+  return {
+    website: group(websiteChecks, track.showInStore === true),
+    sale: group(saleChecks, track.purchaseEnabled === true),
+    dj: group(djChecks, djEnabled),
+    release: group(releaseChecks)
+  };
 }
 
 function timed(promise, milliseconds = 6500) {

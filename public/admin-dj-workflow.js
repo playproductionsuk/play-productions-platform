@@ -94,6 +94,17 @@ function readableSocials(value) {
   return [...new Set(output)].join(" | ");
 }
 
+function combinedSocials(request) {
+  const values = [
+    readableSocials(request.socialLinks),
+    readableSocials(request.socials),
+    readableSocials(request.instagram && { type: "Instagram", value: request.instagram }),
+    readableSocials(request.tiktok && { type: "TikTok", value: request.tiktok }),
+    readableSocials(request.otherSocial && { type: "Other", value: request.otherSocial })
+  ].flatMap(value => value ? value.split(" | ") : []);
+  return [...new Set(values)].join(" | ");
+}
+
 function isoDate(value) {
   if (!value) return "";
   const date = typeof value.toDate === "function"
@@ -111,8 +122,7 @@ function csvCell(value) {
 function exportRows() {
   const headers = [
     "Document ID", "Name", "DJ Name", "Email", "Status", "Account Status",
-    "Customer UID / Approved UID", "Social Links", "Socials",
-    "Where They Play / Message", "Application Message",
+    "Customer UID", "Social Links", "Message / Where They Play",
     "Mailing Consent", "Admin Notes", "Type",
     "Application Date", "Created At", "Updated At", "Approved At",
     "Invitation Queued", "Invitation Queued At", "Rejected At"
@@ -125,15 +135,8 @@ function exportRows() {
       request.status || statusOf(request),
       request.accountStatus,
       request.customerUid || request.approvedUid,
-      readableSocials(request.socialLinks),
-      [
-        readableSocials(request.socials),
-        readableSocials(request.instagram && { type: "Instagram", value: request.instagram }),
-        readableSocials(request.tiktok && { type: "TikTok", value: request.tiktok }),
-        readableSocials(request.otherSocial && { type: "Other", value: request.otherSocial })
-      ].filter(Boolean).join(" | "),
-      request.whereTheyPlay || request.message,
-      request.applicationMessage || request.message,
+      combinedSocials(request),
+      request.whereTheyPlay || request.applicationMessage || request.message,
       request.mailingConsent ?? request.newsletterConsent ?? request.mailingList ?? "",
       request.adminNotes,
       request.type,
@@ -160,6 +163,9 @@ function downloadExport() {
   link.click();
   link.remove();
   URL.revokeObjectURL(url);
+  messageKind = "success";
+  message = `Exported ${requests.length} DJ application record${requests.length === 1 ? "" : "s"}.`;
+  render();
 }
 
 function ensureExportButtons() {

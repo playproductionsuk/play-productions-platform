@@ -24,13 +24,81 @@ const list = document.querySelector("#djTrackList");
 const tools = document.querySelector(".store-tools");
 const dock = document.querySelector("#playerDock");
 const player = document.querySelector("#audioPlayer");
-const signOutButton = document.querySelector("#djSignOut");
+let signOutButton = document.querySelector("#djSignOut");
 const auth = firebaseApp ? getAuth(firebaseApp) : null;
 const demo = new URLSearchParams(location.search).get("demo") === "1";
-signOutButton.style.display = "none";
+if (signOutButton) signOutButton.style.display = "none";
 let tracks = [];
 let user;
 let playingId = "";
+
+async function handleSignOut() {
+  const button = document.querySelector("#djSignOut");
+  if (!button || demo) return;
+
+  button.disabled = true;
+  button.textContent = "Signing out…";
+  try {
+    await signOut(auth);
+    location.replace("dj-login.html");
+  } catch (error) {
+    document.querySelector("#djDownloadStatus").textContent =
+      error.message || "We could not sign you out. Please try again.";
+    button.disabled = false;
+    button.textContent = "Sign out";
+  }
+}
+
+function ensureSignOutButton() {
+  if (demo || !user) {
+    document.querySelectorAll("#djSignOut").forEach(button => button.remove());
+    signOutButton = null;
+    return null;
+  }
+
+  const actions = document.querySelector(".premium-nav .portal-actions");
+  let button = document.querySelector("#djSignOut");
+
+  if (actions && (!button || !actions.contains(button))) {
+    button?.remove();
+    button = document.createElement("button");
+    button.id = "djSignOut";
+    button.className = "button ghost";
+    button.type = "button";
+    button.textContent = "Sign out";
+    const djLogin = [...actions.querySelectorAll("a")].find(link =>
+      link.getAttribute("href")?.includes("dj-login.html")
+    );
+    if (djLogin) djLogin.replaceWith(button);
+    else actions.appendChild(button);
+  }
+
+  if (!button) {
+    const header = document.querySelector(".premium-nav,.public-header");
+    if (!header) return null;
+    button = document.createElement("button");
+    button.id = "djSignOut";
+    button.className = "button ghost";
+    button.type = "button";
+    button.textContent = "Sign out";
+    header.appendChild(button);
+  }
+
+  button.hidden = false;
+  button.style.removeProperty("display");
+  button.onclick = handleSignOut;
+  signOutButton = button;
+  return button;
+}
+
+function mountSignOutAfterNavigation() {
+  [0, 50, 150, 300, 600, 1200, 2000, 3000].forEach(delay => {
+    setTimeout(() => {
+      if (user && !demo) ensureSignOutButton();
+    }, delay);
+  });
+  window.addEventListener("load", ensureSignOutButton, { once: true });
+}
 
 tools.insertAdjacentHTML("beforeend", `
   <label><span class="sr-only">Genre</span><select id="djGenre"><option value="">All genres</option></select></label>
@@ -203,7 +271,7 @@ document.querySelector("#closePlayer").onclick = () => {
   player.pause();
   dock.hidden = true;
 };
-signOutButton.onclick = async () => {
+if (signOutButton) signOutButton.onclick = async () => {
   if (demo) {
     location.href = "dj-login.html?demo=1";
     return;
@@ -223,7 +291,7 @@ signOutButton.onclick = async () => {
 };
 
 if (demo || !firebaseReady) {
-  signOutButton.hidden = true;
+  document.querySelectorAll("#djSignOut").forEach(button => button.remove());
   loadPromos();
 } else {
   onAuthStateChanged(auth, async account => {
@@ -233,8 +301,7 @@ if (demo || !firebaseReady) {
       return;
     }
     user = account;
-    signOutButton.hidden = false;
-    signOutButton.style.removeProperty("display");
+    mountSignOutAfterNavigation();
     await loadPromos();
   });
 }

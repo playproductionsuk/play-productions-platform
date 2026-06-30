@@ -24,8 +24,10 @@ const list = document.querySelector("#djTrackList");
 const tools = document.querySelector(".store-tools");
 const dock = document.querySelector("#playerDock");
 const player = document.querySelector("#audioPlayer");
+const signOutButton = document.querySelector("#djSignOut");
 const auth = firebaseApp ? getAuth(firebaseApp) : null;
 const demo = new URLSearchParams(location.search).get("demo") === "1";
+signOutButton.style.display = "none";
 let tracks = [];
 let user;
 let playingId = "";
@@ -201,12 +203,27 @@ document.querySelector("#closePlayer").onclick = () => {
   player.pause();
   dock.hidden = true;
 };
-document.querySelector("#djSignOut").onclick = async () => {
-  if (auth) await signOut(auth);
-  location.href = "dj-login.html";
+signOutButton.onclick = async () => {
+  if (demo) {
+    location.href = "dj-login.html?demo=1";
+    return;
+  }
+
+  signOutButton.disabled = true;
+  signOutButton.textContent = "Signing out…";
+  try {
+    await signOut(auth);
+    location.replace("dj-login.html");
+  } catch (error) {
+    document.querySelector("#djDownloadStatus").textContent =
+      error.message || "We could not sign you out. Please try again.";
+    signOutButton.disabled = false;
+    signOutButton.textContent = "Sign out";
+  }
 };
 
 if (demo || !firebaseReady) {
+  signOutButton.hidden = true;
   loadPromos();
 } else {
   onAuthStateChanged(auth, async account => {
@@ -216,6 +233,8 @@ if (demo || !firebaseReady) {
       return;
     }
     user = account;
+    signOutButton.hidden = false;
+    signOutButton.style.removeProperty("display");
     await loadPromos();
   });
 }

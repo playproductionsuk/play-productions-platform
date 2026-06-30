@@ -167,8 +167,9 @@ list.addEventListener("click", async event => {
   download.disabled = true;
   try {
     const token = await user.getIdToken();
+    const downloadId = track.slug || track.id;
     const response = await fetch(
-      `/api/dj-download?track=${encodeURIComponent(track.id)}&format=mp3`,
+      `/api/dj-download?track=${encodeURIComponent(downloadId)}&format=mp3`,
       { headers: { Authorization: `Bearer ${token}` } }
     );
     const contentType = response.headers.get("content-type") || "";

@@ -270,12 +270,19 @@ async function createDjUser(req, res) {
   });
   await db.collection("users").doc(user.uid).set({
     name: details.name || "", djName: details.djName || "", email: details.email,
-    socialLinks: details.socialLinks || "", djAccess: true,
+    displayName: details.djName || details.name || "", socialLinks: details.socialLinks || "", djAccess: true,
+    role: "dj", status: "approved",
     mailingList: details.mailingConsent === true, tags: ["DJ"],
-    accountStatus: "invited", invitationSentAt: admin.firestore.FieldValue.serverTimestamp(),
+    accountStatus: "approved", invitationSentAt: admin.firestore.FieldValue.serverTimestamp(),
     updatedAt: admin.firestore.FieldValue.serverTimestamp()
   }, { merge: true });
-  await enquiry.ref.update({ status: "approved", customerUid: user.uid, approvedAt: admin.firestore.FieldValue.serverTimestamp() });
+  await enquiry.ref.update({
+    status: "approved",
+    accountStatus: "approved",
+    customerUid: user.uid,
+    approvedAt: admin.firestore.FieldValue.serverTimestamp(),
+    updatedAt: admin.firestore.FieldValue.serverTimestamp()
+  });
   await db.collection("mail").add({
     to: [details.email],
     message: {
@@ -288,6 +295,52 @@ async function createDjUser(req, res) {
     createdAt: admin.firestore.FieldValue.serverTimestamp()
   });
   json(res, 200, { email: details.email, uid: user.uid, invitationQueued: true });
+}
+
+async function updateDjApplication(req, res) {
+  const bearer = String(req.get("authorization") || "").replace(/^Bearer\s+/i, "");
+  const decoded = await admin.auth().verifyIdToken(bearer);
+  const adminDoc = await db.collection("admins").doc(decoded.uid).get();
+  if (!adminDoc.exists) return json(res, 403, { error: "Admin permission required." });
+
+  const enquiryId = String(req.body?.enquiryId || "");
+  const action = String(req.body?.action || "");
+  if (action !== "reject") return json(res, 400, { error: "Unsupported DJ application action." });
+
+  const enquiry = await db.collection("enquiries").doc(enquiryId).get();
+  if (!enquiry.exists || enquiry.data().type !== "dj-access") {
+    return json(res, 404, { error: "DJ request not found." });
+  }
+
+  const details = enquiry.data();
+  let user = null;
+  if (details.customerUid) {
+    try { user = await admin.auth().getUser(details.customerUid); } catch (error) {
+      if (error.code !== "auth/user-not-found") throw error;
+    }
+  }
+  if (!user && details.email) {
+    try { user = await admin.auth().getUserByEmail(details.email); } catch (error) {
+      if (error.code !== "auth/user-not-found") throw error;
+    }
+  }
+  if (user) {
+    await db.collection("users").doc(user.uid).set({
+      email: details.email || user.email || "",
+      djAccess: false,
+      role: "dj",
+      status: "rejected",
+      accountStatus: "rejected",
+      updatedAt: admin.firestore.FieldValue.serverTimestamp()
+    }, { merge: true });
+  }
+  await enquiry.ref.update({
+    status: "rejected",
+    accountStatus: "rejected",
+    customerUid: user?.uid || details.customerUid || "",
+    updatedAt: admin.firestore.FieldValue.serverTimestamp()
+  });
+  json(res, 200, { rejected: true, uid: user?.uid || null });
 }
 
 exports.api = onRequest({
@@ -306,6 +359,7 @@ exports.api = onRequest({
     if (path === "/download" && req.method === "GET") return await download(req, res);
     if (path === "/dj-download" && req.method === "GET") return await djDownload(req, res);
     if (path === "/admin/create-dj-user" && req.method === "POST") return await createDjUser(req, res);
+    if (path === "/admin/update-dj-application" && req.method === "POST") return await updateDjApplication(req, res);
     return json(res, 404, { error: "Not found" });
   } catch (error) {
     console.error(error);

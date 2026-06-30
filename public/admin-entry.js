@@ -6,6 +6,7 @@ export async function loadAdminDashboardModules() {
   try {
     await import("./admin-fields.js");
     await import("./rc1-admin-fields.js");
+    await import("./track-admin-foundation.js");
     await import("./admin-platform.js");
     await import("./rc1-admin-loader.js");
     await import("./rc2-admin-loader.js");
@@ -21,7 +22,7 @@ export async function loadAdminDashboardModules() {
 }
 
 if (liveMode) {
-  import("./admin-live-login.js?v=m1-live-status-20260630").catch(error => {
+  import("./admin-live-login.js?v=m2a-track-admin-20260630").catch(error => {
     const status = document.querySelector("#loginStatus");
     if (status) status.textContent = `Live admin login could not start: ${error.message}`;
     console.error("Live admin login failed to initialise.", error);

@@ -18,6 +18,8 @@
     #loginPanel[hidden],#adminPortal[hidden],.admin-view[hidden]{display:none!important}
     #adminPortal:not([hidden]){opacity:1!important;visibility:visible!important}
     .live-admin #previewAdminButton{display:none!important}
+    .live-admin.admin-starting #loginPanel{display:block!important;opacity:1!important;visibility:visible!important}
+    .live-admin.admin-starting #adminPortal{display:none!important}
     .live-admin-status{display:none}.live-admin .preview-admin-status{display:none}.live-admin .live-admin-status{display:inline}
     .admin-preview-note{padding:12px 15px;border:1px solid #5c7d16;background:#172208;color:#dfffa2;margin:0 0 20px}
     .admin-preview-note strong{color:#a6f000}.row-actions{align-items:center;flex-wrap:wrap}
@@ -90,6 +92,6 @@
     });
   </script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/lamejs/1.2.1/lame.min.js"></script>
-  <script type="module" src="admin-entry.js?v=m1-admin-mode-20260630"></script>
+  <script type="module" src="admin-entry.js?v=m1-admin-startup-clean-20260630"></script>
 </body>
 </html>

@@ -64,6 +64,120 @@ function socialLinks(request) {
   return [...new Set(values)];
 }
 
+function readableSocials(value) {
+  const output = [];
+  const add = (item, label = "") => {
+    if (!item) return;
+    if (Array.isArray(item)) {
+      item.forEach(entry => add(entry));
+      return;
+    }
+    if (typeof item === "object") {
+      const type = item.type || item.platform || item.label || label;
+      const detail = item.url || item.href || item.handle || item.value || "";
+      if (detail) output.push(type ? `${type}: ${detail}` : String(detail));
+      else Object.entries(item).forEach(([key, entry]) => add(entry, key));
+      return;
+    }
+    const text = String(item).trim();
+    if (!text) return;
+    try {
+      const parsed = JSON.parse(text);
+      if (parsed !== text) {
+        add(parsed, label);
+        return;
+      }
+    } catch {}
+    output.push(label ? `${label}: ${text}` : text);
+  };
+  add(value);
+  return [...new Set(output)].join(" | ");
+}
+
+function isoDate(value) {
+  if (!value) return "";
+  const date = typeof value.toDate === "function"
+    ? value.toDate()
+    : new Date(value.seconds ? value.seconds * 1000 : value);
+  return Number.isNaN(date.getTime()) ? String(value) : date.toISOString();
+}
+
+function csvCell(value) {
+  let text = String(value ?? "");
+  if (/^[=+\-@]/.test(text)) text = `'${text}`;
+  return `"${text.replaceAll('"', '""')}"`;
+}
+
+function exportRows() {
+  const headers = [
+    "Document ID", "Name", "DJ Name", "Email", "Status", "Account Status",
+    "Customer UID / Approved UID", "Social Links", "Socials",
+    "Where They Play / Message", "Application Message",
+    "Mailing Consent", "Admin Notes", "Type",
+    "Application Date", "Created At", "Updated At", "Approved At",
+    "Invitation Queued", "Invitation Queued At", "Rejected At"
+  ];
+  const rows = requests.map(request => [
+      request.id,
+      request.name,
+      request.djName,
+      request.email,
+      request.status || statusOf(request),
+      request.accountStatus,
+      request.customerUid || request.approvedUid,
+      readableSocials(request.socialLinks),
+      [
+        readableSocials(request.socials),
+        readableSocials(request.instagram && { type: "Instagram", value: request.instagram }),
+        readableSocials(request.tiktok && { type: "TikTok", value: request.tiktok }),
+        readableSocials(request.otherSocial && { type: "Other", value: request.otherSocial })
+      ].filter(Boolean).join(" | "),
+      request.whereTheyPlay || request.message,
+      request.applicationMessage || request.message,
+      request.mailingConsent ?? request.newsletterConsent ?? request.mailingList ?? "",
+      request.adminNotes,
+      request.type,
+      isoDate(request.applicationDate),
+      isoDate(request.createdAt),
+      isoDate(request.updatedAt),
+      isoDate(request.approvedAt),
+      request.invitationQueued ?? "",
+      isoDate(request.invitationQueuedAt),
+      isoDate(request.rejectedAt)
+    ]);
+  return [headers, ...rows];
+}
+
+function downloadExport() {
+  const date = new Date().toISOString().slice(0, 10);
+  const filename = `play-productions-dj-applications-${date}.csv`;
+  const csv = `\uFEFF${exportRows().map(row => row.map(csvCell).join(",")).join("\r\n")}`;
+  const url = URL.createObjectURL(new Blob([csv], { type: "text/csv;charset=utf-8" }));
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = filename;
+  document.body.appendChild(link);
+  link.click();
+  link.remove();
+  URL.revokeObjectURL(url);
+}
+
+function ensureExportButtons() {
+  const title = document.querySelector('[data-page="djAccess"] .admin-section-title');
+  if (!title || title.querySelector(".dj-workflow-export-actions")) return;
+  title.querySelectorAll("button").forEach(button => {
+    if (["Export DJs CSV", "Export DJs + notes", "Export DJ applications CSV"].includes(button.textContent.trim())) button.remove();
+  });
+  title.querySelectorAll(".export-actions").forEach(group => {
+    if (!group.querySelector("button")) group.remove();
+  });
+  title.insertAdjacentHTML("beforeend", `
+    <div class="dj-workflow-export-actions">
+      <button type="button" data-dj-export>Export DJ applications CSV</button>
+    </div>
+  `);
+}
+
 function emptyText(filter) {
   return {
     pending: "No DJ requests waiting for approval.",
@@ -119,6 +233,7 @@ function render() {
   const filterBar = document.querySelector("#djFilters");
   const metrics = document.querySelector("#djMetrics");
   if (!list || !filterBar || !metrics) return;
+  ensureExportButtons();
 
   const counts = {
     pending: requests.filter(item => statusOf(item) === "pending").length,
@@ -264,10 +379,15 @@ document.addEventListener("click", async event => {
   const approveButton = event.target.closest("[data-dj-approve]");
   const rejectButton = event.target.closest("[data-dj-reject]");
   const notesButton = event.target.closest("[data-dj-save-notes]");
-  if (!filter && !refresh && !approveButton && !rejectButton && !notesButton) return;
+  const exportButton = event.target.closest("[data-dj-export]");
+  if (!filter && !refresh && !approveButton && !rejectButton && !notesButton && !exportButton) return;
 
   event.preventDefault();
   event.stopImmediatePropagation();
+  if (exportButton) {
+    downloadExport();
+    return;
+  }
   if (filter) {
     activeFilter = filter.dataset.djWorkflowFilter;
     render();

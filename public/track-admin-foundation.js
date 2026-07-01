@@ -125,6 +125,30 @@ if (!globalThis.playAdminPreviewOnly) {
 }
 
 document.addEventListener("click", async event => {
+  const missingEdit = event.target.closest("[data-missing-track]");
+  if (missingEdit) {
+    event.preventDefault();
+    event.stopImmediatePropagation();
+    const trackRow = [...document.querySelectorAll("[data-track-row]")].find(row => String(row.dataset.trackRow) === String(missingEdit.dataset.missingTrack));
+    trackRow?.querySelector("[data-edit],[data-library-edit]")?.click();
+    setTimeout(() => {
+      const section = document.querySelector(`#track-group-${missingEdit.dataset.missingArea}`);
+      document.querySelectorAll(".track-editor-section").forEach(group => group.open = group === section);
+      if (!section) return;
+      section.classList.add("is-focused");
+      const field = document.querySelector(`#${missingEdit.dataset.missingField}`);
+      const target = field?.closest(".field,.file-field,.check-field,label") || section;
+      target.classList.add("field-required");
+      target.scrollIntoView({ behavior: "smooth", block: "center" });
+      field?.focus();
+      setTimeout(() => {
+        section.classList.remove("is-focused");
+        target.classList.remove("field-required");
+      }, 1600);
+    }, 100);
+    return;
+  }
+
   const readiness = event.target.closest("[data-track-readiness]");
   if (readiness) {
     event.preventDefault();

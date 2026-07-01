@@ -19,6 +19,8 @@
 
 Module 2A is preview-only until its complete Track Admin workflow passes testing.
 
+Module 2B has started with the first Track Missing Data Workspace shell. Catalogue View remains the readiness overview, Missing Data View lists incomplete work by priority, and Full Track Editor / All Data remains the deliberate detailed editor.
+
 Preview test URL:
 
 <https://play-productions--preview-4sqed4ku.web.app/admin.html?live=1>
@@ -41,6 +43,7 @@ The current correction consolidates the visible Music Library under the live `ad
 - Consolidated music export around the complete full-data CSV.
 - Preview confirmed the improved Music Library width, visible Actions column, removed/reduced horizontal scrolling, Delete wording, working readiness pills and working filters.
 - Consolidated Add Track and the full music CSV export into one normalized action row and moved the live admin email beside Sign out; preview verification is pending.
+- Added the first Module 2B Missing Data view with Priority, Track, Area, Missing field, Current value and Edit action columns; preview verification is pending.
 
 ## 4. Immediate next tasks
 
@@ -67,6 +70,9 @@ Module 2A preview checks:
 - Confirm the logged-in admin email appears beside Sign out and no longer occupies the page content area.
 - Confirm the full-data export contains current and legacy track fields.
 - Improve editor usability so readiness work does not open or scroll through irrelevant full-editor sections.
+- Verify Missing Data priorities and field labels against real catalogue records.
+- Add inline editing/saving for straightforward missing fields in a future controlled pass.
+- Add upload/select actions for artwork, MP3 and WAV/master in a later pass; do not place uploads inline until the shell is proven.
 - Save and reload a harmless track edit.
 - Recheck DJ Database loading, export, approval and invitation flows.
 
@@ -75,7 +81,7 @@ Module 2A preview checks:
 ### Track and release management
 
 - Build a left-to-right track workflow using traffic-light readiness cards.
-- Build **Module 2B — Track Missing Data Workspace**, a focused workspace for completing incomplete catalogue data efficiently.
+- Continue **Module 2B — Track Missing Data Workspace**, a focused workspace for completing incomplete catalogue data efficiently.
 - Keep three deliberate levels: Catalogue View for overview/readiness, Missing Data View for incomplete fields, and Full Track Editor / All Data for intentional detailed editing.
 - Present missing work as editable rows with Priority, Track, Area, Missing field, Input/control and Save action.
 - Add Missing Data filters for All Missing, Web, Sale, DJ, Release, High Priority, Medium Priority and Low Priority.

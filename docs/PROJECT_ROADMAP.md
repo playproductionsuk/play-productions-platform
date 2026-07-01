@@ -21,6 +21,10 @@ Module 2A is preview-only until its complete Track Admin workflow passes testing
 
 Module 2B has started with the first Track Missing Data Workspace shell. Catalogue View remains the readiness overview, Missing Data View lists incomplete work by priority, and Full Track Editor / All Data remains the deliberate detailed editor.
 
+The Track Flow and Storage audit is complete. Controlled preview testing of add, edit, visibility, archive, restore, delete and export is required before real masters are uploaded or production is approved.
+
+Module 2C has started: Track Admin save-preservation hardening. Existing raw Firestore data, asset aliases, licences, timestamps and stable document IDs are now protected by the revised save payload, pending preview verification.
+
 Preview test URL:
 
 <https://play-productions--preview-4sqed4ku.web.app/admin.html?live=1>
@@ -50,13 +54,12 @@ The current correction consolidates the visible Music Library under the live `ad
 
 Priority order:
 
-1. Finish Module 2A Track Admin / Music Library on preview.
-2. Test track field save/reload and flow-through to the public Music page and DJ promo crate.
-3. Clean public demo/test clutter from the site.
-4. Smoke-test customer purchase and account flows.
-5. Plan notifications, the contact database and promo campaigns.
-6. Expand the Business Dashboard and analytics.
-7. Develop Mixing & Mastering and Vinyl Cutting modules.
+1. Verify Track Admin save-preservation hardening on preview.
+2. Run manual add/edit/archive/restore/delete tests using test tracks only.
+3. Test field flow-through to the public Music page and DJ promo crate.
+4. Build the Storage Usage report/widget later.
+5. Add inline Missing Data editing later.
+6. Approve production only after preview track-flow tests pass.
 
 Module 2A preview checks:
 
@@ -78,6 +81,13 @@ Module 2A preview checks:
 - Move global admin search into the top header in a future layout pass to reduce unused top-page space, then review header spacing.
 - Save and reload a harmless track edit.
 - Recheck DJ Database loading, export, approval and invitation flows.
+- Run the complete test-track flow in preview before uploading real masters.
+- Confirm field flow-through to public Music and the live DJ crate with controlled test records.
+- Confirm the full music CSV contains expected admin, asset, visibility and archive fields.
+- Verify the hardened edit payload preserves `mp3Path`, `previewPath`, `previewUrl`, `masterPath`, `wavPath`, `coverPath`, `coverUrl`, `createdAt`, aliases and licence data.
+- Confirm slug edits continue saving to the original Firestore document ID without creating duplicates.
+- Align live DJ crate visibility with the backend download status gate.
+- Ensure customer purchase availability cannot proceed without a usable WAV/master.
 
 ## 5. Future development ideas
 
@@ -99,6 +109,7 @@ Module 2A preview checks:
 - Track new-release notification state without automatic sending.
 - Later add a deliberate queue/send notification action.
 - Track promo campaigns and outreach per release.
+- Add an admin-only Storage Usage report/widget using a backend function or controlled Admin SDK script. It should total and count covers, MP3s and masters, estimate remaining complete-track capacity and flag possible orphaned files without loosening Storage rules.
 
 ### Contacts, DJ and promotion
 
@@ -144,6 +155,12 @@ Module 2A preview checks:
 - Admin startup cleanup previously broke login and was reverted.
 - Production deployment of Module 2B is not yet approved; preview acceptance remains required.
 - DJ Database should retain one `DJ Database` title, count-bearing filters and the single DJ Applications CSV export without restoring legacy metric cards.
+- Archive is the normal safe removal action. Hard delete is for obvious test/junk records only and currently leaves uploaded files behind.
+- Real track, MP3 and WAV/master uploads must wait until Module 2C save-preservation tests pass.
+- Replacing artwork, preview MP3 or master WAV creates a new timestamped object and currently leaves the previous object in Storage.
+- Live DJ querying can display any `showInDjPool: true` record, while protected downloads allow only `published` and `coming-soon`; these gates need alignment.
+- Public purchase readiness does not prove a master exists for every legacy/external record; paid fulfilment currently requires `masterPath`.
+- Admin editing uses normalization plus merge writes. Unknown fields survive, but known normalized fields can be overwritten by defaults; `mp3Path`, timestamps, aliases and manual path fields require focused regression testing.
 - Do not reintroduce `admin-live-fields.js`.
 - Do not reintroduce `coreReady` waiting logic.
 - Do not reintroduce **“Live admin data timed out”**.

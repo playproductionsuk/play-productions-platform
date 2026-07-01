@@ -146,7 +146,7 @@ export async function loadTracks({ includeAdmin = false } = {}) {
     const request = includeAdmin ? getDocs(collection(db, "tracks")) : getDocs(query(collection(db, "tracks"), where("status", "in", ["coming-soon", "published"])));
     const snapshot = await timed(request);
     if (snapshot.empty) return localTracks();
-    return snapshot.docs.map(item => normaliseTrack({ id: item.id, ...item.data() })).sort((a, b) => b.sortPriority - a.sortPriority || String(b.releaseDate).localeCompare(String(a.releaseDate)));
+    return snapshot.docs.map(item => normaliseTrack({ ...item.data(), id: item.id })).sort((a, b) => b.sortPriority - a.sortPriority || String(b.releaseDate).localeCompare(String(a.releaseDate)));
   } catch (error) {
     console.warn("Firebase tracks unavailable; using local catalogue.", error);
     return localTracks();

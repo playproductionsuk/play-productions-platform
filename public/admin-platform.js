@@ -74,6 +74,69 @@ document.querySelector("#newTrack").addEventListener("click",()=>{clearForm();do
 function upload(path,file,label){return new Promise((resolve,reject)=>{const task=uploadBytesResumable(ref(storage,path),file,{contentType:file.type});task.on("state_changed",s=>progress.textContent=`${label}: ${Math.round(s.bytesTransferred/s.totalBytes*100)}%`,reject,async()=>resolve(await getDownloadURL(task.snapshot.ref)))})}
 function pcm(samples,start,length){const out=new Int16Array(length);for(let i=0;i<length;i++){const v=Math.max(-1,Math.min(1,samples[start+i]||0));out[i]=v<0?v*32768:v*32767}return out}
 async function previewFrom(wav){progress.textContent="Making preview…";const ctx=new AudioContext(),audio=await ctx.decodeAudioData(await wav.arrayBuffer()),channels=Math.min(2,audio.numberOfChannels),total=Math.min(audio.length,audio.sampleRate*75),enc=new lamejs.Mp3Encoder(channels,audio.sampleRate,128),parts=[];for(let i=0;i<total;i+=1152){const len=Math.min(1152,total-i),a=pcm(audio.getChannelData(0),i,len),b=pcm(audio.getChannelData(channels>1?1:0),i,len),chunk=channels>1?enc.encodeBuffer(a,b):enc.encodeBuffer(a);if(chunk.length)parts.push(new Int8Array(chunk))}const end=enc.flush();if(end.length)parts.push(new Int8Array(end));await ctx.close();return new File(parts,"preview.mp3",{type:"audio/mpeg"})}
-form.addEventListener("submit",async e=>{e.preventDefault();const button=document.querySelector("#saveTrack");button.disabled=true;try{let t=formTrack(),existing=state.tracks.find(x=>String(x.id)===document.querySelector("#editingId").value),cover=document.querySelector("#cover").files[0],master=document.querySelector("#master").files[0];let preview=document.querySelector("#preview").files[0];const planned={...existing,...t,coverUrl:cover?"pending":(t.placeholderArtwork?"icons/fallback.png":existing?.coverUrl||""),previewUrl:(preview||master)?"pending":existing?.previewUrl||"",masterPath:master?"pending":existing?.masterPath||""},health=trackHealth(planned);if(t.status==="published"&&t.showInStore&&health.missingRequired.length)throw new Error(`Cannot publish: ${health.missingRequired.join(", ")}`);const stamp=Date.now(),files={coverUrl:existing?.coverUrl||"",coverPath:existing?.coverPath||"",previewUrl:existing?.previewUrl||"",previewPath:existing?.previewPath||"",masterPath:existing?.masterPath||""};if(t.placeholderArtwork&&!files.coverUrl)files.coverUrl="icons/fallback.png";if(cover){files.coverPath=`covers/${t.slug}-${stamp}.${cover.name.split(".").pop()}`;files.coverUrl=await upload(files.coverPath,cover,"Artwork")}if(master){files.masterPath=`masters/${t.slug}-${stamp}.wav`;if(!preview)preview=await previewFrom(master);await upload(files.masterPath,master,"Master WAV")}if(preview){files.previewPath=`previews/${t.slug}-${stamp}.mp3`;files.previewUrl=await upload(files.previewPath,preview,"Preview")};t={...t,...files,licences:{personal:{name:"Personal digital download",price:t.price,enabled:true,summary:"For personal listening. No commercial vocal or exclusive rights."}},updatedAt:serverTimestamp()};if(!existing)t.createdAt=serverTimestamp();const id=existing?.id||t.slug;await setDoc(doc(db,"tracks",id),t,{merge:true});progress.textContent="Saved.";document.querySelector("#trackEditor").hidden=true;await loadAll()}catch(err){console.error(err);progress.textContent=err.message}finally{button.disabled=false}});
+const protectedAssetFields=["coverUrl","coverPath","thumbnail","previewUrl","previewPath","mp3Path","mp3Url","url","masterPath","wavPath"];
+function preservedAssetPayload(record={}){
+  const payload={};
+  protectedAssetFields.forEach(field=>{if(Object.prototype.hasOwnProperty.call(record,field)&&record[field]!==undefined&&record[field]!==null)payload[field]=record[field]});
+  if(!payload.coverUrl&&record.thumbnail)payload.coverUrl=record.thumbnail;
+  if(!payload.previewUrl&&record.url)payload.previewUrl=record.url;
+  if(!payload.mp3Path&&record.previewPath)payload.mp3Path=record.previewPath;
+  if(!payload.masterPath&&record.wavPath)payload.masterPath=record.wavPath;
+  if(!payload.wavPath&&record.masterPath)payload.wavPath=record.masterPath;
+  return payload;
+}
+function preservedLicences(record,track){
+  const licences=record?.licences&&typeof record.licences==="object"?record.licences:{};
+  const personal=licences.personal&&typeof licences.personal==="object"?licences.personal:{};
+  return {...licences,personal:{...personal,name:personal.name||"Personal digital download",price:track.price,enabled:personal.enabled??true,summary:personal.summary||"For personal listening. No commercial vocal or exclusive rights."}};
+}
+form.addEventListener("submit",async e=>{
+  e.preventDefault();
+  const button=document.querySelector("#saveTrack");
+  button.disabled=true;
+  try{
+    const track=formTrack(),editingId=document.querySelector("#editingId").value;
+    const existing=state.tracks.find(item=>String(item.id)===String(editingId));
+    let existingRecord=existing?{...existing}:null;
+    if(existing){
+      const snapshot=await getDoc(doc(db,"tracks",existing.id));
+      if(snapshot.exists())existingRecord={id:snapshot.id,...snapshot.data()};
+    }
+    const documentId=existing?.id||track.slug;
+    const cover=document.querySelector("#cover").files[0],master=document.querySelector("#master").files[0];
+    let preview=document.querySelector("#preview").files[0];
+    const assets=preservedAssetPayload(existingRecord||{});
+    const manualWavPath=document.querySelector("#wavPath")?.value.trim()||"";
+    const manualMp3Url=document.querySelector("#mp3Url")?.value.trim()||"";
+    if(manualWavPath&&manualWavPath!==String(existingRecord?.wavPath||"")){assets.wavPath=manualWavPath;assets.masterPath=manualWavPath}
+    if(manualMp3Url&&manualMp3Url!==String(existingRecord?.mp3Url||""))assets.mp3Url=manualMp3Url;
+    const placeholderArtwork=document.querySelector("#placeholderArtwork")?.checked===true;
+    if(placeholderArtwork&&!assets.coverUrl)assets.coverUrl="icons/fallback.png";
+    const planned=normaliseTrack({...existingRecord,...track,...assets,coverUrl:cover?"pending":assets.coverUrl||"",previewUrl:(preview||master)?"pending":assets.previewUrl||"",masterPath:master?"pending":assets.masterPath||""});
+    const health=trackHealth(planned);
+    if(track.status==="published"&&track.showInStore&&health.missingRequired.length)throw new Error(`Cannot publish: ${health.missingRequired.join(", ")}`);
+    const stamp=Date.now();
+    if(cover){assets.coverPath=`covers/${track.slug}-${stamp}.${cover.name.split(".").pop()}`;assets.coverUrl=await upload(assets.coverPath,cover,"Artwork")}
+    if(master){assets.masterPath=`masters/${track.slug}-${stamp}.wav`;assets.wavPath=assets.masterPath;if(!preview)preview=await previewFrom(master);await upload(assets.masterPath,master,"Master WAV")}
+    if(preview){assets.previewPath=`previews/${track.slug}-${stamp}.mp3`;assets.previewUrl=await upload(assets.previewPath,preview,"Preview")}
+    const payload={...track};
+    [...protectedAssetFields,"id","createdAt","updatedAt"].forEach(field=>delete payload[field]);
+    payload.placeholderArtwork=placeholderArtwork;
+    Object.assign(payload,assets,{
+      licences:preservedLicences(existingRecord,track),
+      updatedAt:serverTimestamp()
+    });
+    if(!existingRecord?.createdAt)payload.createdAt=serverTimestamp();
+    await setDoc(doc(db,"tracks",documentId),payload,{merge:true});
+    progress.textContent="Saved.";
+    document.querySelector("#trackEditor").hidden=true;
+    await loadAll();
+  }catch(err){
+    console.error(err);
+    progress.textContent=err.message;
+  }finally{
+    button.disabled=false;
+  }
+});
 document.addEventListener("click",async e=>{const chip=e.target.closest(".missing-chips button"),edit=e.target.closest("[data-edit]"),del=e.target.closest("[data-delete]"),filter=e.target.closest("[data-music-filter]");if(filter){libraryFilter=filter.dataset.musicFilter;document.querySelectorAll("[data-music-filter]").forEach(button=>button.classList.toggle("active",button===filter));applyMusicLibraryView();return}if(chip){const trackButton=chip.closest("tr")?.querySelector("[data-edit]"),map={coverUrl:"cover",previewUrl:"preview",masterPath:"master",releaseTiming:"releaseDate"};if(trackButton){editTrack(trackButton.dataset.edit);setTimeout(()=>{const field=document.querySelector(`#${map[chip.dataset.field]||chip.dataset.field}`);field?.closest(".field,.file-field")?.classList.add("field-required");field?.focus();field?.scrollIntoView({behavior:"smooth",block:"center"})},80)}}else if(edit){document.querySelector('[data-view="tracks"]').click();editTrack(edit.dataset.edit)}if(del&&confirm("Delete this track record? Uploaded files are retained for safety.")){await deleteDoc(doc(db,"tracks",del.dataset.delete));await loadAll()}});document.addEventListener("change",async e=>{if(e.target.dataset.enquiryStatus){await updateDoc(doc(db,"enquiries",e.target.dataset.enquiryStatus),{status:e.target.value,updatedAt:serverTimestamp()});await loadAll()}if(e.target.dataset.projectStatus){await updateDoc(doc(db,"projects",e.target.dataset.projectStatus),{status:e.target.value,updatedAt:serverTimestamp()});await loadAll()}});document.querySelector("#adminSearch").addEventListener("input",e=>{const q=e.target.value.toLowerCase();document.querySelectorAll(".data-row,.health-row").forEach(x=>x.hidden=!x.textContent.toLowerCase().includes(q));applyMusicLibraryView()});window.addEventListener("play-admin-track-state-change",()=>loadAll().catch(error=>console.error("Track library refresh failed.",error)));
 if(globalThis.playAdminPreviewOnly||!firebaseReady){document.querySelector("#loginStatus").textContent=firebaseReady?"Preview mode is active. Add ?live=1 to this URL for an authorised live admin test.":"Add the Firebase web-app settings before running a live admin test.";document.querySelector("#loginForm button").disabled=true;login.hidden=false;portal.hidden=true}else{document.querySelector("#loginStatus").textContent="Live test mode. Sign in with an authorised admin account.";onAuthStateChanged(auth,async user=>{try{if(user&&await admin(user)){login.hidden=true;portal.hidden=false;document.querySelector("#adminUser").textContent=user.email;window.dispatchEvent(new Event("play-admin-visibility-change"));await loadAll();window.dispatchEvent(new Event("play-admin-live-authenticated"))}else{if(user)await signOut(auth);login.hidden=false;portal.hidden=true}}catch(error){login.hidden=false;portal.hidden=true;document.querySelector("#loginStatus").textContent=`Admin access could not be verified: ${error.message}`}})}

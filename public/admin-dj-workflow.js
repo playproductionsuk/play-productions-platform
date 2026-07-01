@@ -170,13 +170,14 @@ function downloadExport() {
 
 function ensureExportButtons() {
   const title = document.querySelector('[data-page="djAccess"] .admin-section-title');
-  if (!title || title.querySelector(".dj-workflow-export-actions")) return;
+  if (!title) return;
   title.querySelectorAll("button").forEach(button => {
-    if (["Export DJs CSV", "Export DJs + notes", "Export DJ applications CSV"].includes(button.textContent.trim())) button.remove();
+    if (!button.closest(".dj-workflow-export-actions") && ["Export DJs CSV", "Export DJs + notes", "Export DJ applications CSV"].includes(button.textContent.trim())) button.remove();
   });
   title.querySelectorAll(".export-actions").forEach(group => {
     if (!group.querySelector("button")) group.remove();
   });
+  if (title.querySelector(".dj-workflow-export-actions")) return;
   title.insertAdjacentHTML("beforeend", `
     <div class="dj-workflow-export-actions">
       <button type="button" data-dj-export>Export DJ applications CSV</button>

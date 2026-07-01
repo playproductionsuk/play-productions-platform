@@ -36,6 +36,62 @@ if (checklist && !document.querySelector("#samplesChecked")) {
   `);
 }
 
+const trackForm = document.querySelector("#trackForm");
+if (trackForm && !document.querySelector("#trackEditorGroups")) {
+  const groupDefinitions = [
+    ["web", "Web / Track Basics", "Core metadata, visibility and shared artwork/audio assets."],
+    ["sale", "Personal Sale", "Personal MP3/WAV sale availability and track-level pricing."],
+    ["dj", "DJ Promo", "Promo-pool visibility using the same shared MP3 asset."],
+    ["release", "Release Admin", "Registration, distribution, notification and internal release checks."],
+    ["advanced", "All Data / Advanced", "SEO, platform links and all remaining track metadata."]
+  ];
+  const groups = document.createElement("div");
+  groups.id = "trackEditorGroups";
+  groups.className = "track-editor-groups full";
+  groups.innerHTML = groupDefinitions.map(([id, title, description], index) => `
+    <details id="track-group-${id}" class="track-editor-section" ${index === 0 ? "open" : ""}>
+      <summary><strong>${title}</strong><span>${description}</span></summary>
+      <div class="track-editor-section-body"></div>
+    </details>
+  `).join("");
+  checklist.insertAdjacentElement("beforebegin", groups);
+
+  const body = id => groups.querySelector(`#track-group-${id} .track-editor-section-body`);
+  const moveField = (id, group) => {
+    const input = document.querySelector(`#${id}`);
+    const container = input?.closest(".field,.file-field,.check-field") || input?.closest("label");
+    if (container && !container.closest(".track-editor-section")) body(group)?.appendChild(container);
+  };
+
+  [
+    "title","artist","releaseTitle","slug","status","style","subgenre","bpm","key",
+    "moodTags","teaser","description","releaseDate","dateTbc","showInStore",
+    "showInLatest","featured","placeholderArtwork","cover","preview","master"
+  ].forEach(id => moveField(id, "web"));
+  ["price","purchaseEnabled","allowExclusiveEnquiry"].forEach(id => moveField(id, "sale"));
+  ["showInDjPool"].forEach(id => moveField(id, "dj"));
+  [
+    "prsRegistered","pplRegistered","tunecoreUploaded","distributedToStores","isrc","upc",
+    "distributionReleaseId","tunecoreUrl","releaseChecklistNotes","adminNotes"
+  ].forEach(id => moveField(id, "release"));
+
+  const releaseFoundation = document.querySelector(".track-readiness-editor");
+  if (releaseFoundation) body("release")?.appendChild(releaseFoundation);
+
+  const protectedNodes = new Set([
+    groups,
+    checklist,
+    document.querySelector(".form-actions"),
+    document.querySelector("#editingId")
+  ]);
+  [...trackForm.children].forEach(node => {
+    if (!protectedNodes.has(node)) body("advanced")?.appendChild(node);
+  });
+  groups.querySelectorAll(".metadata-fields,.switch-grid,.file-fields").forEach(container => {
+    if (!container.children.length) container.remove();
+  });
+}
+
 const price = document.querySelector("#price");
 if (price && !document.querySelector("#trackPriceHelp")) {
   price.insertAdjacentHTML("afterend", '<small id="trackPriceHelp">New tracks use the saved default price when available; this field remains the track-level override.</small>');
@@ -62,6 +118,23 @@ if (!globalThis.playAdminPreviewOnly) {
 }
 
 document.addEventListener("click", async event => {
+  const readiness = event.target.closest("[data-track-readiness]");
+  if (readiness) {
+    event.preventDefault();
+    event.stopImmediatePropagation();
+    const row = readiness.closest("[data-track-row]");
+    row?.querySelector("[data-library-edit]")?.click();
+    setTimeout(() => {
+      const section = document.querySelector(`#track-group-${readiness.dataset.trackReadiness}`);
+      if (!section) return;
+      section.open = true;
+      section.classList.add("is-focused");
+      section.scrollIntoView({ behavior: "smooth", block: "start" });
+      setTimeout(() => section.classList.remove("is-focused"), 1200);
+    }, 100);
+    return;
+  }
+
   const mark = event.target.closest("[data-mark-notification-sent]");
   if (mark) {
     event.preventDefault();

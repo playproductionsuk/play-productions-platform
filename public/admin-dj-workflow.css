@@ -22,4 +22,5 @@
 .dj-workflow-export-actions button{appearance:none;-webkit-appearance:none;min-height:34px;padding:8px 12px;border:1px solid #4a4a4a;border-radius:4px;background:#151515;color:#eee;font:700 10px Inter,sans-serif;line-height:1;text-transform:uppercase;letter-spacing:.055em;cursor:pointer;box-shadow:none;transition:background-color .16s ease,border-color .16s ease,color .16s ease}
 .dj-workflow-export-actions button:hover{background:#1b1f14;border-color:#a6f000;color:#a6f000}
 .dj-workflow-export-actions button:first-child{border-color:#687d38;color:#dfff9b}
+[data-page="djAccess"] [data-export-djs],[data-page="djAccess"] .export-actions{display:none!important}
 @media(max-width:650px){.dj-workflow-export-actions{width:100%;justify-content:flex-start}.dj-workflow-export-actions button{flex:1;justify-content:center}}

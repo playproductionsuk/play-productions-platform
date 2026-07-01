@@ -6,6 +6,13 @@ style.rel = "stylesheet";
 style.href = "track-admin-foundation.css";
 document.head.appendChild(style);
 
+const adminUser = document.querySelector("#adminUser");
+const signOutButton = document.querySelector("#signOutButton");
+if (adminUser && signOutButton && adminUser.parentElement !== signOutButton.parentElement) {
+  adminUser.classList.add("admin-header-user");
+  signOutButton.insertAdjacentElement("beforebegin", adminUser);
+}
+
 const checklist = document.querySelector("#releaseChecklist");
 if (checklist && !document.querySelector("#samplesChecked")) {
   checklist.insertAdjacentHTML("beforebegin", `

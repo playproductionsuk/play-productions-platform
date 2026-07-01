@@ -65,19 +65,38 @@ document.addEventListener("click",event=>{
 });
 
 const trackTitle=document.querySelector('[data-page="tracks"] .admin-section-title');
-if(trackTitle&&!trackTitle.querySelector("[data-export-rc3-music]")){
-  trackTitle.insertAdjacentHTML("beforeend",'<button type="button" data-export-rc3-music>Export full music data</button>');
+if(trackTitle){
+  const addButton=trackTitle.querySelector("#newTrack");
+  let actions=trackTitle.querySelector(".music-library-top-actions");
+  if(!actions){
+    actions=document.createElement("div");
+    actions.className="music-library-top-actions";
+    trackTitle.appendChild(actions);
+  }
+  if(addButton)actions.appendChild(addButton);
+  let exportButton=trackTitle.querySelector("[data-export-rc3-music]");
+  if(!exportButton){
+    exportButton=document.createElement("button");
+    exportButton.type="button";
+    exportButton.dataset.exportRc3Music="";
+  }
+  exportButton.className="button ghost music-library-export-button";
+  exportButton.textContent="Export full music data CSV";
+  actions.appendChild(exportButton);
+  trackTitle.querySelectorAll(".export-actions,#exportTracks,[data-export-tracks],[data-export-music]").forEach(item=>{if(!item.closest(".music-library-top-actions"))item.remove()});
 }
 document.addEventListener("click",async event=>{
   if(!event.target.closest("[data-export-rc3-music]"))return;
   const tracks=await loadTracks({includeAdmin:true});
-  const headers=["title","genre","BPM","key","mood","status","price","artwork path","preview path","MP3 path","WAV/master path","ISRC","UPC","DistroKid/TuneCore ID","Spotify URL","Apple Music URL","SoundCloud URL","YouTube Music URL","PRS registered","PPL registered","writer/composer","producer","copyright notes","SEO title","SEO description","internal notes","health"];
+  const preferred=["id","title","artist","releaseTitle","slug","status","style","subgenre","bpm","key","moodTags","teaser","description","price","releaseDate","dateTbc","coverUrl","mp3Path","previewPath","previewUrl","masterPath","wavPath","showInStore","showInDjPool","showInLatest","featured","purchaseEnabled","allowExclusiveEnquiry","isrc","upc","distributionReleaseId","prsRegistered","pplRegistered","samplesChecked","tracklibChecked","distributionUploaded","releaseDateConfirmed","publicWebsiteUpdated","newTrackNotificationSent","newTrackNotificationSentAt","notificationNotes","socialPromoStatus","socialPromoNotes","adminNotes"];
+  const headers=[...preferred,...new Set(tracks.flatMap(track=>Object.keys(track)))].filter((field,index,list)=>list.indexOf(field)===index);
   const quote=value=>`"${String(value??"").replaceAll('"','""')}"`;
-  const rows=tracks.map(t=>[t.title,t.style,t.bpm,t.key,(t.moodTags||[]).join("|"),t.status,t.price,t.coverUrl,t.previewUrl,t.mp3Path||t.mp3Url,t.masterPath||t.wavPath,t.isrc,t.upc,t.distributionReleaseId||t.tunecoreUrl,t.spotifyUrl,t.appleMusicUrl,t.soundcloudUrl,t.youtubeMusicUrl,t.prsRegistered,t.pplRegistered,t.composerDetails,t.producerDetails,t.copyrightNotes,t.seoTitle,t.seoDescription,t.adminNotes,trackHealth(t).missingRequired.length?"Blocked: missing required file/field":trackHealth(t).missingRecommended.length?"Needs recommended metadata":"Ready"]);
+  const serialise=value=>Array.isArray(value)?value.join("|"):value&&typeof value==="object"?JSON.stringify(value):value;
+  const rows=tracks.map(track=>headers.map(field=>serialise(track[field])));
   const blob=new Blob([[headers,...rows].map(row=>row.map(quote).join(",")).join("\r\n")],{type:"text/csv;charset=utf-8"});
   const link=document.createElement("a");
   link.href=URL.createObjectURL(blob);
-  link.download="play-productions-full-music-library.csv";
+  link.download=`play-productions-music-full-data-${new Date().toISOString().slice(0,10)}.csv`;
   link.click();
   URL.revokeObjectURL(link.href);
 });

@@ -39,7 +39,8 @@ The current correction consolidates the visible Music Library under the live `ad
 - Added Music Library filters for All, Web, Sale, DJ, Release and Archived.
 - Added safe archive, guarded record deletion and draft restore workflows.
 - Consolidated music export around the complete full-data CSV.
-- Added a viewport-width Music Library layout and explicit Play Productions styling for its top and row action buttons; preview verification is pending.
+- Preview confirmed the improved Music Library width, visible Actions column, removed/reduced horizontal scrolling, Delete wording, working readiness pills and working filters.
+- Consolidated Add Track and the full music CSV export into one normalized action row and moved the live admin email beside Sign out; preview verification is pending.
 
 ## 4. Immediate next tasks
 
@@ -63,7 +64,9 @@ Module 2A preview checks:
 - Confirm Restore returns an archived track to draft without publishing it.
 - Confirm guarded Delete removes only the Firestore track record.
 - Confirm Add Track and Export full music data CSV form one action row.
+- Confirm the logged-in admin email appears beside Sign out and no longer occupies the page content area.
 - Confirm the full-data export contains current and legacy track fields.
+- Improve editor usability so readiness work does not open or scroll through irrelevant full-editor sections.
 - Save and reload a harmless track edit.
 - Recheck DJ Database loading, export, approval and invitation flows.
 
@@ -72,6 +75,14 @@ Module 2A preview checks:
 ### Track and release management
 
 - Build a left-to-right track workflow using traffic-light readiness cards.
+- Build **Module 2B — Track Missing Data Workspace**, a focused workspace for completing incomplete catalogue data efficiently.
+- Keep three deliberate levels: Catalogue View for overview/readiness, Missing Data View for incomplete fields, and Full Track Editor / All Data for intentional detailed editing.
+- Present missing work as editable rows with Priority, Track, Area, Missing field, Input/control and Save action.
+- Add Missing Data filters for All Missing, Web, Sale, DJ, Release, High Priority, Medium Priority and Low Priority.
+- Treat website, DJ promo and personal-sale blockers as high priority; release/admin metadata as medium priority; and notes, promo extras and nice-to-have fields as low priority.
+- Support inline editing for simple fields including BPM, genre/style, key, mood/tags, price, status, visibility toggles, ISRC, UPC and release checks.
+- Open the relevant asset section for complex artwork, MP3 and WAV/master work instead of forcing those fields inline.
+- Avoid showing completed or irrelevant fields by default when a readiness area is being worked on.
 - Add a real upload workflow using one shared MP3 and one shared WAV/master asset.
 - Improve metadata and readiness guidance across Web, Sale, DJ and Release.
 - Add branded fallback and coming-soon artwork.
@@ -175,3 +186,4 @@ Update this roadmap whenever:
 - A future task is identified.
 - Module priorities change.
 - Preview testing changes the status of an item.
+- A known risk or watch-out is found.

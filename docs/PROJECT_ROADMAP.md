@@ -43,7 +43,8 @@ The current correction consolidates the visible Music Library under the live `ad
 - Consolidated music export around the complete full-data CSV.
 - Preview confirmed the improved Music Library width, visible Actions column, removed/reduced horizontal scrolling, Delete wording, working readiness pills and working filters.
 - Consolidated Add Track and the full music CSV export into one normalized action row and moved the live admin email beside Sign out; preview verification is pending.
-- Added the first Module 2B Missing Data view with Priority, Track, Area, Missing field, Current value and Edit action columns; preview verification is pending.
+- Preview confirmed the first Module 2B Missing Data view, including its six-column shell, priority ordering and editor-section actions.
+- Refined Missing Data into the main Music Library filter row, reset Add Track to the default Web / Track Basics section, and removed redundant DJ Database summary presentation; preview verification is pending.
 
 ## 4. Immediate next tasks
 
@@ -73,6 +74,8 @@ Module 2A preview checks:
 - Verify Missing Data priorities and field labels against real catalogue records.
 - Add inline editing/saving for straightforward missing fields in a future controlled pass.
 - Add upload/select actions for artwork, MP3 and WAV/master in a later pass; do not place uploads inline until the shell is proven.
+- Consider a future Add Track wizard with Track Basics, Assets, Website visibility, DJ promo, Sale and Release admin steps.
+- Move global admin search into the top header in a future layout pass to reduce unused top-page space, then review header spacing.
 - Save and reload a harmless track edit.
 - Recheck DJ Database loading, export, approval and invitation flows.
 
@@ -87,6 +90,7 @@ Module 2A preview checks:
 - Add Missing Data filters for All Missing, Web, Sale, DJ, Release, High Priority, Medium Priority and Low Priority.
 - Treat website, DJ promo and personal-sale blockers as high priority; release/admin metadata as medium priority; and notes, promo extras and nice-to-have fields as low priority.
 - Support inline editing for simple fields including BPM, genre/style, key, mood/tags, price, status, visibility toggles, ISRC, UPC and release checks.
+- Use appropriate future controls: number inputs for BPM and price, text inputs for ISRC and UPC, toggles for boolean fields, and date inputs for release/notification dates.
 - Open the relevant asset section for complex artwork, MP3 and WAV/master work instead of forcing those fields inline.
 - Avoid showing completed or irrelevant fields by default when a readiness area is being worked on.
 - Add a real upload workflow using one shared MP3 and one shared WAV/master asset.
@@ -138,6 +142,8 @@ Module 2A preview checks:
 - `rc3-admin.js` owns the full music CSV export.
 - `polish-02-admin.js` historically added the shorter duplicate music export; it must remain hidden/disabled for Tracks.
 - Admin startup cleanup previously broke login and was reverted.
+- Production deployment of Module 2B is not yet approved; preview acceptance remains required.
+- DJ Database should retain one `DJ Database` title, count-bearing filters and the single DJ Applications CSV export without restoring legacy metric cards.
 - Do not reintroduce `admin-live-fields.js`.
 - Do not reintroduce `coreReady` waiting logic.
 - Do not reintroduce **“Live admin data timed out”**.

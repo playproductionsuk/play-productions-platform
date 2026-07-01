@@ -8,9 +8,15 @@ document.head.appendChild(style);
 
 const adminUser = document.querySelector("#adminUser");
 const signOutButton = document.querySelector("#signOutButton");
-if (adminUser && signOutButton && adminUser.parentElement !== signOutButton.parentElement) {
+if (adminUser && signOutButton) {
+  let accountActions = document.querySelector(".admin-account-actions");
+  if (!accountActions) {
+    accountActions = document.createElement("div");
+    accountActions.className = "admin-account-actions";
+    signOutButton.insertAdjacentElement("beforebegin", accountActions);
+  }
   adminUser.classList.add("admin-header-user");
-  signOutButton.insertAdjacentElement("beforebegin", adminUser);
+  accountActions.append(adminUser, signOutButton);
 }
 
 const checklist = document.querySelector("#releaseChecklist");
@@ -116,6 +122,12 @@ function defaultTrackPrice() {
 document.querySelector("#newTrack")?.addEventListener("click", () => {
   setTimeout(() => {
     if (price && !document.querySelector("#editingId")?.value) price.value = defaultTrackPrice().toFixed(2);
+    document.querySelectorAll(".track-editor-section").forEach(section => {
+      section.open = section.id === "track-group-web";
+      section.classList.remove("is-focused");
+    });
+    document.querySelectorAll(".field-required").forEach(field => field.classList.remove("field-required"));
+    document.querySelector("#track-group-web")?.scrollIntoView({ behavior: "smooth", block: "start" });
   }, 0);
 });
 

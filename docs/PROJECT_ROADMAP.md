@@ -39,6 +39,7 @@ The current correction consolidates the visible Music Library under the live `ad
 - Added Music Library filters for All, Web, Sale, DJ, Release and Archived.
 - Added safe archive, guarded record deletion and draft restore workflows.
 - Consolidated music export around the complete full-data CSV.
+- Added a viewport-width Music Library layout and explicit Play Productions styling for its top and row action buttons; preview verification is pending.
 
 ## 4. Immediate next tasks
 

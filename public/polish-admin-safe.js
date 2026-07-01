@@ -5,7 +5,7 @@ import { collection, getDocs } from "https://www.gstatic.com/firebasejs/11.9.1/f
 const stats=document.querySelector("#statGrid");
 const library=document.querySelector("#adminTracks");
 const nav=document.querySelector(".admin-nav");
-let tracks=[],enquiries=[],orders=[],visibility={};
+let tracks=[],enquiries=[],orders=[],visibility={},libraryFilter="all";
 
 async function boundedDocs(name){
   if(!firebaseReady||globalThis.playAdminPreviewOnly)return[];
@@ -48,7 +48,26 @@ function missingValue(track,field){
 function renderLibrary(){
   if(!library)return;
   library.classList.remove("music-library-demo");
-  library.innerHTML=`<table class="library-table music-library-table"><thead><tr><th>Artwork</th><th>Track</th><th>Genre / subgenre</th><th>BPM</th><th>Key</th><th>Mood</th><th>Price</th><th>Status</th><th>Store</th><th>DJ promo</th><th>Latest / featured</th><th>Purchase</th><th>Health</th><th>Missing fields</th><th>Actions</th></tr></thead><tbody>${tracks.map(track=>{
+  const title=document.querySelector('[data-page="tracks"] .admin-section-title');
+  let filters=document.querySelector("#musicLibraryFilters");
+  if(title&&!filters){
+    filters=document.createElement("div");
+    filters.id="musicLibraryFilters";
+    filters.className="music-library-filters";
+    title.insertAdjacentElement("afterend",filters);
+  }
+  const counts=tracks.reduce((result,track)=>{
+    const readiness=trackReadiness(track),archived=track.status==="archived";
+    if(!archived)result.all++;
+    if(!archived&&!readiness.website.ready)result.web++;
+    if(!archived&&!readiness.sale.ready)result.sale++;
+    if(!archived&&!readiness.dj.ready)result.dj++;
+    if(!archived&&!readiness.release.ready)result.release++;
+    if(archived)result.archived++;
+    return result;
+  },{all:0,web:0,sale:0,dj:0,release:0,archived:0});
+  if(filters)filters.innerHTML=["all","web","sale","dj","release","archived"].map(key=>`<button type="button" class="${libraryFilter===key?"active":""}" data-music-filter="${key}">${key[0].toUpperCase()+key.slice(1)} <span>${counts[key]}</span></button>`).join("");
+  library.innerHTML=`<table class="library-table music-library-table"><thead><tr><th>Artwork</th><th>Track</th><th>Genre / subgenre</th><th>BPM</th><th>Key</th><th>Mood</th><th>Price</th><th>Status</th><th>Store</th><th>DJ promo</th><th>Latest / featured</th><th>Purchase</th><th>Health</th><th>Actions</th></tr></thead><tbody>${tracks.map(track=>{
     const health=trackHealth(track),readiness=trackReadiness(track);
     const required=[...health.missingRequired];
     const suggested=[...new Set([...health.missingRecommended,...recommended.filter(field=>missingValue(track,field))])].filter(field=>!required.includes(field));
@@ -58,8 +77,20 @@ function renderLibrary(){
     const polishSummary=suggested.length?`<span class="polish-summary" title="${escapeHtml(suggested.map(field=>labels[field]||field).join(", "))}">${suggested.length} polish item${suggested.length===1?"":"s"}</span>`:"";
     const missingSummary=requiredChips||polishSummary?`${requiredChips}${polishSummary}`:"✓ Complete";
     const readinessPill=(key,label,group)=>{const missing=Object.entries(group.checks).filter(([,value])=>!value).map(([field])=>field).join(", ");return`<button type="button" class="readiness-pill ${!group.enabled?"off":group.ready?"ready":"work"}" data-track-readiness="${key}" title="Open ${label} fields. ${escapeHtml(missing||"Complete")}"><b>${label}</b><em>${group.enabled?`${group.complete}/${group.total}`:"off"}</em></button>`};
-    return `<tr data-track-row="${escapeHtml(track.id)}"><td><img src="${escapeHtml(track.coverUrl||"icons/fallback.png")}" alt=""></td><td><strong>${escapeHtml(track.title)}</strong><small>${escapeHtml(track.artist||"Play Productions")}</small></td><td>${escapeHtml(track.style||"—")}<small>${escapeHtml(track.subgenre||"")}</small></td><td>${track.bpm||"—"}</td><td>${escapeHtml(track.key||"—")}</td><td>${escapeHtml((track.moodTags||[]).join(", ")||"—")}</td><td>£${Number(track.price).toFixed(2)}</td><td><span class="track-status-value">${escapeHtml(track.status)}</span></td><td>${track.showInStore?"✓":"×"}</td><td>${track.showInDjPool?"✓":"×"}</td><td>${track.showInLatest?"Latest ":""}${track.featured?"★":"—"}</td><td>${track.purchaseEnabled?"✓":"×"}</td><td><div class="readiness-groups">${readinessPill("web","Web",readiness.website)}${readinessPill("sale","Sale",readiness.sale)}${readinessPill("dj","DJ",readiness.dj)}${readinessPill("release","Release",readiness.release)}</div></td><td><div class="missing-chips">${missingSummary}</div></td><td><div class="track-library-actions"><button type="button" class="button ghost library-edit-button" data-library-edit="${escapeHtml(track.id)}">Update / edit</button><button type="button" class="track-archive-button" data-track-archive="${escapeHtml(track.id)}">Archive</button><button type="button" class="track-delete-button" data-track-delete-permanent="${escapeHtml(track.id)}">Delete document</button></div></td></tr>`;
+    const filterKeys=["all",...(!readiness.website.ready?["web"]:[]),...(!readiness.sale.ready?["sale"]:[]),...(!readiness.dj.ready?["dj"]:[]),...(!readiness.release.ready?["release"]:[]),...(track.status==="archived"?["archived"]:[])];
+    return `<tr data-track-row="${escapeHtml(track.id)}" data-library-filters="${filterKeys.join(" ")}"><td><img src="${escapeHtml(track.coverUrl||"icons/fallback.png")}" alt=""></td><td><strong>${escapeHtml(track.title)}</strong><small>${escapeHtml(track.artist||"Play Productions")}</small></td><td>${escapeHtml(track.style||"—")}<small>${escapeHtml(track.subgenre||"")}</small></td><td>${track.bpm||"—"}</td><td>${escapeHtml(track.key||"—")}</td><td>${escapeHtml((track.moodTags||[]).join(", ")||"—")}</td><td>£${Number(track.price).toFixed(2)}</td><td><span class="track-status-value">${escapeHtml(track.status)}</span></td><td>${track.showInStore?"✓":"×"}</td><td>${track.showInDjPool?"✓":"×"}</td><td>${track.showInLatest?"Latest ":""}${track.featured?"★":"—"}</td><td>${track.purchaseEnabled?"✓":"×"}</td><td><div class="readiness-groups">${readinessPill("web","Web",readiness.website)}${readinessPill("sale","Sale",readiness.sale)}${readinessPill("dj","DJ",readiness.dj)}${readinessPill("release","Release",readiness.release)}</div></td><td><div class="track-library-actions"><button type="button" class="button ghost library-edit-button" data-library-edit="${escapeHtml(track.id)}">Update / edit</button><button type="button" class="track-archive-button" data-track-archive="${escapeHtml(track.id)}">Archive</button><button type="button" class="track-delete-button" data-track-delete-permanent="${escapeHtml(track.id)}">Delete</button></div></td></tr>`;
   }).join("")}</tbody></table>`;
+  applyLibraryView();
+}
+
+function applyLibraryView(){
+  const query=(document.querySelector("#adminSearch")?.value||"").trim().toLowerCase();
+  library?.querySelectorAll("tbody tr").forEach(row=>{
+    const keys=row.dataset.libraryFilters?.split(" ")||[];
+    const archived=keys.includes("archived");
+    const matchesFilter=libraryFilter==="archived"?archived:!archived&&keys.includes(libraryFilter);
+    row.hidden=!matchesFilter||Boolean(query&&!row.textContent.toLowerCase().includes(query));
+  });
 }
 
 const editorFields=["title","artist","releaseTitle","slug","status","style","subgenre","bpm","key","moodTags","teaser","description","price","releaseDate","sortPriority","adminNotes","seoTitle","seoDescription","ogImageUrl","shareImageUrl","featuredImageUrl","isrc","upc","tunecoreUrl","distributionReleaseId","hyperfollowUrl","prsId","pplId","spotifyUrl","appleMusicUrl","soundcloudUrl","youtubeMusicUrl","mp3Url","wavPath","composerDetails","producerDetails","publisherDetails","distributionDate","copyrightNotes","releaseChecklistNotes","newTrackNotificationSentAt","notificationNotes","socialPromoStatus","socialPromoNotes"];
@@ -94,12 +125,11 @@ library?.addEventListener("click",event=>{
   if(chip){event.preventDefault();event.stopImmediatePropagation();openFullEditor(chip.dataset.libraryChip,chip.dataset.field)}
   else if(edit){event.preventDefault();openFullEditor(edit.dataset.libraryEdit)}
 },true);
-
 tracks=await loadTracks({includeAdmin:true});
 if(firebaseReady&&!globalThis.playAdminPreviewOnly)[enquiries,orders]=await Promise.all([boundedDocs("enquiries"),boundedDocs("orders")]);
 else{try{enquiries=JSON.parse(localStorage.getItem("playDemoEnquiries")||"[]")}catch{enquiries=[]}enquiries.push({type:"dj-access",status:"new"},{type:"exclusive-rights",status:"new"})}
 visibility=(await getSiteSettings()).pageVisibility;
-renderOverview();renderLibrary();applyModuleVisibility();
+renderOverview();applyModuleVisibility();
 window.addEventListener("play-admin-dashboard-rendered",renderOverview);
 globalThis.polishAdminReady=true;
 window.dispatchEvent(new Event("polishadminready"));

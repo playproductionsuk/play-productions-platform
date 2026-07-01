@@ -123,7 +123,7 @@ document.addEventListener("click", async event => {
     event.preventDefault();
     event.stopImmediatePropagation();
     const row = readiness.closest("[data-track-row]");
-    row?.querySelector("[data-library-edit]")?.click();
+    row?.querySelector("[data-edit],[data-library-edit]")?.click();
     setTimeout(() => {
       const section = document.querySelector(`#track-group-${readiness.dataset.trackReadiness}`);
       if (!section) return;
@@ -150,8 +150,9 @@ document.addEventListener("click", async event => {
   }
 
   const archive = event.target.closest("[data-track-archive]");
+  const restore = event.target.closest("[data-track-restore]");
   const remove = event.target.closest("[data-track-delete-permanent]");
-  if (!archive && !remove) return;
+  if (!archive && !restore && !remove) return;
   event.preventDefault();
   event.stopImmediatePropagation();
   if (!firebaseReady || globalThis.playAdminPreviewOnly) {
@@ -159,7 +160,7 @@ document.addEventListener("click", async event => {
     return;
   }
 
-  const id = archive?.dataset.trackArchive || remove?.dataset.trackDeletePermanent;
+  const id = archive?.dataset.trackArchive || restore?.dataset.trackRestore || remove?.dataset.trackDeletePermanent;
   const row = event.target.closest("[data-track-row]");
   try {
     if (archive) {
@@ -176,12 +177,27 @@ document.addEventListener("click", async event => {
       if (status) status.textContent = "archived";
       archive.disabled = true;
       archive.textContent = "Archived";
+      window.dispatchEvent(new Event("play-admin-track-state-change"));
+      return;
+    }
+
+    if (restore) {
+      if (!confirm("Restore this track as a draft? It will remain hidden from the website, DJ promo crate and purchases until you review and enable it.")) return;
+      await updateDoc(doc(db, "tracks", id), {
+        status: "draft",
+        showInStore: false,
+        showInDjPool: false,
+        purchaseEnabled: false,
+        updatedAt: serverTimestamp()
+      });
+      window.dispatchEvent(new Event("play-admin-track-state-change"));
       return;
     }
 
     if (!confirm("Permanently delete this Firestore track document? Uploaded artwork and audio files will be retained. This cannot be undone from the admin.")) return;
     await deleteDoc(doc(db, "tracks", id));
     row?.remove();
+    window.dispatchEvent(new Event("play-admin-track-state-change"));
   } catch (error) {
     alert(`The track could not be updated: ${error.message}`);
   }

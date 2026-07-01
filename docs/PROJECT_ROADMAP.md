@@ -3,78 +3,130 @@
 ## 1. Current stable live state
 
 - Live admin works at `/admin.html`.
+- Production `/admin.html` defaults to the live Firebase admin.
+- `/admin.html?preview=1` remains the safe preview fallback.
 - DJ Applications workflow works.
 - DJ approval and rejection work.
 - Invitation email sends through Firebase Trigger Email.
-- DJ password setup works.
-- DJ login works.
-- DJ promo crate works.
-- Protected MP3 downloads work.
+- DJ password setup and login work.
+- Approved DJs can access the promo crate.
+- Protected MP3 promo downloads work.
 - DJ Applications CSV export works on live.
-- Production `/admin.html` defaults to live admin.
-- `/admin.html?preview=1` remains available as the preview fallback.
 
 ## 2. Current active module
 
 **Module 2 — Track Admin / Music Library management**
 
-All Module 2 work is preview-first.
+Module 2A is preview-only until its complete Track Admin workflow passes testing.
 
 Preview test URL:
 
 <https://play-productions--preview-4sqed4ku.web.app/admin.html?live=1>
 
+The current correction consolidates the visible Music Library under the live `admin-platform.js` renderer. A previous pass changed an earlier renderer and was subsequently overwritten, so future UI work must confirm final renderer ownership before editing.
+
 ## 3. Completed milestones
 
-- Restored a reliable admin login and dashboard without black-screen behaviour.
-- Preserved a safe preview-mode admin fallback.
-- Completed the DJ application workflow.
-- Added DJ approval and rejection handling.
-- Added invitation emails through Firebase Trigger Email.
-- Added DJ password setup and live email/password login.
-- Added approved-DJ access checks for the promo crate.
-- Added protected, MP3-only DJ promo downloads.
-- Added DJ promo sign-out support.
+- Restored reliable admin login and dashboard visibility without black screens.
+- Preserved safe preview-mode admin access.
+- Completed the DJ application, approval, rejection and invitation workflow.
+- Added DJ password setup and live email/password authentication.
+- Added approved-DJ checks, promo access, sign-out and protected MP3 downloads.
 - Added a single, deduplicated DJ Applications CSV export.
-- Began the Module 2 Track Admin readiness foundation for Web, Sale, DJ and Release.
-- Added track editor grouping and clickable readiness links in preview.
+- Added the Track Admin readiness foundation for Web, Sale, DJ and Release.
+- Grouped the track editor into Web / Track Basics, Personal Sale, DJ Promo, Release Admin and All Data / Advanced.
+- Made readiness pills open and highlight their related editor sections.
+- Added Music Library filters for All, Web, Sale, DJ, Release and Archived.
+- Added safe archive, guarded record deletion and draft restore workflows.
+- Consolidated music export around the complete full-data CSV.
 
 ## 4. Immediate next tasks
 
-- Improve the Music Library table width and layout.
-- Remove the redundant Missing Fields column.
-- Centre and align table headers and relevant cells.
-- Centre the **Update / edit** button text.
-- Keep one music export button: **Export full music data CSV**.
-- Put **Add Track** and the export button in one neat action row.
-- Rename **Delete document** to **Delete**.
-- Add Music Library filters: **All**, **Web**, **Sale**, **DJ**, **Release** and **Archived**.
-- Keep readiness pills clickable and linked to their editor sections.
+Priority order:
+
+1. Finish Module 2A Track Admin / Music Library on preview.
+2. Test track field save/reload and flow-through to the public Music page and DJ promo crate.
+3. Clean public demo/test clutter from the site.
+4. Smoke-test customer purchase and account flows.
+5. Plan notifications, the contact database and promo campaigns.
+6. Expand the Business Dashboard and analytics.
+7. Develop Mixing & Mastering and Vinyl Cutting modules.
+
+Module 2A preview checks:
+
+- Confirm the active Music Library table uses the available width without unnecessary horizontal scrolling.
+- Confirm Missing Fields is absent and readiness tooltips retain useful detail.
+- Confirm All, Web, Sale, DJ, Release and Archived filters and their counts.
+- Confirm search works together with the selected readiness filter.
+- Confirm Archive hides website, DJ and purchase visibility without deleting files.
+- Confirm Restore returns an archived track to draft without publishing it.
+- Confirm guarded Delete removes only the Firestore track record.
+- Confirm Add Track and Export full music data CSV form one action row.
+- Confirm the full-data export contains current and legacy track fields.
+- Save and reload a harmless track edit.
+- Recheck DJ Database loading, export, approval and invitation flows.
 
 ## 5. Future development ideas
 
-- Create branded fallback or coming-soon artwork in the Play Productions style.
-- Test track field flow-through to the public Music page.
-- Test track field flow-through to the DJ promo crate.
-- Add a real track upload workflow using shared MP3 and WAV/master assets.
-- Expand track readiness management across Web, Sale, DJ and Release.
-- Add new-track notification tracking.
-- Later add a deliberate **Queue/send new track notification** button.
+### Track and release management
+
+- Build a left-to-right track workflow using traffic-light readiness cards.
+- Add a real upload workflow using one shared MP3 and one shared WAV/master asset.
+- Improve metadata and readiness guidance across Web, Sale, DJ and Release.
+- Add branded fallback and coming-soon artwork.
+- Track new-release notification state without automatic sending.
+- Later add a deliberate queue/send notification action.
+- Track promo campaigns and outreach per release.
+
+### Contacts, DJ and promotion
+
 - Build a contact database for DJs, radio, labels, blogs and playlist curators.
-- Add promo campaign tracking per track.
-- Smoke-test the customer purchase and account flow.
-- Review paid MP3/WAV fulfilment options.
-- Clean up public demo and preview clutter.
+- Add DJ download tracking and engagement statistics.
+- Add campaign lists, outreach status, follow-ups and response notes.
+- Expand email and notification automation only through explicit, guarded actions.
+
+### Customers, sales and licensing
+
+- Add customer purchase and download history to the portal.
+- Complete paid MP3/WAV fulfilment and account-download flows.
+- Add licence-management records while keeping commercial licensing enquiry-led until deliberately expanded.
+- Add Stripe sales, fees and revenue reporting.
+
+### Dashboard, analytics and operations
+
+- Expand the Business Dashboard with useful operational and revenue metrics.
+- Add SEO status, Google Analytics and Search Console reporting.
+- Add an operational/system-health dashboard for Firebase, email, downloads, payments and integrations.
+
+### Public site and services
+
+- Test Track Admin field flow-through to the public Music page.
+- Remove public demo/preview clutter.
+- Complete responsive and mobile polish.
+- Explore settings-driven homepage and public CMS controls.
+- Build the Mixing & Mastering project workflow.
+- Build the Vinyl Cutting quote and project workflow.
+
+### Security and maintenance
+
 - Complete Firebase API-key restrictions and GitHub alert cleanup.
+- Keep dependency, Firestore-rule and Storage-rule reviews in the maintenance plan.
 
 ## 6. Known issues / watch-outs
 
+- A previous correction edited an earlier Music Library renderer and did not visibly affect the final live table.
+- Confirm the final active renderer before every admin UI change.
+- `admin-platform.js` owns the live Music Library table after Firestore loading.
+- `rc3-admin.js` owns the full music CSV export.
+- `polish-02-admin.js` historically added the shorter duplicate music export; it must remain hidden/disabled for Tracks.
+- Admin startup cleanup previously broke login and was reverted.
 - Do not reintroduce `admin-live-fields.js`.
 - Do not reintroduce `coreReady` waiting logic.
-- Do not reintroduce the message **“Live admin data timed out”**.
-- A previous admin startup cleanup broke login and was reverted.
-- Module 2A packages must be built from the current stable main version, not older reverted branches.
-- All work should be tested on the Firebase preview channel before production.
+- Do not reintroduce **“Live admin data timed out”**.
+- Do not introduce MutationObserver-based fixes.
+- Avoid large rewrites and preserve working renderers.
+- Module 2A work must be based on the current stable main files, not reverted packages or older branches.
+- Disabled Web, Sale or DJ toggles currently count as incomplete readiness; verify that product behaviour during preview testing.
 
 ## 7. Deployment rules
 
@@ -84,32 +136,41 @@ Preview first:
 firebase.cmd hosting:channel:deploy preview
 ```
 
-Production only after the preview passes:
-
-```powershell
-firebase.cmd deploy --only hosting
-```
+Production is permitted only after preview acceptance passes.
 
 Deploy Functions only when `functions/index.js` changes.
+
+Keep deployments and commits small, scoped and easy to reverse.
 
 ## 8. Do-not-touch rules
 
 Unless explicitly requested, do not change:
 
-- Admin login or startup.
-- DJ approval and email workflow.
+- Admin login or startup flow.
+- `public/admin.html`.
+- `public/admin-live-login.js`.
+- DJ approval, rejection or invitation-email logic.
 - DJ promo download backend.
 - Checkout or payments.
 - Public pages.
 - `functions/index.js`.
 
+Do not add competing renderers, persistent loops or MutationObservers.
+
 ## 9. Notes for future Codex passes
 
-For every future task, update this roadmap when:
+Before editing:
+
+- Inspect the current stable files rather than relying on old conversation context.
+- Map the import and render chain and identify the final writer for the visible UI.
+- Change the owning renderer instead of adding an overlay.
+- Preserve existing IDs, save paths, asset aliases and working Firestore behaviour.
+- Test on preview before considering production.
+
+Update this roadmap whenever:
 
 - A milestone is completed.
-- A new issue is discovered.
+- A new issue or renderer conflict is discovered.
 - A future task is identified.
 - Module priorities change.
-
-Before editing, inspect the current stable files rather than relying on an older package or conversation context. Keep changes narrowly scoped, preserve working flows and test on preview before considering production deployment.
+- Preview testing changes the status of an item.

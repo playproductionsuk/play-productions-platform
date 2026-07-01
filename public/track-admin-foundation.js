@@ -105,6 +105,44 @@ if (trackForm && !document.querySelector("#trackEditorGroups")) {
   });
 }
 
+if (trackForm && !document.querySelector("#trackEditorSaveControls")) {
+  const editorHeader = document.querySelector("#trackEditor>.admin-section-title");
+  const closeEditor = document.querySelector("#closeEditor");
+  const controls = document.createElement("div");
+  controls.id = "trackEditorSaveControls";
+  controls.className = "track-editor-save-controls";
+  controls.innerHTML = `
+    <span class="track-visibility-summary" aria-live="polite"></span>
+    <button type="button" class="button primary" data-save-track-top>Save Track</button>
+  `;
+  if (editorHeader) editorHeader.insertBefore(controls, closeEditor);
+
+  const topSave = controls.querySelector("[data-save-track-top]");
+  const bottomSave = document.querySelector("#saveTrack");
+  const updateSaveControls = () => {
+    const isDraft = document.querySelector("#status")?.value === "draft";
+    const isNew = !document.querySelector("#editingId")?.value;
+    const readOnly = globalThis.playAdminPreviewOnly === true;
+    const label = readOnly ? "Preview only" : isDraft && isNew ? "Save Draft" : "Save Track";
+    if (topSave) {
+      topSave.textContent = label;
+      topSave.disabled = readOnly;
+    }
+    if (bottomSave) {
+      bottomSave.textContent = label;
+      bottomSave.disabled = readOnly;
+    }
+    const state = id => document.querySelector(`#${id}`)?.checked ? "On" : "Off";
+    const summary = controls.querySelector(".track-visibility-summary");
+    if (summary) summary.textContent = `Website: ${state("showInStore")} | DJ Promo: ${state("showInDjPool")} | Purchase: ${state("purchaseEnabled")}`;
+  };
+  topSave?.addEventListener("click", () => trackForm.requestSubmit(document.querySelector("#saveTrack")));
+  trackForm.addEventListener("input", updateSaveControls);
+  trackForm.addEventListener("change", updateSaveControls);
+  window.addEventListener("play-admin-visibility-change", updateSaveControls);
+  updateSaveControls();
+}
+
 const price = document.querySelector("#price");
 if (price && !document.querySelector("#trackPriceHelp")) {
   price.insertAdjacentHTML("afterend", '<small id="trackPriceHelp">New tracks use the saved default price when available; this field remains the track-level override.</small>');
@@ -130,11 +168,6 @@ document.querySelector("#newTrack")?.addEventListener("click", () => {
     document.querySelector("#track-group-web")?.scrollIntoView({ behavior: "smooth", block: "start" });
   }, 0);
 });
-
-if (!globalThis.playAdminPreviewOnly) {
-  const saveTrack = document.querySelector("#saveTrack");
-  if (saveTrack) saveTrack.textContent = "Save track";
-}
 
 document.addEventListener("click", async event => {
   const missingEdit = event.target.closest("[data-missing-track]");

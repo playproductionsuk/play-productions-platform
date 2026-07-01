@@ -25,6 +25,8 @@ The Track Flow and Storage audit is complete. Controlled preview testing of add,
 
 Module 2C has started: Track Admin save-preservation hardening. Existing raw Firestore data, asset aliases, licences, timestamps and stable document IDs are now protected by the revised save payload, pending preview verification.
 
+Module 2C.1 corrects the save gate: authenticated admins on the hosting preview channel using `?live=1` must be able to write, while explicit `/admin.html?preview=1` and non-live fallback modes remain read-only.
+
 Preview test URL:
 
 <https://play-productions--preview-4sqed4ku.web.app/admin.html?live=1>
@@ -78,6 +80,7 @@ Module 2A preview checks:
 - Add inline editing/saving for straightforward missing fields in a future controlled pass.
 - Add upload/select actions for artwork, MP3 and WAV/master in a later pass; do not place uploads inline until the shell is proven.
 - Consider a future Add Track wizard with Track Basics, Assets, Website visibility, DJ promo, Sale and Release admin steps.
+- Add an unsaved-change warning before switching admin tabs or closing the editor in a later low-risk UX pass.
 - Move global admin search into the top header in a future layout pass to reduce unused top-page space, then review header spacing.
 - Save and reload a harmless track edit.
 - Recheck DJ Database loading, export, approval and invitation flows.
@@ -86,6 +89,8 @@ Module 2A preview checks:
 - Confirm the full music CSV contains expected admin, asset, visibility and archive fields.
 - Verify the hardened edit payload preserves `mp3Path`, `previewPath`, `previewUrl`, `masterPath`, `wavPath`, `coverPath`, `coverUrl`, `createdAt`, aliases and licence data.
 - Confirm slug edits continue saving to the original Firestore document ID without creating duplicates.
+- Verify the editor-header Save Draft/Save Track control remains visible and reports the saved Firestore document ID.
+- Verify Website, DJ Promo and Purchase toggles show clear ON/OFF states and the summary remains synchronized.
 - Align live DJ crate visibility with the backend download status gate.
 - Ensure customer purchase availability cannot proceed without a usable WAV/master.
 

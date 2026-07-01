@@ -90,10 +90,25 @@ function preservedLicences(record,track){
   const personal=licences.personal&&typeof licences.personal==="object"?licences.personal:{};
   return {...licences,personal:{...personal,name:personal.name||"Personal digital download",price:track.price,enabled:personal.enabled??true,summary:personal.summary||"For personal listening. No commercial vocal or exclusive rights."}};
 }
+function showTrackSaveNotice(message,kind="success"){
+  let notice=document.querySelector("#trackSaveNotice");
+  if(!notice){
+    notice=document.createElement("div");
+    notice.id="trackSaveNotice";
+    notice.className="track-save-notice";
+    notice.setAttribute("role","status");
+    document.body.appendChild(notice);
+  }
+  notice.className=`track-save-notice ${kind}`;
+  notice.textContent=message;
+  notice.hidden=false;
+  clearTimeout(showTrackSaveNotice.timer);
+  showTrackSaveNotice.timer=setTimeout(()=>notice.hidden=true,6000);
+}
 form.addEventListener("submit",async e=>{
   e.preventDefault();
-  const button=document.querySelector("#saveTrack");
-  button.disabled=true;
+  const buttons=[document.querySelector("#saveTrack"),document.querySelector("[data-save-track-top]")].filter(Boolean);
+  buttons.forEach(button=>button.disabled=true);
   try{
     const track=formTrack(),editingId=document.querySelector("#editingId").value;
     const existing=state.tracks.find(item=>String(item.id)===String(editingId));
@@ -128,14 +143,21 @@ form.addEventListener("submit",async e=>{
     });
     if(!existingRecord?.createdAt)payload.createdAt=serverTimestamp();
     await setDoc(doc(db,"tracks",documentId),payload,{merge:true});
-    progress.textContent="Saved.";
+    progress.textContent=`Saved as ${documentId}.`;
     document.querySelector("#trackEditor").hidden=true;
-    await loadAll();
+    showTrackSaveNotice(`Track saved successfully. Firestore document: ${documentId}`);
+    try{
+      await loadAll();
+    }catch(refreshError){
+      console.warn("Track saved, but the Music Library could not refresh.",refreshError);
+      showTrackSaveNotice(`Track saved as ${documentId}, but the list could not refresh. Reload the admin to confirm.`,"error");
+    }
   }catch(err){
     console.error(err);
     progress.textContent=err.message;
+    showTrackSaveNotice(`Track save failed: ${err.message}`,"error");
   }finally{
-    button.disabled=false;
+    buttons.forEach(button=>button.disabled=globalThis.playAdminPreviewOnly===true);
   }
 });
 document.addEventListener("click",async e=>{const chip=e.target.closest(".missing-chips button"),edit=e.target.closest("[data-edit]"),del=e.target.closest("[data-delete]"),filter=e.target.closest("[data-music-filter]");if(filter){libraryFilter=filter.dataset.musicFilter;document.querySelectorAll("[data-music-filter]").forEach(button=>button.classList.toggle("active",button===filter));applyMusicLibraryView();return}if(chip){const trackButton=chip.closest("tr")?.querySelector("[data-edit]"),map={coverUrl:"cover",previewUrl:"preview",masterPath:"master",releaseTiming:"releaseDate"};if(trackButton){editTrack(trackButton.dataset.edit);setTimeout(()=>{const field=document.querySelector(`#${map[chip.dataset.field]||chip.dataset.field}`);field?.closest(".field,.file-field")?.classList.add("field-required");field?.focus();field?.scrollIntoView({behavior:"smooth",block:"center"})},80)}}else if(edit){document.querySelector('[data-view="tracks"]').click();editTrack(edit.dataset.edit)}if(del&&confirm("Delete this track record? Uploaded files are retained for safety.")){await deleteDoc(doc(db,"tracks",del.dataset.delete));await loadAll()}});document.addEventListener("change",async e=>{if(e.target.dataset.enquiryStatus){await updateDoc(doc(db,"enquiries",e.target.dataset.enquiryStatus),{status:e.target.value,updatedAt:serverTimestamp()});await loadAll()}if(e.target.dataset.projectStatus){await updateDoc(doc(db,"projects",e.target.dataset.projectStatus),{status:e.target.value,updatedAt:serverTimestamp()});await loadAll()}});document.querySelector("#adminSearch").addEventListener("input",e=>{const q=e.target.value.toLowerCase();document.querySelectorAll(".data-row,.health-row").forEach(x=>x.hidden=!x.textContent.toLowerCase().includes(q));applyMusicLibraryView()});window.addEventListener("play-admin-track-state-change",()=>loadAll().catch(error=>console.error("Track library refresh failed.",error)));

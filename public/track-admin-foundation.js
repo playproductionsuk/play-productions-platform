@@ -143,6 +143,16 @@ if (trackForm && !document.querySelector("#trackEditorSaveControls")) {
   updateSaveControls();
 }
 
+if (checklist && !document.querySelector("#trackEditorStatusBar")) {
+  const editorHeader = document.querySelector("#trackEditor>.admin-section-title");
+  const statusBar = document.createElement("section");
+  statusBar.id = "trackEditorStatusBar";
+  statusBar.className = "track-editor-status-bar";
+  statusBar.innerHTML = '<div id="trackEditorReadinessSummary" class="track-editor-readiness-summary" aria-live="polite"></div>';
+  editorHeader?.insertAdjacentElement("afterend", statusBar);
+  statusBar.appendChild(checklist);
+}
+
 const price = document.querySelector("#price");
 if (price && !document.querySelector("#trackPriceHelp")) {
   price.insertAdjacentHTML("afterend", '<small id="trackPriceHelp">New tracks use the saved default price when available; this field remains the track-level override.</small>');

@@ -27,6 +27,8 @@ Module 2C has started: Track Admin save-preservation hardening. Existing raw Fir
 
 Module 2C.1 corrects the save gate: authenticated admins on the hosting preview channel using `?live=1` must be able to write, while explicit `/admin.html?preview=1` and non-live fallback modes remain read-only.
 
+Module 2C.2 moves the completion/readiness summary to the top of the Track Editor and gives grouped fields the full editor width. Quick Draft and save-control layout cleanup is implemented pending preview verification.
+
 Preview test URL:
 
 <https://play-productions--preview-4sqed4ku.web.app/admin.html?live=1>
@@ -51,6 +53,7 @@ The current correction consolidates the visible Music Library under the live `ad
 - Consolidated Add Track and the full music CSV export into one normalized action row and moved the live admin email beside Sign out; preview verification is pending.
 - Preview confirmed the first Module 2B Missing Data view, including its six-column shell, priority ordering and editor-section actions.
 - Refined Missing Data into the main Music Library filter row, reset Add Track to the default Web / Track Basics section, and removed redundant DJ Database summary presentation; preview verification is pending.
+- Preview confirmed both Music and DJ Applications CSV exports work; exports are not a current blocker.
 
 ## 4. Immediate next tasks
 
@@ -91,6 +94,8 @@ Module 2A preview checks:
 - Confirm slug edits continue saving to the original Firestore document ID without creating duplicates.
 - Verify the editor-header Save Draft/Save Track control remains visible and reports the saved Firestore document ID.
 - Verify Website, DJ Promo and Purchase toggles show clear ON/OFF states and the summary remains synchronized.
+- Verify the compact top completion panel shows Web, Sale, DJ and Release readiness without recreating a right-side column.
+- Verify grouped Track Editor fields use the available width and Quick Draft starts with Web / Track Basics while Release and Advanced remain secondary.
 - Align live DJ crate visibility with the backend download status gate.
 - Ensure customer purchase availability cannot proceed without a usable WAV/master.
 
@@ -162,6 +167,7 @@ Module 2A preview checks:
 - DJ Database should retain one `DJ Database` title, count-bearing filters and the single DJ Applications CSV export without restoring legacy metric cards.
 - Archive is the normal safe removal action. Hard delete is for obvious test/junk records only and currently leaves uploaded files behind.
 - Real track, MP3 and WAV/master uploads must wait until Module 2C save-preservation tests pass.
+- Track Editor right-side layout waste was a current UX issue; Module 2C.2 addresses it by moving status/readiness to the top and making the form full-width.
 - Replacing artwork, preview MP3 or master WAV creates a new timestamped object and currently leaves the previous object in Storage.
 - Live DJ querying can display any `showInDjPool: true` record, while protected downloads allow only `published` and `coming-soon`; these gates need alignment.
 - Public purchase readiness does not prove a master exists for every legacy/external record; paid fulfilment currently requires `masterPath`.

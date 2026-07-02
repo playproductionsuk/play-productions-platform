@@ -50,7 +50,7 @@ Module 2E.2 mostly passed preview, but Enter in a normal Add Track input trigger
 
 Module 2E.3 passed the key Enter/implicit-save safety checks. Module 2E.4 is the final admin layout-polish pass: move global search into the admin command header, normalize title hierarchy across tabs, align Music Library controls with DJ Database controls, compact the readiness/actions table columns, and make Track Editor field sizing and grouping more purposeful.
 
-Module 2E.5 remains an audit-first admin startup, dead-code and performance pass after layout polish. It must map ownership and dependencies before removing or deferring any legacy module. Module 2F Preview Player Controls remains queued after that audit.
+Module 2E.5 admin startup, dead-code and performance audit is complete. The audit found that the eight visible entry imports fan out into roughly nineteen local admin modules. Multiple Music Library, DJ Database and dashboard layers still render or enhance the same DOM, several delayed callbacks repaint accepted views, and tracks/enquiries/orders are read more than once. No runtime cleanup was performed. The ownership map, risk classification and safe cleanup sequence are recorded in `docs/ADMIN_STARTUP_AUDIT.md`. Module 2F Preview Player Controls remains queued after a separately approved startup-cleanup implementation pass.
 
 Module 2E.4 preview was a partial improvement but was not accepted: search/user/sign-out were still inside page content rather than the real navigation header, DJ Database could remain highlighted after another tab opened, and the Track Editor grouping still separated closely related availability controls. Module 2E.4.1 corrects those specific issues.
 
@@ -73,7 +73,7 @@ Personal Sale and DJ Promo controls share Visibility & Availability, while artwo
 
 **Module 2F — Preview Player Controls** is the next near-term Module 2 pass and must be completed before Module 2 is declared complete.
 
-Do not begin Module 2F until Module 2E.4.4 acceptance and the Module 2E.5 startup/performance audit are complete.
+Do not begin Module 2F until Module 2E.4.4 acceptance and a separately approved, preview-tested implementation pass for the highest-value Module 2E.5 findings are complete.
 
 Required direction:
 
@@ -112,16 +112,18 @@ The current correction consolidates the visible Music Library under the live `ad
 - Refined Missing Data into the main Music Library filter row, reset Add Track to the default Web / Track Basics section, and removed redundant DJ Database summary presentation; preview verification is pending.
 - User testing confirmed both Music and DJ Applications CSV exports work; exports are not a current blocker. Browser/Agent Mode can be unreliable when verifying downloads and should not override a successful user test.
 - Module 2D.3 passed live testing: editor and table readiness agree and the stale `Required: coverUrl` warning is resolved.
+- Completed the Module 2E.5 documentation-only startup audit without changing runtime code. It maps the true import fan-out, current renderer ownership, repeated Firestore reads, delayed repaint risks and a preview-first cleanup order.
 
 ## 4. Immediate next tasks
 
 Priority order:
 
-1. Complete and preview-test Module 2E detail routing, release-date/TBC, MP3-only DJ detail and Track Admin polish.
-2. Build and preview-test Module 2F Preview Player Controls.
-3. Live-test Module 2E and 2F before declaring Module 2 complete.
-4. Start Enhancement Phase A — Public Site Quality Pass.
-5. Continue through the enhancement phases in the priority order below.
+1. Preserve the accepted Module 2E.4 baseline and create a stable snapshot/tag.
+2. Run Module 2E.6 Safe Admin Cleanup / Performance Fixes as a separate preview-first pass, beginning with Music CSV extraction and renderer ownership separation. Skip any cleanup item whose responsibility cannot be proven.
+3. Build and preview-test Module 2F Preview Player Controls.
+4. Complete the final Module 2 live test and tag.
+5. Start Enhancement Phase A — Public Site Quality Pass.
+6. Continue through the enhancement phases in the priority order below.
 
 Module 2A preview checks:
 

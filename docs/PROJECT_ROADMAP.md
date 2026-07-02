@@ -52,9 +52,22 @@ Module 2E.3 passed the key Enter/implicit-save safety checks. Module 2E.4 is the
 
 Module 2E.5 remains an audit-first admin startup, dead-code and performance pass after layout polish. It must map ownership and dependencies before removing or deferring any legacy module. Module 2F Preview Player Controls remains queued after that audit.
 
+Module 2E.4 preview was a partial improvement but was not accepted: search/user/sign-out were still inside page content rather than the real navigation header, DJ Database could remain highlighted after another tab opened, and the Track Editor grouping still separated closely related availability controls. Module 2E.4.1 corrects those specific issues.
+
+The intended editor structure is now:
+
+1. Track Basics.
+2. Visibility & Availability.
+3. Assets.
+4. Release Admin.
+5. Promo & Notification Tracking.
+6. All Data / Advanced.
+
+Personal Sale and DJ Promo controls share Visibility & Availability, while artwork, Preview MP3 and Master WAV share the Assets section. The real admin navigation owns search, user email and Sign out. The common tab handler clears every previous nav active state before selecting the current page.
+
 **Module 2F — Preview Player Controls** is the next near-term Module 2 pass and must be completed before Module 2 is declared complete.
 
-Do not begin Module 2F until Module 2E.4 layout acceptance and the Module 2E.5 startup/performance audit are complete.
+Do not begin Module 2F until Module 2E.4.1 layout acceptance and the Module 2E.5 startup/performance audit are complete.
 
 Required direction:
 
@@ -82,7 +95,7 @@ The current correction consolidates the visible Music Library under the live `ad
 - Added approved-DJ checks, promo access, sign-out and protected MP3 downloads.
 - Added a single, deduplicated DJ Applications CSV export.
 - Added the Track Admin readiness foundation for Web, Sale, DJ and Release.
-- Grouped the track editor into Web / Track Basics, Personal Sale, DJ Promo, Release Admin and All Data / Advanced.
+- Grouped the Track Editor into Track Basics, Visibility & Availability, Assets, Release Admin, Promo & Notification Tracking and All Data / Advanced.
 - Made readiness pills open and highlight their related editor sections.
 - Added Music Library filters for All, Web, Sale, DJ, Release and Archived.
 - Added safe archive, guarded record deletion and draft restore workflows.
@@ -133,7 +146,7 @@ Module 2A preview checks:
 - Verify the editor-header Save Draft/Save Track control remains visible and reports the saved Firestore document ID.
 - Verify Website, DJ Promo and Purchase toggles show clear ON/OFF states and the summary remains synchronized.
 - Verify the compact top completion panel shows Web, Sale, DJ and Release readiness without recreating a right-side column.
-- Verify grouped Track Editor fields use the available width and Quick Draft starts with Web / Track Basics while Release and Advanced remain secondary.
+- Verify grouped Track Editor fields use the available width and new tracks start with Track Basics while Release and Advanced remain secondary.
 - Re-test artwork upload for `coverUrl`, `coverPath` and `thumbnail`.
 - Re-test preview upload for `previewUrl`, `previewPath`, `mp3Path`, `mp3Url` and `url`.
 - Re-test master upload for `masterPath` and `wavPath` without requiring a public master URL.
@@ -153,6 +166,9 @@ Module 2A preview checks:
 - Verify the global admin command header, title/subtitle hierarchy and reduced top whitespace across every visible admin tab.
 - Verify Music Library filters/actions visually align with DJ Database controls and remain functional.
 - Verify release-date TBC visibly clears whenever a real date exists.
+- Verify only one admin navigation tab remains highlighted when moving to or from DJ Database.
+- Verify Track Basics, Visibility & Availability, Assets, Release Admin, Promo & Notification Tracking and All Data / Advanced contain the intended fields.
+- Verify Music Library sticky headings clear the responsive admin navigation and the compact readiness/action columns remain readable.
 - Review Coming Soon public-card action alignment during the Public Site Quality Pass; it was deliberately not changed in Module 2E.4 to avoid touching catalogue behaviour before Module 2F.
 
 ## 5. Future development ideas

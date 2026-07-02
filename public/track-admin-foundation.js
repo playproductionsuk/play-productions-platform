@@ -26,15 +26,8 @@ if (adminSearch && adminNav && !document.querySelector(".admin-header-search")) 
   searchWrap.className = "admin-header-search";
   searchWrap.appendChild(adminSearch);
   const accountActions = document.querySelector(".admin-account-actions");
-  adminNav.insertBefore(searchWrap, accountActions || signOutButton || null);
-  const adminMain = document.querySelector(".admin-main");
-  if (adminMain) {
-    const commandBar = document.createElement("div");
-    commandBar.className = "admin-command-bar";
-    adminMain.prepend(commandBar);
-    commandBar.append(searchWrap);
-    if (accountActions) commandBar.append(accountActions);
-  }
+  adminNav.appendChild(searchWrap);
+  if (accountActions) adminNav.appendChild(accountActions);
   document.querySelector(".admin-top")?.classList.add("admin-top-empty");
 }
 
@@ -42,7 +35,7 @@ const tracksTitle = document.querySelector('[data-page="tracks"]>.admin-section-
 if (tracksTitle) {
   const eyebrow = tracksTitle.querySelector(".eyebrow");
   const heading = tracksTitle.querySelector("h1");
-  if (eyebrow) eyebrow.textContent = "Tracks";
+  if (eyebrow) eyebrow.remove();
   if (heading) heading.textContent = "Catalogue";
 }
 document.querySelectorAll(".admin-view").forEach(view => {
@@ -89,9 +82,9 @@ if (checklist && !document.querySelector("#samplesChecked")) {
 const trackForm = document.querySelector("#trackForm");
 if (trackForm && !document.querySelector("#trackEditorGroups")) {
   const groupDefinitions = [
-    ["web", "Web / Track Basics", "Core metadata, visibility and shared artwork/audio assets."],
-    ["sale", "Personal Sale", "Personal MP3/WAV sale availability and track-level pricing."],
-    ["dj", "DJ Promo", "Promo-pool visibility using the same shared MP3 asset."],
+    ["basics", "Track Basics", "Identity, musical metadata and public-facing descriptions."],
+    ["availability", "Visibility & Availability", "Website, purchase, DJ promo and display-placement controls."],
+    ["assets", "Assets", "Shared artwork, preview MP3 and private WAV/master files."],
     ["release", "Release Admin", "Registration, distribution and release checks in workflow order."],
     ["promo", "Promo / Notification Tracking", "Manual notification and social-promotion tracking."],
     ["advanced", "All Data / Advanced", "SEO, platform links and all remaining track metadata."]
@@ -116,12 +109,12 @@ if (trackForm && !document.querySelector("#trackEditorGroups")) {
 
   [
     "title","artist","releaseTitle","slug","status","style","subgenre","bpm","key",
-    "moodTags","teaser","description","releaseDate","dateTbc","showInStore",
-    "showInLatest","featured","cover","preview","master"
-  ].forEach(id => moveField(id, "web"));
-  ["price","purchaseEnabled","allowExclusiveEnquiry"].forEach(id => moveField(id, "sale"));
-  ["showInDjPool"].forEach(id => moveField(id, "dj"));
+    "moodTags","teaser","description"
+  ].forEach(id => moveField(id, "basics"));
+  ["showInStore","showInLatest","featured","price","purchaseEnabled","allowExclusiveEnquiry","showInDjPool"].forEach(id => moveField(id, "availability"));
+  ["cover","preview","master"].forEach(id => moveField(id, "assets"));
   [
+    "releaseDate","dateTbc",
     "samplesChecked","tracklibChecked","prsRegistered","pplRegistered","distributionUploaded",
     "tunecoreUploaded","distributedToStores","isrc","upc","distributionReleaseId","tunecoreUrl",
     "spotifyUrl","appleMusicUrl","soundcloudUrl","youtubeMusicUrl","releaseDateConfirmed",
@@ -288,11 +281,11 @@ document.querySelector("#newTrack")?.addEventListener("click", () => {
     if (artistField) artistField.value = "Play Productions";
     if (dateTbcField) dateTbcField.checked = true;
     document.querySelectorAll(".track-editor-section").forEach(section => {
-      section.open = section.id === "track-group-web";
+      section.open = section.id === "track-group-basics";
       section.classList.remove("is-focused");
     });
     document.querySelectorAll(".field-required").forEach(field => field.classList.remove("field-required"));
-    document.querySelector("#track-group-web")?.scrollIntoView({ behavior: "smooth", block: "start" });
+    document.querySelector("#track-group-basics")?.scrollIntoView({ behavior: "smooth", block: "start" });
   }, 0);
 });
 
@@ -306,7 +299,7 @@ window.addEventListener("play-track-editor-mode", event => {
   if (artistField) artistField.value = "Play Productions";
   if (dateTbcField) dateTbcField.checked = true;
   document.querySelectorAll(".track-editor-section").forEach(section => {
-    section.open = section.id === "track-group-web";
+    section.open = section.id === "track-group-basics";
     section.classList.remove("is-focused");
   });
   document.querySelectorAll(".field-required").forEach(field => field.classList.remove("field-required"));
@@ -342,7 +335,8 @@ document.addEventListener("click", async event => {
     const trackRow = [...document.querySelectorAll("[data-track-row]")].find(row => String(row.dataset.trackRow) === String(missingEdit.dataset.missingTrack));
     trackRow?.querySelector("[data-edit],[data-library-edit]")?.click();
     setTimeout(() => {
-      const section = document.querySelector(`#track-group-${missingEdit.dataset.missingArea}`);
+      const sectionMap = { web: "basics", sale: "availability", dj: "availability", release: "release" };
+      const section = document.querySelector(`#track-group-${sectionMap[missingEdit.dataset.missingArea] || missingEdit.dataset.missingArea}`);
       document.querySelectorAll(".track-editor-section").forEach(group => group.open = group === section);
       if (!section) return;
       section.classList.add("is-focused");
@@ -366,7 +360,8 @@ document.addEventListener("click", async event => {
     const row = readiness.closest("[data-track-row]");
     row?.querySelector("[data-edit],[data-library-edit]")?.click();
     setTimeout(() => {
-      const section = document.querySelector(`#track-group-${readiness.dataset.trackReadiness}`);
+      const sectionMap = { web: "basics", sale: "availability", dj: "availability", release: "release" };
+      const section = document.querySelector(`#track-group-${sectionMap[readiness.dataset.trackReadiness] || readiness.dataset.trackReadiness}`);
       if (!section) return;
       section.open = true;
       section.classList.add("is-focused");

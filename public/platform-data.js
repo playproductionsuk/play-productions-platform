@@ -25,7 +25,7 @@ export function normaliseTrack(raw) {
     status: raw.status || "published", productType: raw.productType || "digital-track",
     showInStore: raw.showInStore ?? raw.published ?? true, showInDjPool: raw.showInDjPool ?? raw.djPromoEnabled ?? false,
     showInLatest: raw.showInLatest ?? true, featured: raw.featured ?? false, allowExclusiveEnquiry: raw.allowExclusiveEnquiry ?? true,
-    purchaseEnabled: raw.purchaseEnabled ?? true, dateTbc: raw.dateTbc ?? false,
+    purchaseEnabled: raw.purchaseEnabled ?? true, dateTbc: raw.releaseDate ? false : raw.dateTbc ?? false,
     coverUrl: raw.coverUrl || raw.thumbnail || (raw.placeholderArtwork ? "icons/fallback.png" : ""), coverPath: raw.coverPath || "", thumbnail: raw.thumbnail || raw.coverUrl || "",
     previewUrl: raw.previewUrl || raw.url || "", previewPath: raw.previewPath || "", mp3Path: raw.mp3Path || raw.previewPath || "", mp3Url: raw.mp3Url || raw.previewUrl || raw.url || "", url: raw.url || raw.previewUrl || "", masterPath: raw.masterPath || raw.wavPath || "",
     style: raw.style || raw.genre || "", subgenre: raw.subgenre || "", bpm: raw.bpm || "", key: raw.key || "", moodTags: raw.moodTags || [],

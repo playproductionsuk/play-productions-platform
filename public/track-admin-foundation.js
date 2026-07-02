@@ -30,6 +30,9 @@ if (checklist && !document.querySelector("#samplesChecked")) {
           <label><input type="checkbox" checked disabled> Track assets reviewed in Web / Track Basics</label>
           <label><input id="samplesChecked" name="samplesChecked" type="checkbox"> Samples checked</label>
           <label><input id="tracklibChecked" name="tracklibChecked" type="checkbox"> Tracklib checked</label>
+          <label><input id="distributionUploaded" name="distributionUploaded" type="checkbox"> Distribution uploaded</label>
+          <label><input id="releaseDateConfirmed" name="releaseDateConfirmed" type="checkbox"> Release date confirmed</label>
+          <label><input id="publicWebsiteUpdated" name="publicWebsiteUpdated" type="checkbox"> Public website updated</label>
         </div>
       </div>
     </section>
@@ -260,6 +263,22 @@ document.querySelector("#newTrack")?.addEventListener("click", () => {
     document.querySelectorAll(".field-required").forEach(field => field.classList.remove("field-required"));
     document.querySelector("#track-group-web")?.scrollIntoView({ behavior: "smooth", block: "start" });
   }, 0);
+});
+
+window.addEventListener("play-track-editor-mode", event => {
+  const isNew = event.detail?.mode === "new";
+  slugManuallyEdited = !isNew;
+  seoTitleManuallyEdited = !isNew;
+  seoDescriptionManuallyEdited = !isNew;
+  if (!isNew) return;
+  if (price) price.value = defaultTrackPrice().toFixed(2);
+  if (artistField) artistField.value = "Play Productions";
+  if (dateTbcField) dateTbcField.checked = true;
+  document.querySelectorAll(".track-editor-section").forEach(section => {
+    section.open = section.id === "track-group-web";
+    section.classList.remove("is-focused");
+  });
+  document.querySelectorAll(".field-required").forEach(field => field.classList.remove("field-required"));
 });
 
 document.addEventListener("click", event => {

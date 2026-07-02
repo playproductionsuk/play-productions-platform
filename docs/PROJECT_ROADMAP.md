@@ -12,16 +12,17 @@
 - Approved DJs can access the promo crate.
 - Protected MP3 promo downloads work.
 - DJ Applications CSV export works on live.
+- Full Music Library export works and is user-confirmed.
 
 ## 2. Current active module
 
-**Module 2 — Track Admin / Music Library management**
+**Module 2 — Music Library / Track Admin / public music catalogue / DJ track flow**
 
 Module 2A is preview-only until its complete Track Admin workflow passes testing.
 
 Module 2B has started with the first Track Missing Data Workspace shell. Catalogue View remains the readiness overview, Missing Data View lists incomplete work by priority, and Full Track Editor / All Data remains the deliberate detailed editor.
 
-The Track Flow and Storage audit is complete. Controlled preview testing of add, edit, visibility, archive, restore, delete and export is required before real masters are uploaded or production is approved.
+The Track Flow and Storage audit is complete. Real-track artwork, preview MP3 and WAV/master upload flows now work. Remaining Module 2 changes continue to require preview acceptance before production.
 
 Module 2C has started: Track Admin save-preservation hardening. Existing raw Firestore data, asset aliases, licences, timestamps and stable document IDs are now protected by the revised save payload, pending preview verification.
 
@@ -35,11 +36,28 @@ Module 2D.1 is functionally working on preview: disposable artwork, MP3 and mast
 
 Module 2D.2 attempted to align the editor status panel with the same normalized asset aliases and Web readiness resolver used by the active Music Library table. Its preview acceptance failed because the visible editor panel continued to render the stale `Required: coverUrl` and status-based percentage, even though the table reported Web 12/12 and the public Music page displayed the saved artwork correctly.
 
-Module 2D.3 traced that exact visible sentence to `admin-platform.js` → `checklist()`. The corrected local renderer merges the saved track's canonical/legacy asset aliases with current form values and uses the shared Web readiness result. Preview JavaScript and CSS delivery is now explicitly `no-store` as well as revalidated, preventing an older checklist module from surviving a preview deployment. This remains preview-only until the editor and table agree after refresh.
+Module 2D.3 traced that exact visible sentence to `admin-platform.js` → `checklist()`. Live testing passed: the corrected renderer merges saved canonical/legacy assets with current form values, the editor readiness panel agrees with the Music Library table, and the stale `Required: coverUrl` issue is resolved.
 
 Module 2E is the final real-track detail-flow and Track Admin polish pass. Module 2's core admin asset flow is working: real artwork, preview MP3 and WAV/master uploads save successfully, and Coming Soon public visibility works. DJ Promo summary/list download has already passed live testing. Music and DJ exports also work and must not be treated as broken.
 
 Module 2E aligns Music and DJ detail routing around slug, Firestore document ID and legacy ID fallbacks; applies one release-date/TBC rule; and replaces the legacy DJ-detail placeholder/WAV controls with an approved-DJ protected MP3 action. It also improves field purpose, compact layout, toggle clarity, release workflow order and safe auto-fill behaviour. Module 2 remains incomplete until these detail-page changes pass preview acceptance.
+
+Module 2E preview failed because Add Track/Edit events reached competing editor paths, leaking an existing track into new-track state, and because three release workflow checkboxes removed during layout work were still read unconditionally during save. Module 2E.1 is the narrow regression fix: `admin-platform.js` is the single Add/Edit event owner, new and existing editor states reset explicitly, release controls are restored and checkbox reads are null-safe, and a valid saved release date clears stale TBC state for admin and detail display.
+
+**Module 2F — Preview Player Controls** is the next near-term Module 2 pass and must be completed before Module 2 is declared complete.
+
+Do not begin Module 2F until Module 2E.1 passes preview testing.
+
+Required direction:
+
+- Public Music and DJ Promo streaming previews use the same configurable per-track limits.
+- Track Admin supports `previewStartSeconds` and `previewDurationSeconds`.
+- Useful duration choices include 30, 45, 60 and 90 seconds.
+- Playback stops automatically at the configured preview end.
+- The floating player close control stops playback and hides the player; selecting another preview reopens it.
+- Playback-speed controls are hidden so users receive simple play/pause and useful progress/time controls.
+- Optional later fields are `previewFadeInSeconds` and `previewFadeOutSeconds`.
+- Preview limits must not affect protected approved-DJ MP3 downloads, paid customer downloads or internal WAV/master files.
 
 Preview test URL:
 
@@ -65,18 +83,18 @@ The current correction consolidates the visible Music Library under the live `ad
 - Consolidated Add Track and the full music CSV export into one normalized action row and moved the live admin email beside Sign out; preview verification is pending.
 - Preview confirmed the first Module 2B Missing Data view, including its six-column shell, priority ordering and editor-section actions.
 - Refined Missing Data into the main Music Library filter row, reset Add Track to the default Web / Track Basics section, and removed redundant DJ Database summary presentation; preview verification is pending.
-- Preview confirmed both Music and DJ Applications CSV exports work; exports are not a current blocker.
+- User testing confirmed both Music and DJ Applications CSV exports work; exports are not a current blocker. Browser/Agent Mode can be unreliable when verifying downloads and should not override a successful user test.
+- Module 2D.3 passed live testing: editor and table readiness agree and the stale `Required: coverUrl` warning is resolved.
 
 ## 4. Immediate next tasks
 
 Priority order:
 
-1. Verify Track Admin save-preservation hardening on preview.
-2. Run manual add/edit/archive/restore/delete tests using test tracks only.
-3. Test field flow-through to the public Music page and DJ promo crate.
-4. Build the Storage Usage report/widget later.
-5. Add inline Missing Data editing later.
-6. Approve production only after preview track-flow tests pass.
+1. Complete and preview-test Module 2E detail routing, release-date/TBC, MP3-only DJ detail and Track Admin polish.
+2. Build and preview-test Module 2F Preview Player Controls.
+3. Live-test Module 2E and 2F before declaring Module 2 complete.
+4. Start Enhancement Phase A — Public Site Quality Pass.
+5. Continue through the enhancement phases in the priority order below.
 
 Module 2A preview checks:
 
@@ -114,13 +132,14 @@ Module 2A preview checks:
 - Confirm Coming Soon + Website On persists after canonical assets and release timing are present.
 - Confirm reopening `ZZ TEST Track A` shows Web readiness complete and no false `Required: coverUrl` message.
 - Confirm the editor percentage uses the complete Web readiness result when Website is enabled.
-- Re-test Module 2D.3 after a fresh preview deployment and confirm the served editor checklist matches the table's Web 12/12 result.
+- Preserve Module 2D.3’s proven editor/table readiness alignment.
 - Test a real track's Music and DJ detail links using slug and document-ID routes.
 - Confirm saved release dates appear on both detail routes and TBC appears only when selected or no usable date exists.
 - Confirm DJ detail offers only protected MP3 and the main DJ crate download remains unchanged.
 - Verify title-driven slug, release-title and SEO helpers preserve manual edits.
 - Align live DJ crate visibility with the backend download status gate.
 - Ensure customer purchase availability cannot proceed without a usable WAV/master.
+- Define safe preview start/duration defaults for legacy tracks without Module 2F fields.
 
 ## 5. Future development ideas
 
@@ -177,6 +196,15 @@ Module 2A preview checks:
 - Build the Mixing & Mastering project workflow.
 - Build the Vinyl Cutting quote and project workflow.
 
+### Existing website module names
+
+- **Module 1** — DJ Promo, DJ Applications and admin-access workflow.
+- **Module 2** — Music Library, Track Admin, public music catalogue and DJ track flow.
+- **Module 3** — Mixing & Mastering public section. Do not offer it for sale until it is ready to present properly.
+- **Module 4** — Custom Vinyl Record Cutting public section. Do not offer it for sale until it is ready to present properly.
+
+Future work outside those existing website controls must use **enhancement phase** or **workstream** names rather than additional numbered modules.
+
 ### Security and maintenance
 
 - Complete Firebase API-key restrictions and GitHub alert cleanup.
@@ -197,9 +225,8 @@ Module 2A preview checks:
 - The live Module 2D test exposed a `coverUrl` readiness blocker because private master URL resolution aborted the Firestore save after Storage uploads. Module 2D.1 corrected this and passed the disposable-asset preview test.
 - Coming Soon public flow now works on preview; Published flow and real catalogue onboarding remain pending deliberate testing.
 - DJ promo authentication and MP3 downloads have already passed live testing and should not be rebuilt during editor-readiness alignment.
-- Real catalogue/master onboarding should wait until the Module 2D.2 display alignment is re-tested and accepted on preview.
-- Module 2D.2 preview acceptance failed because the visible editor checklist still reported `Required: coverUrl`; Module 2D.3 must pass before this asset/readiness change is considered for live deployment.
-- The public Music flow and Music Library table readiness are working for the disposable Coming Soon test track; the remaining mismatch is confined to the editor checklist presentation.
+- Module 2D.2 initially failed because the visible editor checklist still reported `Required: coverUrl`; Module 2D.3 resolved the mismatch and passed live testing.
+- The public Music flow and Music Library table/editor readiness work for the controlled Coming Soon track.
 - Monitor intermittent preview 502 responses, but do not treat a single occurrence as a blocker unless it repeats.
 - DJ Promo does not need retesting in the Module 2D.3 pass because the live DJ workflow and protected MP3 download have already been proven.
 - Track Editor right-side layout waste was a current UX issue; Module 2C.2 addresses it by moving status/readiness to the top and making the form full-width.
@@ -230,14 +257,31 @@ Deploy Functions only when `functions/index.js` changes.
 
 Keep deployments and commits small, scoped and easy to reverse.
 
-Planned order after Module 2 remains:
+Priority order after Module 2:
 
-1. Module 3 — Public site cleanup.
-2. Module 4 — Purchase and Customer Account Flow.
-3. Module 5 — Catalogue workflow enhancements: Missing Data inline editing, Storage usage, orphan-file audit and branded fallback artwork.
-4. Module 6 — Promo, contacts and notifications.
-5. Module 7 — Business dashboard and analytics.
-6. Module 8+ — Mixing/mastering, case studies, booking and vinyl service modules.
+1. **Enhancement Phase A — Public Site Quality Pass**
+   - Public-page, Music detail and DJ Promo visual polish.
+   - Mobile/responsive review, navigation and button consistency.
+   - Remove test/demo/preview clutter and refine user-facing wording.
+2. **Enhancement Phase B — Purchase + Customer Account Flow**
+   - Cart, checkout, payments, customer accounts and purchase history.
+   - Paid MP3/WAV fulfilment, account downloads and order/download emails.
+3. **Enhancement Phase C — Brand + Catalogue Setup Tools**
+   - Branded black/lime fallback artwork.
+   - Settings-managed genre/style, subgenre and mood/tag lists.
+   - Track defaults for artist, SEO and pricing.
+4. **Enhancement Phase D — Contacts + New Track Notifications**
+   - Contact database for DJs, radio, labels, blogs and playlist curators.
+   - Consent/source tracking, release alerts, follow-ups, responses and campaign notes.
+5. **Enhancement Phase E — Admin Productivity Enhancements**
+   - Missing Data inline editing and better filtering/search/refresh.
+   - Quick Draft/Add Track wizard improvements and bulk updates.
+6. **Enhancement Phase F — Storage + Maintenance**
+   - Storage usage widget, orphan-asset audit, cleanup tools and replacement history.
+7. **Module 3 — Mixing & Mastering public section**
+   - Existing website module; build only when ready to present properly.
+8. **Module 4 — Custom Vinyl Record Cutting public section**
+   - Existing website module; build only when ready to present properly.
 
 ## 8. Do-not-touch rules
 

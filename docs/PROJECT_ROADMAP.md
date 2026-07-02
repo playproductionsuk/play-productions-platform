@@ -44,9 +44,11 @@ Module 2E aligns Music and DJ detail routing around slug, Firestore document ID 
 
 Module 2E preview failed because Add Track/Edit events reached competing editor paths, leaking an existing track into new-track state, and because three release workflow checkboxes removed during layout work were still read unconditionally during save. Module 2E.1 is the narrow regression fix: `admin-platform.js` is the single Add/Edit event owner, new and existing editor states reset explicitly, release controls are restored and checkbox reads are null-safe, and a valid saved release date clears stale TBC state for admin and detail display.
 
+Module 2E.1 preview mostly passed: Add/Edit routing and release-date/TBC handling are fixed. Closing a dirty Add Track session could still result in an accidental draft, so Module 2E.2 adds an explicit save-intent gate and a discard path. Closing/cancelling now resets unsaved new-track state without writing; only Save Draft or Save Track may authorize a Firestore submission.
+
 **Module 2F — Preview Player Controls** is the next near-term Module 2 pass and must be completed before Module 2 is declared complete.
 
-Do not begin Module 2F until Module 2E.1 passes preview testing.
+Do not begin Module 2F until Module 2E.2 Add Track cancel/close safety passes preview testing.
 
 Required direction:
 
@@ -140,6 +142,7 @@ Module 2A preview checks:
 - Align live DJ crate visibility with the backend download status gate.
 - Ensure customer purchase availability cannot proceed without a usable WAV/master.
 - Define safe preview start/duration defaults for legacy tracks without Module 2F fields.
+- Manually archive or delete the accidental `ZZ DO NOT SAVE TEST` record if it remains after Module 2E.2 passes; do not remove it automatically in code.
 
 ## 5. Future development ideas
 

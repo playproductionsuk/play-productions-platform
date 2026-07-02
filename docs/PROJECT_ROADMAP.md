@@ -33,7 +33,9 @@ Module 2D.1 fixes the canonical asset mapping blocker found during the live `ZZ 
 
 Module 2D.1 is functionally working on preview: disposable artwork, MP3 and master uploads persist; Coming Soon + Website On persists; and the public preview Music page shows the test track as Coming Soon without a purchase action.
 
-Module 2D.2 aligns the editor status panel with the same normalized asset aliases and Web readiness resolver used by the active Music Library table. The editor previously evaluated form controls alone and incorrectly reported `coverUrl` missing after a successful upload.
+Module 2D.2 attempted to align the editor status panel with the same normalized asset aliases and Web readiness resolver used by the active Music Library table. Its preview acceptance failed because the visible editor panel continued to render the stale `Required: coverUrl` and status-based percentage, even though the table reported Web 12/12 and the public Music page displayed the saved artwork correctly.
+
+Module 2D.3 traced that exact visible sentence to `admin-platform.js` → `checklist()`. The corrected local renderer merges the saved track's canonical/legacy asset aliases with current form values and uses the shared Web readiness result. Preview JavaScript and CSS delivery is now explicitly `no-store` as well as revalidated, preventing an older checklist module from surviving a preview deployment. This remains preview-only until the editor and table agree after refresh.
 
 Preview test URL:
 
@@ -108,6 +110,7 @@ Module 2A preview checks:
 - Confirm Coming Soon + Website On persists after canonical assets and release timing are present.
 - Confirm reopening `ZZ TEST Track A` shows Web readiness complete and no false `Required: coverUrl` message.
 - Confirm the editor percentage uses the complete Web readiness result when Website is enabled.
+- Re-test Module 2D.3 after a fresh preview deployment and confirm the served editor checklist matches the table's Web 12/12 result.
 - Align live DJ crate visibility with the backend download status gate.
 - Ensure customer purchase availability cannot proceed without a usable WAV/master.
 
@@ -125,6 +128,7 @@ Module 2A preview checks:
 - Use appropriate future controls: number inputs for BPM and price, text inputs for ISRC and UPC, toggles for boolean fields, and date inputs for release/notification dates.
 - Open the relevant asset section for complex artwork, MP3 and WAV/master work instead of forcing those fields inline.
 - Avoid showing completed or irrelevant fields by default when a readiness area is being worked on.
+- Consolidate table, editor and Missing Data calculations behind one readiness source, and avoid duplicate or stale readiness panels.
 - Add a real upload workflow using one shared MP3 and one shared WAV/master asset.
 - Improve metadata and readiness guidance across Web, Sale, DJ and Release.
 - Add branded fallback and coming-soon artwork.
@@ -183,6 +187,10 @@ Module 2A preview checks:
 - Coming Soon public flow now works on preview; Published flow and real catalogue onboarding remain pending deliberate testing.
 - DJ promo authentication and MP3 downloads have already passed live testing and should not be rebuilt during editor-readiness alignment.
 - Real catalogue/master onboarding should wait until the Module 2D.2 display alignment is re-tested and accepted on preview.
+- Module 2D.2 preview acceptance failed because the visible editor checklist still reported `Required: coverUrl`; Module 2D.3 must pass before this asset/readiness change is considered for live deployment.
+- The public Music flow and Music Library table readiness are working for the disposable Coming Soon test track; the remaining mismatch is confined to the editor checklist presentation.
+- Monitor intermittent preview 502 responses, but do not treat a single occurrence as a blocker unless it repeats.
+- DJ Promo does not need retesting in the Module 2D.3 pass because the live DJ workflow and protected MP3 download have already been proven.
 - Track Editor right-side layout waste was a current UX issue; Module 2C.2 addresses it by moving status/readiness to the top and making the form full-width.
 - Replacing artwork, preview MP3 or master WAV creates a new timestamped object and currently leaves the previous object in Storage.
 - Live DJ querying can display any `showInDjPool: true` record, while protected downloads allow only `published` and `coming-soon`; these gates need alignment.

@@ -58,6 +58,8 @@ Module 2E.4.1 mostly passed preview: header placement, active-tab state, Catalog
 
 Module 2E.4.2 was a strong partial pass: sticky table headings, compact health percentage, Featured/Latest indicators and compact actions are working. Module 2E.4.3 finishes the Track Editor header and field polish by keeping Digital Price in the metadata row, refining Status/BPM/Key/Mood/Price sizing, placing toggle explanations beneath their control line, removing the internal Preview MP3 backend note, aligning Unreleased/TBC help, and integrating save/status controls more cleanly into the editor header.
 
+Module 2E.4.3 is accepted for Track Editor header and field polish. Module 2E.4.4 is the final Music Library usability pass: close the sticky-control/header gap, align quick filters to Store, DJ Promo, Purchase, Featured and Latest flags, make counts explicitly represent enabled tracks, and add dependency-free sorting for text, numeric, boolean and health columns. Archived remains separate and Missing Data retains its existing workspace/item count.
+
 The intended editor structure is now:
 
 1. Track Basics.
@@ -71,7 +73,7 @@ Personal Sale and DJ Promo controls share Visibility & Availability, while artwo
 
 **Module 2F — Preview Player Controls** is the next near-term Module 2 pass and must be completed before Module 2 is declared complete.
 
-Do not begin Module 2F until Module 2E.4.3 layout acceptance and the Module 2E.5 startup/performance audit are complete.
+Do not begin Module 2F until Module 2E.4.4 acceptance and the Module 2E.5 startup/performance audit are complete.
 
 Required direction:
 
@@ -177,6 +179,8 @@ Module 2A preview checks:
 - Verify Digital Price remains in the Track Basics metadata row and uses the standard small helper style.
 - Verify toggle helper text sits below labels/states and the three asset cards no longer expose internal backend wording.
 - Preserve Settings-managed Genre/Mood lists for Enhancement Phase C rather than building them during Module 2E.
+- After Module 2E.4.4 acceptance, create a stable snapshot/tag before beginning Module 2E.5 audit work.
+- Consider future optional On/Off filter modes for Store, DJ Promo, Purchase, Featured and Latest; the current quick filters intentionally show enabled tracks only.
 - Review Coming Soon public-card action alignment during the Public Site Quality Pass; it was deliberately not changed in Module 2E.4 to avoid touching catalogue behaviour before Module 2F.
 
 ## 5. Future development ideas

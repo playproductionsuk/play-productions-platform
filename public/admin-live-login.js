@@ -96,10 +96,8 @@ if (!firebaseReady || !firebaseApp || !db) {
         document.body.appendChild(previewBlocker);
       }
       globalThis.playAdminLiveAuthenticated = true;
-      showAuthenticatedDashboard(account);
       const dashboardReady = new Promise(resolve => {
         window.addEventListener("play-admin-live-authenticated", () => {
-          showAuthenticatedDashboard(account);
           resolve();
         }, { once: true });
       });

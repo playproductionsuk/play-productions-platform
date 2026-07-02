@@ -310,3 +310,53 @@ Preview deployment verification:
   acceptance checks.
 - Because RC3–RC7 remain active, startup cycling is expected to be unchanged;
   no performance improvement is claimed for this boundary-extraction pass.
+
+Module 2E.6 was subsequently accepted by user preview testing, committed as
+`83c9834`, and tagged
+`stable-preview-module2e6-csv-extraction-20260702-2242`.
+
+## Module 2E.7 implementation note
+
+The visible login-to-dashboard cycle had two direct early-reveal paths:
+
+1. `admin-live-login.js` called `showAuthenticatedDashboard()` immediately
+   after permission passed, before `loadAdminDashboardModules()`.
+2. `admin-platform.js` independently showed `#adminPortal` before its initial
+   `loadAll()` Firestore/data render completed.
+
+Those paths exposed the static dashboard and each legacy enhancement while the
+accepted interface was still assembling. Module 2E.7 keeps the login/loading
+panel visible while modules and initial dashboard data load, then lets
+`admin-live-login.js` perform the final reveal once.
+
+The change is deliberately narrow:
+
+- `admin-live-login.js` no longer performs its pre-module or event-callback
+  dashboard reveal; its existing final reveal and two-second safety fallback
+  remain.
+- `admin-platform.js` completes `loadAll()` before dispatching
+  `play-admin-live-authenticated`. When live login owns the handoff, it does not
+  independently reveal the portal.
+- Preview/non-orchestrated behaviour retains the existing fallback reveal.
+
+No delayed RC callback, RC import, Firestore query or renderer was removed.
+RC3 remains imported and RC4–RC7 remain loaded. Their work should now occur
+behind the login/loading state during the normal authenticated handoff, which
+targets visible cycling without changing their accepted responsibilities.
+
+### Module 2E.7.1 action-row correction
+
+User preview testing confirmed the Module 2E.7 reveal ordering substantially
+improved visible startup cycling, but exposed a pre-existing Music Library
+render-order dependency: `renderMusicLibrary()` replaced
+`#musicLibraryFilters.innerHTML` before querying for
+`.music-library-top-actions`. When the export module created the action row
+before the first data render, that replacement removed both Add Track and Full
+Music CSV controls.
+
+`admin-platform.js` now captures the existing action-row node before rebuilding
+the filters and reattaches it immediately afterward. The current
+`music-library-export.js` remains the action-row/export owner; no duplicate
+button or new renderer was added. This preserves the improved startup handoff
+and allows the controls to survive initial render, subsequent data refreshes
+and tab changes.

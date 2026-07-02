@@ -60,6 +60,27 @@ non-export Key input, visibility, system-status, order-fallback and legacy DJ
 enhancement behaviour. RC4–RC7 therefore remain active through RC3. No bulk
 deletion, auth/startup rewrite or protected-file change is permitted.
 
+Module 2E.6 is preview-accepted with no regressions. Full Music CSV export,
+Music Library filters/sorting, Add/Edit safety, Missing Data, DJ Database,
+DJ Applications CSV and public/DJ routes passed user testing. It is committed
+as `83c9834` and tagged
+`stable-preview-module2e6-csv-extraction-20260702-2242`. Startup cycling remained
+unchanged because RC3–RC7 stayed active by design.
+
+Module 2E.7 is the current preview-first pass. It targets the login-to-dashboard
+handoff rather than removing legacy modules: the portal remains hidden until
+the dashboard module sequence and initial `admin-platform.js` data load are
+ready, then the live-login owner reveals the accepted dashboard once. RC3 and
+RC4–RC7 remain loaded, and no delayed callback or Firestore read is removed in
+this pass. Module 2F remains queued after 2E.7 acceptance.
+
+The first Module 2E.7 preview substantially improved login-to-dashboard
+cycling, but failed acceptance because Add Track and Full Music CSV disappeared
+from Music Library. Module 2E.7.1 corrects that narrow render-order regression:
+the existing action row is preserved while filters rerender, retaining the
+2E.7 startup improvement without adding another renderer or export control.
+Module 2E.7 remains unaccepted until 2E.7.1 passes preview testing.
+
 Module 2E.4 preview was a partial improvement but was not accepted: search/user/sign-out were still inside page content rather than the real navigation header, DJ Database could remain highlighted after another tab opened, and the Track Editor grouping still separated closely related availability controls. Module 2E.4.1 corrects those specific issues.
 
 Module 2E.4.1 mostly passed preview: header placement, active-tab state, Catalogue hierarchy and six-section editor structure are accepted. Module 2E.4.2 is the final narrow table/editor polish pass. It makes the table header genuinely sticky, replaces the table’s four readiness cards with one red/amber/green percentage, adds separate Featured and Latest indicators, tightens Actions, moves Digital Price into Track Basics, aligns boolean controls, and treats an explicit Unreleased/date TBC choice as valid release timing.

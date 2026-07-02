@@ -56,6 +56,8 @@ Module 2E.4 preview was a partial improvement but was not accepted: search/user/
 
 Module 2E.4.1 mostly passed preview: header placement, active-tab state, Catalogue hierarchy and six-section editor structure are accepted. Module 2E.4.2 is the final narrow table/editor polish pass. It makes the table header genuinely sticky, replaces the table’s four readiness cards with one red/amber/green percentage, adds separate Featured and Latest indicators, tightens Actions, moves Digital Price into Track Basics, aligns boolean controls, and treats an explicit Unreleased/date TBC choice as valid release timing.
 
+Module 2E.4.2 was a strong partial pass: sticky table headings, compact health percentage, Featured/Latest indicators and compact actions are working. Module 2E.4.3 finishes the Track Editor header and field polish by keeping Digital Price in the metadata row, refining Status/BPM/Key/Mood/Price sizing, placing toggle explanations beneath their control line, removing the internal Preview MP3 backend note, aligning Unreleased/TBC help, and integrating save/status controls more cleanly into the editor header.
+
 The intended editor structure is now:
 
 1. Track Basics.
@@ -69,7 +71,7 @@ Personal Sale and DJ Promo controls share Visibility & Availability, while artwo
 
 **Module 2F — Preview Player Controls** is the next near-term Module 2 pass and must be completed before Module 2 is declared complete.
 
-Do not begin Module 2F until Module 2E.4.2 layout acceptance and the Module 2E.5 startup/performance audit are complete.
+Do not begin Module 2F until Module 2E.4.3 layout acceptance and the Module 2E.5 startup/performance audit are complete.
 
 Required direction:
 
@@ -171,6 +173,10 @@ Module 2A preview checks:
 - Verify only one admin navigation tab remains highlighted when moving to or from DJ Database.
 - Verify Track Basics, Visibility & Availability, Assets, Release Admin, Promo & Notification Tracking and All Data / Advanced contain the intended fields.
 - Verify Music Library sticky headings clear the responsive admin navigation and the compact readiness/action columns remain readable.
+- Verify the sticky Music Library filter/action row and column headings stack without clipping on desktop.
+- Verify Digital Price remains in the Track Basics metadata row and uses the standard small helper style.
+- Verify toggle helper text sits below labels/states and the three asset cards no longer expose internal backend wording.
+- Preserve Settings-managed Genre/Mood lists for Enhancement Phase C rather than building them during Module 2E.
 - Review Coming Soon public-card action alignment during the Public Site Quality Pass; it was deliberately not changed in Module 2E.4 to avoid touching catalogue behaviour before Module 2F.
 
 ## 5. Future development ideas

@@ -112,6 +112,9 @@ if (trackForm && !document.querySelector("#trackEditorGroups")) {
     "moodTags","teaser","description"
   ].forEach(id => moveField(id, "basics"));
   ["price"].forEach(id => moveField(id, "basics"));
+  const priceContainer = document.querySelector("#price")?.closest(".field");
+  const teaserContainer = document.querySelector("#teaser")?.closest(".field");
+  if (priceContainer && teaserContainer) body("basics")?.insertBefore(priceContainer, teaserContainer);
   ["showInStore","showInLatest","featured","purchaseEnabled","allowExclusiveEnquiry","showInDjPool"].forEach(id => moveField(id, "availability"));
   ["cover","preview","master"].forEach(id => moveField(id, "assets"));
   [
@@ -126,6 +129,8 @@ if (trackForm && !document.querySelector("#trackEditorGroups")) {
   if (releaseFoundation) body("release")?.appendChild(releaseFoundation);
   const promoTracking = document.querySelector(".track-promo-tracking");
   if (promoTracking) body("promo")?.appendChild(promoTracking);
+  const previewHelp = document.querySelector("#preview")?.closest(".file-field")?.querySelector("small");
+  if (previewHelp?.textContent.toLowerCase().includes("upload handling activates")) previewHelp.remove();
 
   const protectedNodes = new Set([
     groups,
@@ -199,7 +204,7 @@ if (checklist && !document.querySelector("#trackEditorStatusBar")) {
 
 const price = document.querySelector("#price");
 if (price && !document.querySelector("#trackPriceHelp")) {
-  price.insertAdjacentHTML("afterend", '<small id="trackPriceHelp">New tracks use the saved default price when available; this field remains the track-level override.</small>');
+  price.insertAdjacentHTML("afterend", '<small id="trackPriceHelp" class="track-field-help">Defaults from Settings when available.</small>');
 }
 
 const slugField = document.querySelector("#slug");

@@ -29,6 +29,8 @@ Module 2C.1 corrects the save gate: authenticated admins on the hosting preview 
 
 Module 2C.2 moves the completion/readiness summary to the top of the Track Editor and gives grouped fields the full editor width. Quick Draft and save-control layout cleanup is implemented pending preview verification.
 
+Module 2D.1 fixes the canonical asset mapping blocker found during the live `ZZ TEST Track A` workflow. Private WAV uploads must save a Storage path without requesting a forbidden download URL; artwork and preview uploads must populate the canonical URL/path fields and compatibility aliases used by readiness, public Music, DJ Promo and exports.
+
 Preview test URL:
 
 <https://play-productions--preview-4sqed4ku.web.app/admin.html?live=1>
@@ -96,6 +98,10 @@ Module 2A preview checks:
 - Verify Website, DJ Promo and Purchase toggles show clear ON/OFF states and the summary remains synchronized.
 - Verify the compact top completion panel shows Web, Sale, DJ and Release readiness without recreating a right-side column.
 - Verify grouped Track Editor fields use the available width and Quick Draft starts with Web / Track Basics while Release and Advanced remain secondary.
+- Re-test artwork upload for `coverUrl`, `coverPath` and `thumbnail`.
+- Re-test preview upload for `previewUrl`, `previewPath`, `mp3Path`, `mp3Url` and `url`.
+- Re-test master upload for `masterPath` and `wavPath` without requiring a public master URL.
+- Confirm Coming Soon + Website On persists after canonical assets and release timing are present.
 - Align live DJ crate visibility with the backend download status gate.
 - Ensure customer purchase availability cannot proceed without a usable WAV/master.
 
@@ -167,6 +173,8 @@ Module 2A preview checks:
 - DJ Database should retain one `DJ Database` title, count-bearing filters and the single DJ Applications CSV export without restoring legacy metric cards.
 - Archive is the normal safe removal action. Hard delete is for obvious test/junk records only and currently leaves uploaded files behind.
 - Real track, MP3 and WAV/master uploads must wait until Module 2C save-preservation tests pass.
+- The live Module 2D test exposed a `coverUrl` readiness blocker because private master URL resolution aborted the Firestore save after Storage uploads. Canonical mapping and the private-path upload flow must pass with test assets before any real master upload.
+- Coming Soon and Published public-flow testing remains blocked until the Module 2D.1 asset mapping test passes.
 - Track Editor right-side layout waste was a current UX issue; Module 2C.2 addresses it by moving status/readiness to the top and making the form full-width.
 - Replacing artwork, preview MP3 or master WAV creates a new timestamped object and currently leaves the previous object in Storage.
 - Live DJ querying can display any `showInDjPool: true` record, while protected downloads allow only `published` and `coming-soon`; these gates need alignment.

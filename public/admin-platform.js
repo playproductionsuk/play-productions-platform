@@ -125,8 +125,8 @@ form.addEventListener("submit",async e=>{
     const manualMp3Url=document.querySelector("#mp3Url")?.value.trim()||"";
     if(manualWavPath&&manualWavPath!==String(existingRecord?.wavPath||"")){assets.wavPath=manualWavPath;assets.masterPath=manualWavPath}
     if(manualMp3Url&&manualMp3Url!==String(existingRecord?.mp3Url||""))assets.mp3Url=manualMp3Url;
-    const placeholderArtwork=document.querySelector("#placeholderArtwork")?.checked===true;
-    if(placeholderArtwork&&!assets.coverUrl)assets.coverUrl="icons/fallback.png";
+    const placeholderArtwork=!cover&&!assets.coverUrl;
+    if(placeholderArtwork)assets.coverUrl="icons/fallback.png";
     const planned=normaliseTrack({...existingRecord,...track,...assets,coverUrl:cover?"pending":assets.coverUrl||"",previewUrl:(preview||master)?"pending":assets.previewUrl||"",masterPath:master?"pending":assets.masterPath||""});
     const health=trackHealth(planned);
     if(["coming-soon","published"].includes(track.status)&&track.showInStore&&health.missingRequired.length){const label=track.status==="coming-soon"?"Coming Soon":"Published";throw new Error(`Cannot save ${label} with Website On. Missing required fields: ${health.missingRequired.join(", ")}`)}

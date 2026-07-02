@@ -21,7 +21,7 @@ export function escapeHtml(value = "") { const element = document.createElement(
 export function normaliseTrack(raw) {
   const legacyId = raw.id || String(raw.trackNumber || "").replace(/^0+/, "");
   return {
-    id: legacyId || slugify(raw.title), slug: raw.slug || slugify(raw.title), title: raw.title || "Untitled", artist: raw.artist || "Play Productions", releaseTitle: raw.releaseTitle || "",
+    id: legacyId || slugify(raw.title), legacyId: raw.legacyId || raw.trackNumber || "", slug: raw.slug || slugify(raw.title), title: raw.title || "Untitled", artist: raw.artist || "Play Productions", releaseTitle: raw.releaseTitle || "",
     status: raw.status || "published", productType: raw.productType || "digital-track",
     showInStore: raw.showInStore ?? raw.published ?? true, showInDjPool: raw.showInDjPool ?? raw.djPromoEnabled ?? false,
     showInLatest: raw.showInLatest ?? true, featured: raw.featured ?? false, allowExclusiveEnquiry: raw.allowExclusiveEnquiry ?? true,

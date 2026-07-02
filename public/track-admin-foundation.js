@@ -23,20 +23,23 @@ const checklist = document.querySelector("#releaseChecklist");
 if (checklist && !document.querySelector("#samplesChecked")) {
   checklist.insertAdjacentHTML("beforebegin", `
     <section class="track-readiness-editor full">
-      <div class="track-editor-group">
+      <div class="track-editor-group release-workflow">
         <h3>Release administration</h3>
         <p>Manual checks only. Nothing here sends email or publishes the track automatically.</p>
         <div class="track-check-grid">
+          <label><input type="checkbox" checked disabled> Track assets reviewed in Web / Track Basics</label>
           <label><input id="samplesChecked" name="samplesChecked" type="checkbox"> Samples checked</label>
           <label><input id="tracklibChecked" name="tracklibChecked" type="checkbox"> Tracklib checked</label>
-          <label><input id="distributionUploaded" name="distributionUploaded" type="checkbox"> Distribution uploaded</label>
-          <label><input id="releaseDateConfirmed" name="releaseDateConfirmed" type="checkbox"> Release date confirmed</label>
-          <label><input id="publicWebsiteUpdated" name="publicWebsiteUpdated" type="checkbox"> Public website updated</label>
-          <label><input id="newTrackNotificationSent" name="newTrackNotificationSent" type="checkbox"> New track notification sent</label>
         </div>
       </div>
+    </section>
+    <section class="track-promo-tracking full">
       <div class="track-editor-group">
-        <h3>Notification and social tracking</h3>
+        <h3>Promo / Notification Tracking</h3>
+        <p>Manual tracking only. Saving these fields does not send an email or publish a social post.</p>
+        <div class="track-check-grid">
+          <label><input id="newTrackNotificationSent" name="newTrackNotificationSent" type="checkbox"> New track notification sent</label>
+        </div>
         <div class="track-admin-fields">
           <label>Notification sent date<input id="newTrackNotificationSentAt" name="newTrackNotificationSentAt" type="datetime-local"></label>
           <label>Social promo status<select id="socialPromoStatus" name="socialPromoStatus"><option value="">Not set</option><option value="planned">Planned</option><option value="posted">Posted</option><option value="not-required">Not required</option></select></label>
@@ -55,7 +58,8 @@ if (trackForm && !document.querySelector("#trackEditorGroups")) {
     ["web", "Web / Track Basics", "Core metadata, visibility and shared artwork/audio assets."],
     ["sale", "Personal Sale", "Personal MP3/WAV sale availability and track-level pricing."],
     ["dj", "DJ Promo", "Promo-pool visibility using the same shared MP3 asset."],
-    ["release", "Release Admin", "Registration, distribution, notification and internal release checks."],
+    ["release", "Release Admin", "Registration, distribution and release checks in workflow order."],
+    ["promo", "Promo / Notification Tracking", "Manual notification and social-promotion tracking."],
     ["advanced", "All Data / Advanced", "SEO, platform links and all remaining track metadata."]
   ];
   const groups = document.createElement("div");
@@ -79,17 +83,21 @@ if (trackForm && !document.querySelector("#trackEditorGroups")) {
   [
     "title","artist","releaseTitle","slug","status","style","subgenre","bpm","key",
     "moodTags","teaser","description","releaseDate","dateTbc","showInStore",
-    "showInLatest","featured","placeholderArtwork","cover","preview","master"
+    "showInLatest","featured","cover","preview","master"
   ].forEach(id => moveField(id, "web"));
   ["price","purchaseEnabled","allowExclusiveEnquiry"].forEach(id => moveField(id, "sale"));
   ["showInDjPool"].forEach(id => moveField(id, "dj"));
   [
-    "prsRegistered","pplRegistered","tunecoreUploaded","distributedToStores","isrc","upc",
-    "distributionReleaseId","tunecoreUrl","releaseChecklistNotes","adminNotes"
+    "samplesChecked","tracklibChecked","prsRegistered","pplRegistered","distributionUploaded",
+    "tunecoreUploaded","distributedToStores","isrc","upc","distributionReleaseId","tunecoreUrl",
+    "spotifyUrl","appleMusicUrl","soundcloudUrl","youtubeMusicUrl","releaseDateConfirmed",
+    "publicWebsiteUpdated","releaseChecklistNotes","adminNotes"
   ].forEach(id => moveField(id, "release"));
 
   const releaseFoundation = document.querySelector(".track-readiness-editor");
   if (releaseFoundation) body("release")?.appendChild(releaseFoundation);
+  const promoTracking = document.querySelector(".track-promo-tracking");
+  if (promoTracking) body("promo")?.appendChild(promoTracking);
 
   const protectedNodes = new Set([
     groups,
@@ -103,6 +111,14 @@ if (trackForm && !document.querySelector("#trackEditorGroups")) {
   groups.querySelectorAll(".metadata-fields,.switch-grid,.file-fields").forEach(container => {
     if (!container.children.length) container.remove();
   });
+  body("advanced")?.insertAdjacentHTML("afterbegin", `
+    <aside class="advanced-field-guide">
+      <strong>Field purpose</strong>
+      <span><b>Website / SEO:</b> SEO title, description and share imagery</span>
+      <span><b>Release/admin:</b> writer, producer, publisher, copyright and distribution records</span>
+      <span><b>Compatibility:</b> direct MP3/WAV references retained for older catalogue and fulfilment paths</span>
+      <small>These fields are preserved for compatibility. Only change them when you know which downstream service uses them.</small>
+    </aside>`);
 }
 
 if (trackForm && !document.querySelector("#trackEditorSaveControls")) {
@@ -158,6 +174,68 @@ if (price && !document.querySelector("#trackPriceHelp")) {
   price.insertAdjacentHTML("afterend", '<small id="trackPriceHelp">New tracks use the saved default price when available; this field remains the track-level override.</small>');
 }
 
+const slugField = document.querySelector("#slug");
+const titleField = document.querySelector("#title");
+const artistField = document.querySelector("#artist");
+const releaseTitleField = document.querySelector("#releaseTitle");
+const seoTitleField = document.querySelector("#seoTitle");
+const seoDescriptionField = document.querySelector("#seoDescription");
+const teaserField = document.querySelector("#teaser");
+const descriptionField = document.querySelector("#description");
+const releaseDateField = document.querySelector("#releaseDate");
+const dateTbcField = document.querySelector("#dateTbc");
+let slugManuallyEdited = false;
+let seoTitleManuallyEdited = false;
+let seoDescriptionManuallyEdited = false;
+
+const slugFromTitle = value => String(value || "").toLowerCase().trim()
+  .replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "").slice(0, 70);
+const addHelp = (input, text) => {
+  if (!input || input.parentElement.querySelector(".track-field-help")) return;
+  input.insertAdjacentHTML("afterend", `<small class="track-field-help">${text}</small>`);
+};
+
+addHelp(titleField, "Track name shown throughout the catalogue.");
+addHelp(releaseTitleField, "Release or project title. It follows Track Title until you enter something different.");
+addHelp(teaserField, "Short summary used on cards and catalogue lists.");
+addHelp(descriptionField, "Longer copy used on the individual track detail page.");
+addHelp(releaseDateField, "Entering a date turns off Release date TBC automatically.");
+addHelp(document.querySelector("#showInStore"), "Shows this track on the public Music page when its status allows.");
+addHelp(document.querySelector("#showInDjPool"), "Shows this track to approved DJs when its status and MP3 allow.");
+addHelp(document.querySelector("#purchaseEnabled"), "Allows personal purchase when the track is published and sale assets are complete.");
+addHelp(document.querySelector("#showInLatest"), "Includes this track in Latest Releases placements.");
+addHelp(document.querySelector("#featured"), "Marks this track for featured placements.");
+addHelp(document.querySelector("#allowExclusiveEnquiry"), "Shows the artist/commercial-use enquiry panel on the track detail page.");
+
+document.querySelector("#placeholderArtwork")?.closest("label")?.setAttribute("hidden", "");
+slugField?.addEventListener("input", event => {
+  if (event.isTrusted) slugManuallyEdited = true;
+});
+seoTitleField?.addEventListener("input", event => {
+  if (event.isTrusted) seoTitleManuallyEdited = true;
+});
+seoDescriptionField?.addEventListener("input", event => {
+  if (event.isTrusted) seoDescriptionManuallyEdited = true;
+});
+titleField?.addEventListener("input", () => {
+  const isNew = !document.querySelector("#editingId")?.value;
+  if (!artistField?.value.trim()) artistField.value = "Play Productions";
+  if (!releaseTitleField?.value.trim()) releaseTitleField.value = titleField.value;
+  if (isNew && !slugManuallyEdited) slugField.value = slugFromTitle(titleField.value);
+  if (!seoTitleManuallyEdited && !seoTitleField?.value.trim()) seoTitleField.value = `${titleField.value} | Play Productions`;
+});
+[teaserField, descriptionField].forEach(field => field?.addEventListener("input", () => {
+  if (!seoDescriptionManuallyEdited && !seoDescriptionField?.value.trim()) {
+    seoDescriptionField.value = teaserField?.value.trim() || descriptionField?.value.trim() || "";
+  }
+}));
+releaseDateField?.addEventListener("change", () => {
+  if (releaseDateField.value && dateTbcField) dateTbcField.checked = false;
+});
+dateTbcField?.addEventListener("change", () => {
+  if (dateTbcField.checked && releaseDateField) releaseDateField.value = "";
+});
+
 function defaultTrackPrice() {
   try {
     const settings = JSON.parse(localStorage.getItem("playBusinessSettings") || "{}");
@@ -170,6 +248,11 @@ function defaultTrackPrice() {
 document.querySelector("#newTrack")?.addEventListener("click", () => {
   setTimeout(() => {
     if (price && !document.querySelector("#editingId")?.value) price.value = defaultTrackPrice().toFixed(2);
+    slugManuallyEdited = false;
+    seoTitleManuallyEdited = false;
+    seoDescriptionManuallyEdited = false;
+    if (artistField) artistField.value = "Play Productions";
+    if (dateTbcField) dateTbcField.checked = true;
     document.querySelectorAll(".track-editor-section").forEach(section => {
       section.open = section.id === "track-group-web";
       section.classList.remove("is-focused");
@@ -177,6 +260,13 @@ document.querySelector("#newTrack")?.addEventListener("click", () => {
     document.querySelectorAll(".field-required").forEach(field => field.classList.remove("field-required"));
     document.querySelector("#track-group-web")?.scrollIntoView({ behavior: "smooth", block: "start" });
   }, 0);
+});
+
+document.addEventListener("click", event => {
+  if (!event.target.closest("[data-edit],[data-library-edit]")) return;
+  slugManuallyEdited = true;
+  seoTitleManuallyEdited = true;
+  seoDescriptionManuallyEdited = true;
 });
 
 document.addEventListener("click", async event => {

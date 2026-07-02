@@ -173,6 +173,7 @@ function render() {
           : demo
             ? '<small class="availability-note">Downloads are disabled in demo mode.</small>'
             : "";
+        const detailId = track.slug || track.id;
         return `<article class="dj-track store-track" data-id="${escapeHtml(track.id)}">
           <div class="store-art">
             <img src="${escapeHtml(track.coverUrl || "icons/fallback.png")}" alt="Cover art for ${escapeHtml(track.title)}">
@@ -187,6 +188,7 @@ function render() {
           <span class="tags">${escapeHtml((track.moodTags || []).join(" · ") || "—")}</span>
           <div class="format-actions">
             <button class="button ghost preview-action" data-preview>Preview</button>
+            <a class="button ghost dj-more-details" href="track.html?id=${encodeURIComponent(detailId)}&promo=1${demo ? "&demo=1" : ""}">More Details</a>
             <button class="button primary dj-download" data-format="mp3" ${demo || !mp3Available ? "disabled" : ""}>Download MP3</button>
             ${unavailable}
           </div>

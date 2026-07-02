@@ -37,6 +37,10 @@ Module 2D.2 attempted to align the editor status panel with the same normalized 
 
 Module 2D.3 traced that exact visible sentence to `admin-platform.js` → `checklist()`. The corrected local renderer merges the saved track's canonical/legacy asset aliases with current form values and uses the shared Web readiness result. Preview JavaScript and CSS delivery is now explicitly `no-store` as well as revalidated, preventing an older checklist module from surviving a preview deployment. This remains preview-only until the editor and table agree after refresh.
 
+Module 2E is the final real-track detail-flow and Track Admin polish pass. Module 2's core admin asset flow is working: real artwork, preview MP3 and WAV/master uploads save successfully, and Coming Soon public visibility works. DJ Promo summary/list download has already passed live testing. Music and DJ exports also work and must not be treated as broken.
+
+Module 2E aligns Music and DJ detail routing around slug, Firestore document ID and legacy ID fallbacks; applies one release-date/TBC rule; and replaces the legacy DJ-detail placeholder/WAV controls with an approved-DJ protected MP3 action. It also improves field purpose, compact layout, toggle clarity, release workflow order and safe auto-fill behaviour. Module 2 remains incomplete until these detail-page changes pass preview acceptance.
+
 Preview test URL:
 
 <https://play-productions--preview-4sqed4ku.web.app/admin.html?live=1>
@@ -111,6 +115,10 @@ Module 2A preview checks:
 - Confirm reopening `ZZ TEST Track A` shows Web readiness complete and no false `Required: coverUrl` message.
 - Confirm the editor percentage uses the complete Web readiness result when Website is enabled.
 - Re-test Module 2D.3 after a fresh preview deployment and confirm the served editor checklist matches the table's Web 12/12 result.
+- Test a real track's Music and DJ detail links using slug and document-ID routes.
+- Confirm saved release dates appear on both detail routes and TBC appears only when selected or no usable date exists.
+- Confirm DJ detail offers only protected MP3 and the main DJ crate download remains unchanged.
+- Verify title-driven slug, release-title and SEO helpers preserve manual edits.
 - Align live DJ crate visibility with the backend download status gate.
 - Ensure customer purchase availability cannot proceed without a usable WAV/master.
 
@@ -132,6 +140,8 @@ Module 2A preview checks:
 - Add a real upload workflow using one shared MP3 and one shared WAV/master asset.
 - Improve metadata and readiness guidance across Web, Sale, DJ and Release.
 - Add branded fallback and coming-soon artwork.
+- Move genre/style and mood/tag options into Settings-managed reusable lists; Module 2E retains safe free-text entry until those settings are designed.
+- Review and migrate legacy/compatibility fields in All Data / Advanced after purchase and distribution consumers are fully mapped.
 - Track new-release notification state without automatic sending.
 - Later add a deliberate queue/send notification action.
 - Track promo campaigns and outreach per release.
@@ -148,6 +158,7 @@ Module 2A preview checks:
 
 - Add customer purchase and download history to the portal.
 - Complete paid MP3/WAV fulfilment and account-download flows.
+- Keep the purchase/customer account flow as a later module after public-site cleanup.
 - Add licence-management records while keeping commercial licensing enquiry-led until deliberately expanded.
 - Add Stripe sales, fees and revenue reporting.
 
@@ -203,6 +214,7 @@ Module 2A preview checks:
 - Avoid large rewrites and preserve working renderers.
 - Module 2A work must be based on the current stable main files, not reverted packages or older branches.
 - Disabled Web, Sale or DJ toggles currently count as incomplete readiness; verify that product behaviour during preview testing.
+- Module 2E public/DJ detail routing and date/download changes must pass preview before Module 2 is declared complete.
 
 ## 7. Deployment rules
 
@@ -217,6 +229,15 @@ Production is permitted only after preview acceptance passes.
 Deploy Functions only when `functions/index.js` changes.
 
 Keep deployments and commits small, scoped and easy to reverse.
+
+Planned order after Module 2 remains:
+
+1. Module 3 — Public site cleanup.
+2. Module 4 — Purchase and Customer Account Flow.
+3. Module 5 — Catalogue workflow enhancements: Missing Data inline editing, Storage usage, orphan-file audit and branded fallback artwork.
+4. Module 6 — Promo, contacts and notifications.
+5. Module 7 — Business dashboard and analytics.
+6. Module 8+ — Mixing/mastering, case studies, booking and vinyl service modules.
 
 ## 8. Do-not-touch rules
 

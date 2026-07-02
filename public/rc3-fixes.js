@@ -26,31 +26,6 @@ if(rc3Page==="music.html"){
   catalogue?.insertAdjacentHTML("beforeend",'<aside class="commercial-store-panel"><p class="eyebrow">Artists & commercial use</p><h2>Interested in using one of these tracks commercially?</h2><p>Standard downloads are for personal/private use. If you want to record vocals, use a track commercially, or discuss exclusive/commercial rights, get in touch.</p><a class="button ghost" href="contact.html?subject=commercial">Commercial Enquiry</a></aside>');
 }
 
-if(rc3Page==="track.html"){
-  const promo=new URLSearchParams(location.search).get("promo")==="1";
-  const observer=new MutationObserver(()=>{
-    const commercial=document.querySelector(".commercial-panel"),related=document.querySelector(".related-section");
-    if(commercial&&related&&commercial.compareDocumentPosition(related)&Node.DOCUMENT_POSITION_PRECEDING)related.before(commercial);
-    if(promo&&!document.querySelector(".promo-detail-actions")){
-      document.querySelector(".download-box")?.remove();
-      commercial?.querySelector("p")?.insertAdjacentText("beforeend"," Promo downloads are supplied for DJ, radio and promotional use; commercial release use still needs a separate enquiry.");
-      document.querySelector(".track-product-info")?.insertAdjacentHTML("beforeend",'<div class="download-box promo-detail-actions"><p class="eyebrow">DJ promo download</p><div class="format-actions"><button class="button ghost" disabled>Download MP3</button><button class="button primary" disabled>Download WAV</button></div><p class="preview-disabled-note">Preview mode: downloads activate for an approved DJ account when Firebase Storage files are connected.</p></div>');
-    }
-  });
-  observer.observe(document.querySelector("#beatContent"),{childList:true});
-}
-
-if(rc3Page==="dj-promo.html"){
-  const list=document.querySelector("#djTrackList");
-  const addDetails=()=>list?.querySelectorAll(".dj-track").forEach(row=>{
-    if(row.querySelector(".dj-more-details"))return;
-    const id=row.dataset.id;
-    row.querySelector(".preview-action")?.insertAdjacentHTML("afterend",`<a class="button ghost dj-more-details" href="track.html?id=${encodeURIComponent(id)}&promo=1">More Details</a>`);
-  });
-  new MutationObserver(addDetails).observe(list,{childList:true});
-  addDetails();
-}
-
 if(rc3Page==="portal.html"){
   const music=document.querySelector("#myMusic");
   const welcome=document.querySelector("#welcome");

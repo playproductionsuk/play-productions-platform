@@ -97,9 +97,3 @@
 #track-group-assets .file-field small{display:none}
 @media(max-width:1180px){.music-library-filters{position:static}.music-library-table thead th{top:99px!important}}
 @media(max-width:760px){#trackEditor>.admin-section-title{align-items:flex-start!important;flex-wrap:wrap}.track-editor-save-controls{order:3;flex-basis:100%;justify-content:flex-start!important}.track-visibility-summary{width:auto}.music-library-table thead th{top:96px!important}}
-
-/* Module 2E.4.4 — catalogue filters, sorting and sticky stack */
-@media(min-width:1181px){.music-library-filters{top:61px!important;margin-bottom:0!important;border-bottom-left-radius:0;border-bottom-right-radius:0}.music-library-table thead th{top:115px!important}}
-.music-library-table thead button[data-library-sort]{appearance:none;display:inline-flex;align-items:center;justify-content:center;gap:3px;width:100%;padding:0;border:0;background:transparent;color:inherit;font:inherit;text-transform:inherit;letter-spacing:inherit;cursor:pointer}.music-library-table thead button[data-library-sort]::after{content:"↕";color:#666;font-size:8px}.music-library-table thead button[data-library-sort][aria-sort="ascending"]::after{content:"↑";color:#a6f000}.music-library-table thead button[data-library-sort][aria-sort="descending"]::after{content:"↓";color:#a6f000}.music-library-table thead button[data-library-sort]:hover,.music-library-table thead button[data-library-sort]:focus-visible{color:#a6f000;outline:none}
-.music-library-filters button{white-space:nowrap}.music-library-filters button[title^="Missing"] span{background:#a6f000;color:#090909}
-@media(max-width:1180px){.music-library-filters{margin-bottom:0!important}.music-library-table thead th{top:99px!important}}

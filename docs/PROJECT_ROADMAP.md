@@ -52,6 +52,14 @@ Module 2E.3 passed the key Enter/implicit-save safety checks. Module 2E.4 is the
 
 Module 2E.5 admin startup, dead-code and performance audit is complete. The audit found that the eight visible entry imports fan out into roughly nineteen local admin modules. Multiple Music Library, DJ Database and dashboard layers still render or enhance the same DOM, several delayed callbacks repaint accepted views, and tracks/enquiries/orders are read more than once. No runtime cleanup was performed. The ownership map, risk classification and safe cleanup sequence are recorded in `docs/ADMIN_STARTUP_AUDIT.md`. Module 2F Preview Player Controls remains queued after a separately approved startup-cleanup implementation pass.
 
+Module 2E.6 has started as the first safe cleanup implementation pass. The
+accepted Full Music CSV is now isolated in `public/music-library-export.js`,
+while its schema, filename, button label and placement remain unchanged.
+`rc3-admin.js` cannot yet be removed safely because it still owns accepted
+non-export Key input, visibility, system-status, order-fallback and legacy DJ
+enhancement behaviour. RC4–RC7 therefore remain active through RC3. No bulk
+deletion, auth/startup rewrite or protected-file change is permitted.
+
 Module 2E.4 preview was a partial improvement but was not accepted: search/user/sign-out were still inside page content rather than the real navigation header, DJ Database could remain highlighted after another tab opened, and the Track Editor grouping still separated closely related availability controls. Module 2E.4.1 corrects those specific issues.
 
 Module 2E.4.1 mostly passed preview: header placement, active-tab state, Catalogue hierarchy and six-section editor structure are accepted. Module 2E.4.2 is the final narrow table/editor polish pass. It makes the table header genuinely sticky, replaces the table’s four readiness cards with one red/amber/green percentage, adds separate Featured and Latest indicators, tightens Actions, moves Digital Price into Track Basics, aligns boolean controls, and treats an explicit Unreleased/date TBC choice as valid release timing.
@@ -113,6 +121,7 @@ The current correction consolidates the visible Music Library under the live `ad
 - User testing confirmed both Music and DJ Applications CSV exports work; exports are not a current blocker. Browser/Agent Mode can be unreliable when verifying downloads and should not override a successful user test.
 - Module 2D.3 passed live testing: editor and table readiness agree and the stale `Required: coverUrl` warning is resolved.
 - Completed the Module 2E.5 documentation-only startup audit without changing runtime code. It maps the true import fan-out, current renderer ownership, repeated Firestore reads, delayed repaint risks and a preview-first cleanup order.
+- Module 2E.6 extracted the accepted Full Music CSV into `public/music-library-export.js`. RC3 and its RC4–RC7 dependency remain active pending a later responsibility-by-responsibility cleanup.
 
 ## 4. Immediate next tasks
 

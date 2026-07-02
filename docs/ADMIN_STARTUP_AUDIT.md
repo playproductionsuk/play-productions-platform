@@ -269,3 +269,44 @@ No item below is authorization to edit runtime code. Each step needs its own pre
 ## Audit decision
 
 The startup chain should be simplified, but a bulk deletion or broad rewrite would be unsafe. The best first implementation pass is to extract the accepted Music CSV from RC3 and separate final Music/DJ render ownership from legacy enhancers. This creates a clean boundary before deferring or removing any RC chain.
+
+## Module 2E.6 implementation note
+
+The accepted Full Music CSV implementation has been extracted into the focused
+`public/music-library-export.js` module. It preserves the existing button label,
+placement, styling hook, full-data field order, legacy/additional field inclusion,
+CSV escaping and dated filename.
+
+`rc3-admin.js` now imports that focused module instead of owning the export code.
+RC3 itself remains imported because it still has accepted non-export responsibilities:
+
+- replacing the Key input with the current select control;
+- applying service-page visibility to Projects/Cases/Vinyl navigation;
+- adding the System/setup status card;
+- providing the empty-order preview fallback;
+- providing legacy DJ export enhancement behaviour.
+
+Therefore RC4–RC7 are still loaded through RC3 and their delayed callbacks remain
+active. Removing RC3 in this pass would have exceeded the proven-safe export boundary.
+No startup/auth file was changed, no RC file was deleted and no performance
+improvement is claimed until preview behaviour is measured.
+
+The next safe candidate is to identify current owners for each remaining RC3
+non-export responsibility, especially the obsolete DJ export enhancement. Once
+those responsibilities have parity coverage, RC3 can be decoupled from
+`admin-entry.js` and the RC4–RC7 chain can be evaluated independently.
+
+Preview deployment verification:
+
+- `/admin.html?live=1` displayed the stable authorised-admin login form with no
+  Preview button and no stuck/blank state.
+- `/admin.html?preview=1` opened the safe preview dashboard.
+- Music Library displayed exactly one `Export full music data CSV` button and
+  one Add Track button.
+- No protected-pattern regression was found and both changed JavaScript files
+  passed `node --check`.
+- Browser automation did not capture the blob download event, so CSV file
+  contents and the authenticated live-dashboard journey remain manual
+  acceptance checks.
+- Because RC3–RC7 remain active, startup cycling is expected to be unchanged;
+  no performance improvement is claimed for this boundary-extraction pass.

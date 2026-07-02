@@ -111,7 +111,8 @@ if (trackForm && !document.querySelector("#trackEditorGroups")) {
     "title","artist","releaseTitle","slug","status","style","subgenre","bpm","key",
     "moodTags","teaser","description"
   ].forEach(id => moveField(id, "basics"));
-  ["showInStore","showInLatest","featured","price","purchaseEnabled","allowExclusiveEnquiry","showInDjPool"].forEach(id => moveField(id, "availability"));
+  ["price"].forEach(id => moveField(id, "basics"));
+  ["showInStore","showInLatest","featured","purchaseEnabled","allowExclusiveEnquiry","showInDjPool"].forEach(id => moveField(id, "availability"));
   ["cover","preview","master"].forEach(id => moveField(id, "assets"));
   [
     "releaseDate","dateTbc",
@@ -227,6 +228,11 @@ addHelp(releaseTitleField, "Release or project title. It follows Track Title unt
 addHelp(teaserField, "Short summary used on cards and catalogue lists.");
 addHelp(descriptionField, "Longer copy used on the individual track detail page.");
 addHelp(releaseDateField, "Entering a date turns off Release date TBC automatically.");
+if (dateTbcField?.closest("label")) {
+  const label = dateTbcField.closest("label");
+  [...label.childNodes].filter(node => node.nodeType === Node.TEXT_NODE).forEach(node => node.textContent = " Unreleased / date TBC");
+  addHelp(dateTbcField, "Use this when the track is unreleased or the release date is not confirmed.");
+}
 addHelp(document.querySelector("#showInStore"), "Shows this track on the public Music page when its status allows.");
 addHelp(document.querySelector("#showInDjPool"), "Shows this track to approved DJs when its status and MP3 allow.");
 addHelp(document.querySelector("#purchaseEnabled"), "Allows personal purchase when the track is published and sale assets are complete.");

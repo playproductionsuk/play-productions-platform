@@ -54,6 +54,8 @@ Module 2E.5 remains an audit-first admin startup, dead-code and performance pass
 
 Module 2E.4 preview was a partial improvement but was not accepted: search/user/sign-out were still inside page content rather than the real navigation header, DJ Database could remain highlighted after another tab opened, and the Track Editor grouping still separated closely related availability controls. Module 2E.4.1 corrects those specific issues.
 
+Module 2E.4.1 mostly passed preview: header placement, active-tab state, Catalogue hierarchy and six-section editor structure are accepted. Module 2E.4.2 is the final narrow table/editor polish pass. It makes the table header genuinely sticky, replaces the table’s four readiness cards with one red/amber/green percentage, adds separate Featured and Latest indicators, tightens Actions, moves Digital Price into Track Basics, aligns boolean controls, and treats an explicit Unreleased/date TBC choice as valid release timing.
+
 The intended editor structure is now:
 
 1. Track Basics.
@@ -67,7 +69,7 @@ Personal Sale and DJ Promo controls share Visibility & Availability, while artwo
 
 **Module 2F — Preview Player Controls** is the next near-term Module 2 pass and must be completed before Module 2 is declared complete.
 
-Do not begin Module 2F until Module 2E.4.1 layout acceptance and the Module 2E.5 startup/performance audit are complete.
+Do not begin Module 2F until Module 2E.4.2 layout acceptance and the Module 2E.5 startup/performance audit are complete.
 
 Required direction:
 

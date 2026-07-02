@@ -75,3 +75,15 @@
 #track-group-release .field:has(#releaseDate),#track-group-release .check-field:has(#dateTbc){grid-column:span 1}#track-group-release .check-field:has(#dateTbc){display:flex;align-items:center;min-height:58px}
 @media(max-width:1180px){.admin-nav .admin-header-search{order:20;flex-basis:100%;max-width:none}.admin-nav .admin-account-actions{margin-left:auto!important}.music-library-table thead th{top:99px!important}}
 @media(max-width:900px){#track-group-basics .track-editor-section-body,#track-group-availability .track-editor-section-body,#track-group-assets .track-editor-section-body{grid-template-columns:1fr}#track-group-basics .track-editor-section-body>*,#track-group-availability .track-editor-section-body>*,#track-group-assets .track-editor-section-body>*{grid-column:1!important}.music-library-table thead th{top:96px!important}}
+
+/* Module 2E.4.2 — final table and editor field polish */
+@media(min-width:1101px){#adminTracks{overflow:visible!important}}
+.music-library-table th:nth-child(9),.music-library-table th:nth-child(10),.music-library-table th:nth-child(11),.music-library-table th:nth-child(12),.music-library-table th:nth-child(13){width:48px!important}.music-library-table th:nth-child(14){width:58px!important}.music-library-table th:nth-child(15){width:88px!important}
+.health-percent{appearance:none;display:inline-grid;place-items:center;width:38px;height:38px;margin:auto;border:1px solid;border-radius:50%;background:#151515;font:800 9px Inter,sans-serif;cursor:pointer}.health-percent.red{border-color:#9b4242;background:#271313;color:#ff9c9c}.health-percent.amber{border-color:#917528;background:#2a230f;color:#ffd76b}.health-percent.green{border-color:#638c20;background:#17210d;color:#c7ff67}.health-percent:hover,.health-percent:focus-visible{outline:2px solid #a6f000;outline-offset:2px}
+.track-library-actions{min-width:80px!important}.track-library-actions button{padding:4px 3px!important;font-size:7px!important}
+#track-group-basics .field:has(#moodTags){grid-column:span 3}#track-group-basics .field:has(#price){grid-column:span 1;max-width:120px}#track-group-basics .field:has(#price) input{padding-left:6px;padding-right:6px}
+#track-group-availability .track-editor-section-body{grid-template-columns:repeat(3,minmax(0,1fr))}#track-group-availability .track-field-help{margin-left:auto;max-width:72%;text-align:right}
+#track-group-release .track-editor-section-body>label:has(input[type="checkbox"]),#track-group-promo .track-check-grid label,#track-group-advanced .switch-grid label{display:flex;align-items:center;gap:8px;min-height:44px;padding:9px;border:1px solid #303030;background:#121212}
+#track-group-release .track-check-grid{grid-template-columns:repeat(3,minmax(0,1fr))}.track-editor-section-body input[type="checkbox"]{flex:0 0 auto;accent-color:#a6f000}
+@media(max-width:1100px){#adminTracks{overflow-x:auto!important;overflow-y:visible!important}.music-library-table{min-width:1080px!important}}
+@media(max-width:900px){#track-group-release .track-check-grid{grid-template-columns:1fr}#track-group-basics .field:has(#price){max-width:none}}

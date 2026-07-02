@@ -40,7 +40,7 @@ export function normaliseTrack(raw) {
 export const requirements = {
   draft: { required: ["title"], recommended: ["style", "teaser"] },
   "coming-soon": { required: ["title", "coverUrl", "teaser", "releaseTiming"], recommended: ["previewUrl", "style", "seoDescription"] },
-  published: { required: ["title", "slug", "coverUrl", "previewUrl", "masterPath", "price", "style", "description", "releaseDate"], recommended: ["bpm", "key", "moodTags", "seoTitle", "seoDescription", "ogImageUrl"] },
+  published: { required: ["title", "slug", "coverUrl", "previewUrl", "masterPath", "price", "style", "description", "releaseTiming"], recommended: ["bpm", "key", "moodTags", "seoTitle", "seoDescription", "ogImageUrl"] },
   archived: { required: ["title"], recommended: [] },
   "dj-only": { required: ["title", "coverUrl", "mainMp3"], recommended: ["description", "style", "moodTags"] }
 };

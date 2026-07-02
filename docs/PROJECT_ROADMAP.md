@@ -48,9 +48,13 @@ Module 2E.1 preview mostly passed: Add/Edit routing and release-date/TBC handlin
 
 Module 2E.2 mostly passed preview, but Enter in a normal Add Track input triggered the browser’s implicit default-submit-button click and therefore inherited save intent. Module 2E.3 blocks Enter-based implicit submission inside the Track Editor while preserving textarea line breaks and deliberate Save-button activation. Add Track may create a record only through Save Draft or Save Track.
 
+Module 2E.3 passed the key Enter/implicit-save safety checks. Module 2E.4 is the final admin layout-polish pass: move global search into the admin command header, normalize title hierarchy across tabs, align Music Library controls with DJ Database controls, compact the readiness/actions table columns, and make Track Editor field sizing and grouping more purposeful.
+
+Module 2E.5 remains an audit-first admin startup, dead-code and performance pass after layout polish. It must map ownership and dependencies before removing or deferring any legacy module. Module 2F Preview Player Controls remains queued after that audit.
+
 **Module 2F — Preview Player Controls** is the next near-term Module 2 pass and must be completed before Module 2 is declared complete.
 
-Do not begin Module 2F until Module 2E.3 Enter/implicit-submit safety passes preview testing.
+Do not begin Module 2F until Module 2E.4 layout acceptance and the Module 2E.5 startup/performance audit are complete.
 
 Required direction:
 
@@ -146,6 +150,10 @@ Module 2A preview checks:
 - Define safe preview start/duration defaults for legacy tracks without Module 2F fields.
 - Manually archive or delete the accidental `ZZ DO NOT SAVE TEST` record if it remains after Module 2E.2 passes; do not remove it automatically in code.
 - Manually archive or delete the accidental `ZZ IMPLICIT SHOULD NOT SAVE` preview record after Module 2E.3 passes; do not remove real tracks or automate this cleanup.
+- Verify the global admin command header, title/subtitle hierarchy and reduced top whitespace across every visible admin tab.
+- Verify Music Library filters/actions visually align with DJ Database controls and remain functional.
+- Verify release-date TBC visibly clears whenever a real date exists.
+- Review Coming Soon public-card action alignment during the Public Site Quality Pass; it was deliberately not changed in Module 2E.4 to avoid touching catalogue behaviour before Module 2F.
 
 ## 5. Future development ideas
 

@@ -54,6 +54,7 @@ function renderMusicLibrary(){
   counts["missing-data"]=missingRows.length;
   const filterLabels={all:"All",web:"Web",sale:"Sale",dj:"DJ",release:"Release",archived:"Archived","missing-data":"Missing Data"};
   if(filters)filters.innerHTML=["all","web","sale","dj","release","archived","missing-data"].map(key=>`<button type="button" class="${libraryFilter===key?"active":""}" data-music-filter="${key}">${filterLabels[key]} <span>${counts[key]}</span></button>`).join("");
+  const libraryActions=document.querySelector(".music-library-top-actions");if(filters&&libraryActions)filters.appendChild(libraryActions);
   const catalogue=state.tracks.length?`<table id="musicCatalogueTable" class="library-table music-library-table"><thead><tr><th>Artwork</th><th>Track</th><th>Genre / subgenre</th><th>BPM</th><th>Key</th><th>Mood</th><th>Price</th><th>Status</th><th>Store</th><th>DJ promo</th><th>Latest / featured</th><th>Purchase</th><th>Health</th><th>Actions</th></tr></thead><tbody>${state.tracks.map(track=>{
     const health=trackHealth(track),readiness=trackReadiness(track),archived=track.status==="archived";
     const readinessPill=(key,label,group)=>{const missing=Object.entries(group.checks).filter(([,value])=>!value).map(([field])=>field).join(", ");return`<button type="button" class="readiness-pill ${!group.enabled?"off":group.ready?"ready":"work"}" data-track-readiness="${key}" title="Open ${label} fields. ${escapeHtml(missing||"Complete")}"><b>${label}</b><em>${group.enabled?`${group.complete}/${group.total}`:"off"}</em></button>`};

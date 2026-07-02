@@ -19,6 +19,37 @@ if (adminUser && signOutButton) {
   accountActions.append(adminUser, signOutButton);
 }
 
+const adminSearch = document.querySelector("#adminSearch");
+const adminNav = document.querySelector(".admin-nav");
+if (adminSearch && adminNav && !document.querySelector(".admin-header-search")) {
+  const searchWrap = document.createElement("div");
+  searchWrap.className = "admin-header-search";
+  searchWrap.appendChild(adminSearch);
+  const accountActions = document.querySelector(".admin-account-actions");
+  adminNav.insertBefore(searchWrap, accountActions || signOutButton || null);
+  const adminMain = document.querySelector(".admin-main");
+  if (adminMain) {
+    const commandBar = document.createElement("div");
+    commandBar.className = "admin-command-bar";
+    adminMain.prepend(commandBar);
+    commandBar.append(searchWrap);
+    if (accountActions) commandBar.append(accountActions);
+  }
+  document.querySelector(".admin-top")?.classList.add("admin-top-empty");
+}
+
+const tracksTitle = document.querySelector('[data-page="tracks"]>.admin-section-title');
+if (tracksTitle) {
+  const eyebrow = tracksTitle.querySelector(".eyebrow");
+  const heading = tracksTitle.querySelector("h1");
+  if (eyebrow) eyebrow.textContent = "Tracks";
+  if (heading) heading.textContent = "Catalogue";
+}
+document.querySelectorAll(".admin-view").forEach(view => {
+  const heading = view.querySelector(":scope>.admin-section-title h1,:scope>.page-title");
+  if (heading) view.setAttribute("aria-label", heading.textContent.trim());
+});
+
 const checklist = document.querySelector("#releaseChecklist");
 if (checklist && !document.querySelector("#samplesChecked")) {
   checklist.insertAdjacentHTML("beforebegin", `
@@ -289,6 +320,21 @@ document.addEventListener("click", event => {
 });
 
 document.addEventListener("click", async event => {
+  const jump = event.target.closest(".jump-missing");
+  if (jump) {
+    setTimeout(() => {
+      const target = document.querySelector("#trackForm .field-required");
+      const section = target?.closest(".track-editor-section");
+      if (section) section.open = true;
+      if (target) {
+        target.classList.add("is-jump-highlight");
+        target.scrollIntoView({ behavior: "smooth", block: "center" });
+        target.querySelector("input,select,textarea")?.focus();
+        setTimeout(() => target.classList.remove("is-jump-highlight"), 1600);
+      }
+    }, 0);
+  }
+
   const missingEdit = event.target.closest("[data-missing-track]");
   if (missingEdit) {
     event.preventDefault();

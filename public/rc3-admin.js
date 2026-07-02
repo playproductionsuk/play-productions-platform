@@ -83,6 +83,7 @@ if(trackTitle){
   exportButton.className="button ghost music-library-export-button";
   exportButton.textContent="Export full music data CSV";
   actions.appendChild(exportButton);
+  document.querySelector("#musicLibraryFilters")?.appendChild(actions);
   trackTitle.querySelectorAll(".export-actions,#exportTracks,[data-export-tracks],[data-export-music]").forEach(item=>{if(!item.closest(".music-library-top-actions"))item.remove()});
 }
 document.addEventListener("click",async event=>{

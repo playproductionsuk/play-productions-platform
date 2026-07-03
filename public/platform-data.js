@@ -28,6 +28,8 @@ export function normaliseTrack(raw) {
     purchaseEnabled: raw.purchaseEnabled ?? true, dateTbc: raw.releaseDate ? false : raw.dateTbc ?? false,
     coverUrl: raw.coverUrl || raw.thumbnail || (raw.placeholderArtwork ? "icons/fallback.png" : ""), coverPath: raw.coverPath || "", thumbnail: raw.thumbnail || raw.coverUrl || "",
     previewUrl: raw.previewUrl || raw.url || "", previewPath: raw.previewPath || "", mp3Path: raw.mp3Path || raw.previewPath || "", mp3Url: raw.mp3Url || raw.previewUrl || raw.url || "", url: raw.url || raw.previewUrl || "", masterPath: raw.masterPath || raw.wavPath || "",
+    previewStartSeconds: Math.max(0, Number.isFinite(Number(raw.previewStartSeconds)) ? Number(raw.previewStartSeconds) : 0),
+    previewDurationSeconds: Number.isFinite(Number(raw.previewDurationSeconds)) && Number(raw.previewDurationSeconds) > 0 ? Number(raw.previewDurationSeconds) : 30,
     style: raw.style || raw.genre || "", subgenre: raw.subgenre || "", bpm: raw.bpm || "", key: raw.key || "", moodTags: raw.moodTags || [],
     teaser: raw.teaser || raw.description || "", description: raw.description || raw.teaser || "",
     price: Number(raw.price ?? 1.29), releaseDate: raw.releaseDate || "", adminNotes: raw.adminNotes || "",

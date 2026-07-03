@@ -40,7 +40,8 @@ async function exportFullMusicData() {
   const preferred = [
     "id", "title", "artist", "releaseTitle", "slug", "status", "style", "subgenre",
     "bpm", "key", "moodTags", "teaser", "description", "price", "releaseDate",
-    "dateTbc", "coverUrl", "mp3Path", "previewPath", "previewUrl", "masterPath",
+    "dateTbc", "coverUrl", "mp3Path", "previewPath", "previewUrl",
+    "previewStartSeconds", "previewDurationSeconds", "masterPath",
     "wavPath", "showInStore", "showInDjPool", "showInLatest", "featured",
     "purchaseEnabled", "allowExclusiveEnquiry", "isrc", "upc",
     "distributionReleaseId", "prsRegistered", "pplRegistered", "samplesChecked",
@@ -74,4 +75,3 @@ document.addEventListener("click", event => {
     console.error("Full Music CSV export failed.", error);
   });
 });
-

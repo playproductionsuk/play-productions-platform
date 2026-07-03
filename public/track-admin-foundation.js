@@ -79,6 +79,24 @@ if (checklist && !document.querySelector("#samplesChecked")) {
   `);
 }
 
+const previewFileField = document.querySelector("#preview")?.closest(".file-field");
+if (previewFileField && !document.querySelector("#previewStartSeconds")) {
+  previewFileField.insertAdjacentHTML("afterend", `
+    <div class="field preview-timing-field">
+      <label>Preview Start
+        <input id="previewStartSeconds" name="previewStartSeconds" type="number" min="0" step="1" value="0" inputmode="numeric">
+      </label>
+      <small class="track-field-help">Seconds into the MP3 where public and DJ previews begin.</small>
+    </div>
+    <div class="field preview-timing-field">
+      <label>Preview Duration
+        <input id="previewDurationSeconds" name="previewDurationSeconds" type="number" min="1" step="1" value="30" list="previewDurationOptions" inputmode="numeric">
+        <datalist id="previewDurationOptions"><option value="30"><option value="45"><option value="60"><option value="90"></datalist>
+      </label>
+      <small class="track-field-help">Seconds available for preview playback. Suggested: 30, 45, 60 or 90.</small>
+    </div>`);
+}
+
 const trackForm = document.querySelector("#trackForm");
 if (trackForm && !document.querySelector("#trackEditorGroups")) {
   const groupDefinitions = [
@@ -117,6 +135,13 @@ if (trackForm && !document.querySelector("#trackEditorGroups")) {
   if (priceContainer && teaserContainer) body("basics")?.insertBefore(priceContainer, teaserContainer);
   ["showInStore","showInLatest","featured","purchaseEnabled","allowExclusiveEnquiry","showInDjPool"].forEach(id => moveField(id, "availability"));
   ["cover","preview","master"].forEach(id => moveField(id, "assets"));
+  const previewTimingRow = document.createElement("div");
+  previewTimingRow.className = "preview-timing-row";
+  ["previewStartSeconds","previewDurationSeconds"].forEach(id => {
+    const field = document.querySelector(`#${id}`)?.closest(".field");
+    if (field) previewTimingRow.appendChild(field);
+  });
+  body("assets")?.appendChild(previewTimingRow);
   [
     "releaseDate","dateTbc",
     "samplesChecked","tracklibChecked","prsRegistered","pplRegistered","distributionUploaded",
@@ -153,6 +178,83 @@ if (trackForm && !document.querySelector("#trackEditorGroups")) {
       <small>These fields are preserved for compatibility. Only change them when you know which downstream service uses them.</small>
     </aside>`);
 }
+
+const assetDefinitions = [
+  {
+    input: "cover",
+    values: track => [track?.coverUrl, track?.coverPath, track?.thumbnail],
+    placeholderFlag: track => track?.placeholderArtwork === true,
+    connectedText: "Existing artwork connected ✓",
+    missingText: "No artwork connected",
+    uploadText: "Upload artwork",
+    replaceText: "Replace artwork"
+  },
+  {
+    input: "preview",
+    values: track => [track?.previewUrl, track?.previewPath, track?.mp3Path, track?.mp3Url, track?.url],
+    connectedText: "Existing preview MP3 connected ✓",
+    missingText: "No preview MP3 connected",
+    uploadText: "Upload preview MP3",
+    replaceText: "Replace preview MP3"
+  },
+  {
+    input: "master",
+    values: track => [track?.masterPath, track?.wavPath],
+    connectedText: "Existing master WAV connected ✓",
+    missingText: "No master WAV connected",
+    uploadText: "Upload master WAV",
+    replaceText: "Replace master WAV"
+  }
+];
+
+function usableAssetValue(value) {
+  if (typeof value !== "string") return false;
+  const candidate = value.trim();
+  if (!candidate) return false;
+  if (/^(pending|null|undefined|none|n\/a)$/i.test(candidate)) return false;
+  if (/(^|\/)(icons\/)?fallback(?:[-_.\/]|$)/i.test(candidate)) return false;
+  if (/(^|\/)(placeholder|default-cover|default-artwork)(?:[-_.\/]|$)/i.test(candidate)) return false;
+  return true;
+}
+
+function updateAssetCards(track = null) {
+  assetDefinitions.forEach(definition => {
+    const input = document.querySelector(`#${definition.input}`);
+    const card = input?.closest(".file-field");
+    if (!input || !card) return;
+    let status = card.querySelector(".asset-connection-status");
+    let action = card.querySelector(".asset-upload-action");
+    if (!status) {
+      status = document.createElement("span");
+      status.className = "asset-connection-status";
+      input.insertAdjacentElement("beforebegin", status);
+    }
+    if (!action) {
+      action = document.createElement("span");
+      action.className = "asset-upload-action";
+      input.insertAdjacentElement("beforebegin", action);
+    }
+    const connected = !definition.placeholderFlag?.(track) && definition.values(track).some(usableAssetValue);
+    status.textContent = connected ? definition.connectedText : `${definition.missingText} ✕`;
+    status.classList.toggle("connected", connected);
+    action.textContent = connected ? definition.replaceText : definition.uploadText;
+    input.classList.add("asset-file-input");
+    input.setAttribute("aria-label", action.textContent);
+    if (!input.dataset.assetStatusBound) {
+      input.dataset.assetStatusBound = "true";
+      input.addEventListener("change", () => {
+        if (!input.files?.[0]) {
+          updateAssetCards(track);
+          return;
+        }
+        status.textContent = `New file selected: ${input.files[0].name}`;
+        status.classList.add("connected");
+        action.textContent = "Change selected file";
+      });
+    }
+  });
+}
+updateAssetCards();
 
 if (trackForm && !document.querySelector("#trackEditorSaveControls")) {
   const editorHeader = document.querySelector("#trackEditor>.admin-section-title");
@@ -302,10 +404,13 @@ document.querySelector("#newTrack")?.addEventListener("click", () => {
 
 window.addEventListener("play-track-editor-mode", event => {
   const isNew = event.detail?.mode === "new";
+  updateAssetCards(isNew ? null : event.detail?.track);
   slugManuallyEdited = !isNew;
   seoTitleManuallyEdited = !isNew;
   seoDescriptionManuallyEdited = !isNew;
   if (!isNew) return;
+  const previewDuration = document.querySelector("#previewDurationSeconds");
+  if (previewDuration) previewDuration.value = "30";
   if (price) price.value = defaultTrackPrice().toFixed(2);
   if (artistField) artistField.value = "Play Productions";
   if (dateTbcField) dateTbcField.checked = true;

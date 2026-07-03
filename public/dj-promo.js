@@ -6,6 +6,7 @@ import {
   normaliseTrack,
   loadTracks
 } from "./platform-data.js";
+import { createPreviewDock } from "./preview-player.js";
 import {
   getAuth,
   onAuthStateChanged,
@@ -198,23 +199,39 @@ function render() {
 }
 
 function reset() {
+  playingId = "";
   list.querySelectorAll(".store-track").forEach(row => row.classList.remove("is-playing"));
+  list.querySelectorAll(".mini-progress span").forEach(bar => {
+    bar.style.width = "0";
+  });
 }
 
+const preview = createPreviewDock({
+  audio: player,
+  dock,
+  closeButton: document.querySelector("#closePlayer"),
+  onProgress(ratio) {
+    const row = list.querySelector(`[data-id="${CSS.escape(playingId)}"]`);
+    const bar = row?.querySelector(".mini-progress span");
+    if (bar) bar.style.width = `${ratio * 100}%`;
+  },
+  onStop: reset,
+  onClose: reset
+});
+
 function play(track, row) {
-  if (playingId === String(track.id) && !player.paused) {
-    player.pause();
+  if (playingId === String(track.id) && preview.isPlaying()) {
+    preview.pause();
     reset();
     return;
   }
   reset();
   playingId = String(track.id);
-  player.src = track.previewUrl;
   row.classList.add("is-playing");
   dock.hidden = false;
   document.querySelector("#playerTitle").textContent = track.title;
   document.querySelector("#playerCover").src = track.coverUrl || "icons/fallback.png";
-  player.play().catch(reset);
+  preview.start(track, track.previewUrl).catch(reset);
 }
 
 list.addEventListener("click", async event => {
@@ -254,25 +271,11 @@ list.addEventListener("click", async event => {
   }
 });
 
-player.addEventListener("timeupdate", () => {
-  const row = list.querySelector(`[data-id="${CSS.escape(playingId)}"]`);
-  const bar = row?.querySelector(".mini-progress span");
-  if (bar && player.duration) bar.style.width = `${player.currentTime / player.duration * 100}%`;
-});
-player.addEventListener("ended", () => {
-  reset();
-  dock.hidden = true;
-});
-
 ["djSearch", "djGenre", "djBpm", "djMood", "djSort"].forEach(id => {
   const element = document.querySelector(`#${id}`);
   element.addEventListener(element.tagName === "INPUT" ? "input" : "change", render);
 });
 
-document.querySelector("#closePlayer").onclick = () => {
-  player.pause();
-  dock.hidden = true;
-};
 if (signOutButton) signOutButton.onclick = async () => {
   if (demo) {
     location.href = "dj-login.html?demo=1";

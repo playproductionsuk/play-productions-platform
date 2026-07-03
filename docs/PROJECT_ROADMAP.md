@@ -81,6 +81,38 @@ the existing action row is preserved while filters rerender, retaining the
 2E.7 startup improvement without adding another renderer or export control.
 Module 2E.7 remains unaccepted until 2E.7.1 passes preview testing.
 
+Module 2E.7 is now live accepted and tagged. The cleaner login-to-dashboard
+handoff is retained, the Music Library action-row regression is fixed, and RC3
+through RC7 remain loaded for a later responsibility-by-responsibility cleanup.
+
+Module 2F Preview Player Controls has started. Track Admin now manages
+`previewStartSeconds` and `previewDurationSeconds`, defaulting safely to 0 and
+30 seconds for existing records. Public Music, DJ Promo and track-detail
+previews share bounded playback rules, custom play/progress/time controls and a
+fixed-rate playback engine. Floating-player close stops, clears and hides
+playback. These limits apply only to listening previews: approved-DJ protected
+MP3 downloads, paid customer downloads and internal WAV/master assets remain
+unchanged. Optional preview fade-in/fade-out fields remain future polish.
+
+Module 2F core playback behaviour passed preview testing. Module 2F.1 is the
+acceptance-polish pass: the default duration changes to 30 seconds while saved
+track-specific values continue to override it; Artwork, Preview MP3 and Master
+WAV return to one aligned asset row; existing asset connections receive clear
+connected/missing status and Upload/Replace wording; and player time/progress
+stay grouped away from the isolated close control. A persistent cross-page
+player is deliberately deferred to the Public Site Quality phase because it
+requires a larger site-wide playback/routing design.
+
+Module 2F.2 is the final preview-player UI and asset-status correction. Asset
+status now rejects known sentinel/placeholder values such as `pending` and
+fallback artwork instead of treating every non-empty alias as a real upload.
+Connected status is green, missing status is red, and asset titles remain
+neutral. The floating player uses a shrink-safe grid so progress cannot run
+under the isolated close control. Default 0/30 timing, saved overrides, bounded
+public/DJ/detail playback and full approved-DJ MP3 downloads remain unchanged.
+Module 2F has passed preview acceptance and its hosting release is live pending
+separate production smoke-test acceptance.
+
 Module 2E.4 preview was a partial improvement but was not accepted: search/user/sign-out were still inside page content rather than the real navigation header, DJ Database could remain highlighted after another tab opened, and the Track Editor grouping still separated closely related availability controls. Module 2E.4.1 corrects those specific issues.
 
 Module 2E.4.1 mostly passed preview: header placement, active-tab state, Catalogue hierarchy and six-section editor structure are accepted. Module 2E.4.2 is the final narrow table/editor polish pass. It makes the table header genuinely sticky, replaces the table’s four readiness cards with one red/amber/green percentage, adds separate Featured and Latest indicators, tightens Actions, moves Digital Price into Track Basics, aligns boolean controls, and treats an explicit Unreleased/date TBC choice as valid release timing.
@@ -100,9 +132,8 @@ The intended editor structure is now:
 
 Personal Sale and DJ Promo controls share Visibility & Availability, while artwork, Preview MP3 and Master WAV share the Assets section. The real admin navigation owns search, user email and Sign out. The common tab handler clears every previous nav active state before selecting the current page.
 
-**Module 2F — Preview Player Controls** is the next near-term Module 2 pass and must be completed before Module 2 is declared complete.
-
-Do not begin Module 2F until Module 2E.4.4 acceptance and a separately approved, preview-tested implementation pass for the highest-value Module 2E.5 findings are complete.
+**Module 2F — Preview Player Controls** has completed preview acceptance. Its
+production hosting release remains pending separate live smoke-test acceptance.
 
 Required direction:
 
@@ -143,17 +174,19 @@ The current correction consolidates the visible Music Library under the live `ad
 - Module 2D.3 passed live testing: editor and table readiness agree and the stale `Required: coverUrl` warning is resolved.
 - Completed the Module 2E.5 documentation-only startup audit without changing runtime code. It maps the true import fan-out, current renderer ownership, repeated Firestore reads, delayed repaint risks and a preview-first cleanup order.
 - Module 2E.6 extracted the accepted Full Music CSV into `public/music-library-export.js`. RC3 and its RC4–RC7 dependency remain active pending a later responsibility-by-responsibility cleanup.
+- Module 2F preview acceptance confirmed a 30-second default, saved per-track
+  start/duration overrides, bounded Public Music and DJ Promo playback,
+  stop-and-hide close behaviour, no playback-speed controls, unaffected full
+  approved-DJ MP3 downloads, and clearer connected/missing asset status.
 
 ## 4. Immediate next tasks
 
 Priority order:
 
-1. Preserve the accepted Module 2E.4 baseline and create a stable snapshot/tag.
-2. Run Module 2E.6 Safe Admin Cleanup / Performance Fixes as a separate preview-first pass, beginning with Music CSV extraction and renderer ownership separation. Skip any cleanup item whose responsibility cannot be proven.
-3. Build and preview-test Module 2F Preview Player Controls.
-4. Complete the final Module 2 live test and tag.
-5. Start Enhancement Phase A — Public Site Quality Pass.
-6. Continue through the enhancement phases in the priority order below.
+1. Complete the separate Module 2F production smoke test and create the stable-live tag only after it passes.
+2. Complete the final Module 2 live test and tag.
+3. Start Enhancement Phase A — Public Site Quality Pass.
+4. Continue through the enhancement phases in the priority order below.
 
 Module 2A preview checks:
 
@@ -316,6 +349,7 @@ Future work outside those existing website controls must use **enhancement phase
 - Module 2A work must be based on the current stable main files, not reverted packages or older branches.
 - Disabled Web, Sale or DJ toggles currently count as incomplete readiness; verify that product behaviour during preview testing.
 - Module 2E public/DJ detail routing and date/download changes must pass preview before Module 2 is declared complete.
+- Future safe startup cleanup should further reduce the transitional sign-in shell and continue the RC3/RC4–RC7 responsibility split without rebuilding authentication.
 
 ## 7. Deployment rules
 
@@ -334,7 +368,10 @@ Keep deployments and commits small, scoped and easy to reverse.
 Priority order after Module 2:
 
 1. **Enhancement Phase A — Public Site Quality Pass**
-   - Public-page, Music detail and DJ Promo visual polish.
+   - Coming Soon action alignment and replacement of `personal download unavailable` with a clear disabled purchase state.
+   - Public Music, track-detail and DJ Promo polish, including duplicate genre/metadata cleanup.
+   - DJ logged-in navigation and consistent Promo Crate terminology.
+   - Mobile/responsive player polish and a future persistent site-wide preview-player design option.
    - Mobile/responsive review, navigation and button consistency.
    - Remove test/demo/preview clutter and refine user-facing wording.
 2. **Enhancement Phase B — Purchase + Customer Account Flow**
@@ -349,9 +386,13 @@ Priority order after Module 2:
    - Consent/source tracking, release alerts, follow-ups, responses and campaign notes.
 5. **Enhancement Phase E — Admin Productivity Enhancements**
    - Missing Data inline editing and better filtering/search/refresh.
+   - Admin-only asset preview/playback, open current artwork and copy asset URL/path actions.
+   - A clearer asset replacement workflow.
    - Quick Draft/Add Track wizard improvements and bulk updates.
 6. **Enhancement Phase F — Storage + Maintenance**
-   - Storage usage widget, orphan-asset audit, cleanup tools and replacement history.
+   - Storage usage widget, orphan-asset audit and cleanup of replaced/unused assets.
+   - Asset replacement history and permission-safe admin asset export/download tools.
+   - Business dashboard, analytics, revenue and download-health widgets.
 7. **Module 3 — Mixing & Mastering public section**
    - Existing website module; build only when ready to present properly.
 8. **Module 4 — Custom Vinyl Record Cutting public section**

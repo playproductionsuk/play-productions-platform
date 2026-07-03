@@ -11,7 +11,7 @@ import { doc, getDoc } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-
 const form = document.querySelector("#djLoginForm");
 const status = document.querySelector("#djLoginStatus");
 const submitButton = form.querySelector('button[type="submit"],button:not([type])');
-const demo = new URLSearchParams(location.search).get("demo") === "1";
+const demo = false;
 const reason = new URLSearchParams(location.search).get("reason");
 const auth = firebaseReady ? getAuth(firebaseApp) : null;
 

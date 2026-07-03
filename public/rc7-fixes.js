@@ -20,18 +20,27 @@ if(page==="track.html"){
     const id=new URLSearchParams(location.search).get("id")||new URLSearchParams(location.search).get("track");
     if(button&&getCart().some(item=>String(item.id)===String(id))&&button.textContent!=="In Cart ✓"){button.textContent="In Cart ✓";button.disabled=true}
     if(promo){
+      const approved=globalThis.playDjApproved===true;
       const back=document.querySelector(".back-link");
-      if(back&&back.getAttribute("href")!=="dj-promo.html"){back.href="dj-promo.html";back.textContent="← Back to Promo Crate"}
+      if(back){back.href=approved?"dj-promo.html":"dj-access.html";back.textContent=approved?"← Back to Promo Crate":"← Back to Request DJ Access"}
       const crumbs=document.querySelectorAll(".breadcrumb-bar a");
-      crumbs.forEach(link=>{if(link.getAttribute("href")==="music.html"){link.href="dj-promo.html";link.textContent="DJ Promo Pool"}});
+      crumbs.forEach(link=>{if(["music.html","dj-promo.html","dj-access.html"].includes(link.getAttribute("href"))){link.href=approved?"dj-promo.html":"dj-access.html";link.textContent=approved?"Promo Crate":"Request DJ Access"}});
     }
   };
   const beatContent=document.querySelector("#beatContent");
   if(beatContent)new MutationObserver(update).observe(beatContent,{childList:true,subtree:true});
+  window.addEventListener("play-dj-navigation-change",update);
   update();
 }
 
 if(page==="dj-promo.html"){
+  const updateCrateBreadcrumb=()=>{
+    if(globalThis.playDjApproved!==true)return;
+    const bar=document.querySelector(".breadcrumb-bar");
+    if(bar)bar.innerHTML='<a href="index.html">Home</a><span>›</span><strong>Promo Crate</strong>';
+  };
+  window.addEventListener("play-dj-navigation-change",updateCrateBreadcrumb);
+  updateCrateBreadcrumb();
   const label=()=>document.querySelectorAll(".dj-column-head").forEach(head=>{
     const spans=head.querySelectorAll("span");
     if(spans.length===6&&spans[5].textContent!=="Actions / Downloads")spans[5].textContent="Actions / Downloads";

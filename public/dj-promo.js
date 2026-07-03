@@ -27,7 +27,7 @@ const dock = document.querySelector("#playerDock");
 const player = document.querySelector("#audioPlayer");
 let signOutButton = document.querySelector("#djSignOut");
 const auth = firebaseApp ? getAuth(firebaseApp) : null;
-const demo = new URLSearchParams(location.search).get("demo") === "1";
+const demo = false;
 if (signOutButton) signOutButton.style.display = "none";
 let tracks = [];
 let user;

@@ -113,6 +113,61 @@ public/DJ/detail playback and full approved-DJ MP3 downloads remain unchanged.
 Module 2F has passed preview acceptance and its hosting release is live pending
 separate production smoke-test acceptance.
 
+### Final Module 2 DJ Invite Readiness
+
+Must fix/check before inviting trusted DJs:
+
+- The terminology preview passed. The remaining pre-invite access/navigation
+  pass makes the approved-DJ header portal-focused: `Home`, `Promo Crate`,
+  `Let’s Work` and `Sign out`.
+- Approved DJs do not see Browse Music, Request DJ Access, DJ Login, Cart,
+  Checkout or My Account controls in the header.
+- The old `?demo=1` Promo Crate bypass is removed; crate access always requires
+  `users/<uid>.djAccess === true`.
+- DJ Invite Readiness access/navigation passed the approved-DJ manual preview
+  checks and is ready for commit, production hosting deployment and separate
+  live smoke testing. The public/logged-out gate, blocked `?demo=1` route,
+  reduced approved-DJ navigation, crate breadcrumb, protected MP3 download,
+  MP3-only detail and sign-out restoration all passed.
+- The visible `Preview approved DJ portal` link injected by the legacy page
+  module is removed because it incorrectly implied a bypass.
+- The Promo Crate page breadcrumb uses Promo Crate context rather than the
+  public request-access journey.
+- Public desktop/mobile navigation uses `Browse Music` and
+  `Request DJ Access`; public footer and track-detail context use the same
+  terminology where safe.
+- Approved-DJ navigation switches from the public `DJ Promo` route to
+  `Promo Crate` and opens the protected crate directly.
+- Logged-out and unapproved visitors retain the public DJ Promo request/access
+  journey.
+- Public track pages return to `Browse Music`; DJ detail pages retain
+  `Promo Crate` context and do not remain highlighted as Music for approved
+  DJs.
+- Complete final smoke tests for the DJ Promo Pool, DJ detail, protected
+  Download MP3, basic mobile/responsive presentation, MP3-only actions, bounded
+  previews and release-date display.
+- Confirm no WAV action or stale Firebase/preview wording appears.
+- Complete the separate production smoke test before creating the stable-live
+  DJ Invite Readiness tag.
+
+These items should not block the first trusted-DJ invite and remain in the
+future backlog: the login-to-dashboard transition shell; admin asset
+view/export/download and full-MP3 preview actions; asset replacement history;
+the persistent cross-page player; Coming Soon card alignment; duplicate detail
+genre cleanup; Missing Data inline editing; settings-managed genre/mood lists;
+storage usage/orphan tools; business dashboard widgets; RC3/RC4–RC7
+responsibility cleanup; and the purchase/customer-account flow.
+Any remaining legacy wording or auth-aware footer polish stays in Enhancement
+Phase A rather than blocking the first trusted-DJ invite.
+Enhancement Phase A also retains broader typography/navigation polish and
+hero/action/cart/account button consistency. Purchase/customer-account work
+remains in Phase B; admin asset tooling and storage cleanup remain in Phases
+E/F.
+
+Enhancement Phases A–F retain their existing names and order. Module 3 remains
+the future Mixing & Mastering public section, and Module 4 remains the future
+Custom Vinyl Record Cutting public section.
+
 Module 2E.4 preview was a partial improvement but was not accepted: search/user/sign-out were still inside page content rather than the real navigation header, DJ Database could remain highlighted after another tab opened, and the Track Editor grouping still separated closely related availability controls. Module 2E.4.1 corrects those specific issues.
 
 Module 2E.4.1 mostly passed preview: header placement, active-tab state, Catalogue hierarchy and six-section editor structure are accepted. Module 2E.4.2 is the final narrow table/editor polish pass. It makes the table header genuinely sticky, replaces the table’s four readiness cards with one red/amber/green percentage, adds separate Featured and Latest indicators, tightens Actions, moves Digital Price into Track Basics, aligns boolean controls, and treats an explicit Unreleased/date TBC choice as valid release timing.

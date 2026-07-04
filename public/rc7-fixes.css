@@ -10,6 +10,35 @@
 .brand-hero-content,.store-hero,.page-shell>.contact-grid>section:first-child{width:100%!important;max-width:980px!important}
 .brand-hero-copy,.store-hero p,.page-shell .subcopy{width:100%!important;max-width:900px!important}
 .brand-hero{background-image:linear-gradient(90deg,rgba(7,7,7,.97) 0%,rgba(7,7,7,.8) 43%,rgba(7,7,7,.18) 72%),url("assets/hero-play-productions-studio.png")!important;background-position:64% center!important;background-size:cover!important}
+.primary-nav a,.portal-actions a,.portal-actions button,.site-footer,.auth-card,.portal-page-wide{font-family:Oswald,Inter,sans-serif!important}
+.primary-nav a,.portal-actions a,.portal-actions button,.site-footer a,.auth-card .button,.portal-page-wide .button{text-transform:uppercase!important;letter-spacing:.035em!important}
+.portal-actions>a,.portal-actions>button:not(.cart-link){border:1px solid #555!important;border-radius:3px!important;background:#111!important;color:#eee!important;font-weight:600!important}
+.portal-actions>a:hover,.portal-actions>button:not(.cart-link):hover{border-color:#a6f000!important;color:#a6f000!important;background:#171a12!important}
+.premium-nav .brand img,.site-footer .footer-brand img,.admin-page .simple-header img{filter:brightness(0) saturate(100%) invert(83%) sepia(92%) saturate(1260%) hue-rotate(34deg) brightness(104%) contrast(105%)!important}
+.admin-page .simple-header .admin-nav button,.admin-page .simple-header .back-link{font-family:Oswald,Inter,sans-serif!important;text-transform:uppercase!important;letter-spacing:.035em!important}
+
+.home-latest{margin-top:12px!important;padding:22px;border:1px solid #2a2a2a;border-radius:8px;background:#171717}
+.home-latest-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+.home-track-card{min-width:0;border:1px solid #2a2a2a;border-radius:6px;background:#101010;overflow:hidden;display:flex;flex-direction:column}
+.home-track-art{position:relative;aspect-ratio:1/1;overflow:hidden;background:#090909}
+.home-track-art img{width:100%;height:100%;object-fit:cover}
+.home-track-preview{position:absolute;inset:auto 10px 10px 10px;min-height:34px;border:1px solid rgba(255,255,255,.48);border-radius:3px;background:rgba(8,8,8,.86);color:#fff;font:600 11px Oswald,Inter,sans-serif;text-transform:uppercase;letter-spacing:.035em}
+.home-track-preview:hover,.home-track-card.is-playing .home-track-preview{border-color:#a6f000;color:#a6f000}
+.home-track-copy{padding:16px 16px 10px}
+.home-track-copy .eyebrow{margin:0 0 5px}
+.home-track-copy h3{font-size:1.12rem;text-transform:none;margin:0 0 8px}
+.home-track-copy>span{color:#aaa;font-size:.8rem}
+.home-track-actions{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-top:auto;padding:10px 16px 16px}
+.home-track-actions .button{width:100%;min-height:36px;padding:8px 9px;font-size:10px;text-align:center}
+.home-track-actions button[disabled]{opacity:.55;cursor:not-allowed}
+.home-about{display:grid;grid-template-columns:minmax(230px,.7fr) minmax(0,1.5fr);gap:55px;margin-top:12px;padding:50px;border:1px solid #2a2a2a;border-radius:8px;background:linear-gradient(135deg,#151515,#0e0e0e)}
+.home-about h2,.home-newsletter h2{font-size:clamp(2rem,4vw,4rem);margin:.15em 0}
+.home-about-copy{columns:2;column-gap:34px;color:#c8c8c8}
+.home-about-copy p{break-inside:avoid;margin:0 0 18px;line-height:1.75}
+.home-newsletter{display:flex;align-items:center;justify-content:space-between;gap:35px;margin-top:12px;padding:38px 45px;border:1px solid #3d4e1d;border-radius:8px;background:radial-gradient(circle at 90% 15%,rgba(166,240,0,.12),transparent 30%),#111}
+.home-newsletter p{color:#ccc;margin:.5em 0}
+.home-newsletter small{display:block;max-width:690px;color:#888;line-height:1.5}
+.home-newsletter .button{flex:0 0 auto}
 
 .store-track{grid-template-columns:58px minmax(170px,2fr) 100px 68px minmax(105px,1fr) 72px 226px!important}
 .store-column-head{grid-template-columns:58px minmax(170px,2fr) 100px 68px minmax(105px,1fr) 72px 226px!important}
@@ -52,6 +81,8 @@
  .admin-page .simple-header{grid-template-columns:auto 1fr!important}
  .admin-page .simple-header>.back-link{display:none!important}
  .dashboard-status-restored .setup-status-grid{grid-template-columns:1fr 1fr!important}
+ .home-latest-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .home-about{grid-template-columns:1fr;gap:20px}
 }
 @media(max-width:560px){
  .brand-hero{background-position:68% center!important}
@@ -59,4 +90,9 @@
  .dj-page .store-tools label:first-child{grid-column:auto!important}
  .social-brand-links.rc4-socials{grid-template-columns:repeat(2,1fr)!important}
  .dashboard-status-restored .setup-status-grid{grid-template-columns:1fr!important}
+ .home-latest-grid{grid-template-columns:1fr}
+ .home-about{padding:30px 22px}
+ .home-about-copy{columns:1}
+ .home-newsletter{align-items:flex-start;flex-direction:column;padding:30px 22px}
+ .home-newsletter .button{width:100%}
 }

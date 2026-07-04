@@ -288,5 +288,9 @@ import("./cart.js").then(({ getCart, removeFromCart, cartTotal }) => {
 import("./site-settings.js").then((module) => {
   module.applySiteSettings();
   applyPublicTerminology();
+  if (page === "index.html") {
+    const heroCopy = document.querySelector(".brand-hero-copy");
+    if (heroCopy) heroCopy.textContent = "Original music and professional audio services from Play Productions.";
+  }
   document.querySelector('a[href="dj-promo.html?demo=1"]')?.remove();
 }).catch(console.warn);

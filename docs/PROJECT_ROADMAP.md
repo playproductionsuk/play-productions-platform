@@ -1,259 +1,258 @@
 # Play Productions Project Roadmap
 
-## Phase A.3.6 — Browse Music catalogue refinement
-
-- Phase A.3.5 Browse Music hero was accepted in preview, tagged `stable-preview-browse-music-hero-20260704-2042`, and deployed to production Hosting pending live smoke testing.
-- The Browse Music breadcrumb now uses `Browse Music`; track detail breadcrumbs retain the same catalogue context.
-- Duplicate catalogue labels are consolidated into one Oswald `Catalogue` heading with tighter spacing.
-- The catalogue shows approximately five desktop rows before using an internal mouse, keyboard, or touch scroll area.
-- The desktop column header is sticky inside the catalogue window. At compact breakpoints the existing card layout hides that header, so the responsive catalogue uses a shorter scroll window without adding fragile JavaScript.
-- Commercial Inquiry remains immediately below the catalogue and is reached sooner.
-- Phase B speed/legacy cycling remains the next high-priority audit-first pass after this public refinement is accepted.
-
 ## 1. Current stable live state
 
 - Production admin works at `/admin.html`; `/admin.html?preview=1` remains the emergency preview fallback.
 - DJ applications, approval/rejection, invitation email, password setup and approved-DJ login work.
-- The protected Promo Crate and MP3-only DJ downloads work.
+- The protected Promo Crate and MP3-only downloads work for normal approved promo tracks.
 - DJ Applications CSV export works.
-- Music Library and Track Admin support track editing, readiness, asset assignment and preview playback.
-- Public catalogue, Coming Soon handling, track details and Add to Cart work.
+- Music Library and Track Admin support editing, readiness, asset assignment and preview playback.
+- Public catalogue, Coming Soon handling, track details, Preview, More Details and Add to Cart work.
 - Customer and approved-DJ navigation are separated by the strict `users/<uid>.djAccess === true` rule.
 - Sign Out clears Firebase Auth and returns users to Home.
-- The auth-aware homepage hero, studio image and role-specific CTAs are deployed and pending final live validation.
+- The auth-aware homepage hero, studio image and role-specific CTAs are live accepted and stable.
+- Homepage content and brand polish are live accepted and stable:
+  - Latest Tracks.
+  - About Play Productions.
+  - Stay Connected / Join the List.
+  - Commercial Inquiry.
+- The Browse Music hero is live accepted. Its confirmed release reference is `stable-preview-browse-music-hero-20260704-2042`; no separate stable-live hero tag exists.
+- The Browse Music catalogue layout is live accepted and stable:
+  - `Home › Browse Music` breadcrumb.
+  - One `Catalogue` heading.
+  - Internal approximately five-track scroll window.
+  - Sticky desktop column header.
+  - Commercial Inquiry is easier to reach.
+
+Known release blocker before trusted DJ invites:
+
+- A promo-only track can be hidden from Browse Music and shown in the Promo Crate, but its visible `Download MP3` action can fail with `This promo download is not available for that format`.
+- Fix this without weakening Firebase ID-token protection, exposing private Storage paths or adding WAV access for DJs.
 
 ## 2. Current strategic priority
 
 ### DJ-first growth
 
-The near-term goal is to make Play Productions ready for 1–3 trusted DJ invites.
+Prepare Play Productions for the first 1–3 trusted DJ invites. The next sprint must finish the remaining public entry pages, correct logged-in DJ behaviour, prove promo-only protected downloads and complete one clean end-to-end DJ journey.
 
-Trusted DJs should be able to:
-
-- Apply and receive an approval invitation.
-- Create their password and sign in.
-- Browse the Promo Crate.
-- Preview and download protected MP3 promos without manual file sending.
-- Promote tracks online and on social media.
-
-DJ access, delivery, tracking, outreach and useful promo metrics take priority over the full paid customer account journey.
+DJ access, delivery, tracking, outreach and useful promo metrics remain ahead of the full paid customer account journey.
 
 ## 3. Recently completed / stable milestones
 
 - Multi-page public platform and recovered admin shell.
-- Stable live DJ application and invitation workflow.
+- Stable live DJ application, approval and invitation workflow.
 - Approved-DJ Promo Crate with strict Firestore access checks.
 - Protected MP3 downloads using Firebase ID tokens; no public private-storage paths.
-- Music Library and Track Admin foundation, asset mapping, readiness and preview-player controls.
+- Music Library and Track Admin foundation, readiness, asset mapping and preview-player controls.
 - Single, deduplicated DJ Applications CSV export.
-- Public Coming Soon catalogue-row polish.
-- Customer-versus-DJ navigation separation.
+- Stable Coming Soon catalogue-row behaviour.
+- Strict customer-versus-DJ navigation separation.
 - Sign Out redirect to Home.
-- New Play Productions studio hero image and auth-aware homepage CTAs:
-  - Public: Browse Music + Request DJ Access.
-  - Customer: Browse Music.
-  - Approved DJ: Promo Crate.
+- Auth-aware homepage hero and role-specific CTAs.
+- Homepage content and public brand polish.
+- Browse Music hero and catalogue refinement.
 
-Useful release references:
+Confirmed release references:
 
 - `stable-live-dj-invite-readiness-access-nav-20260703-1930`
 - `stable-live-public-site-coming-soon-row-20260704-1248`
-- `stable-preview-signout-home-redirect-20260704-1305`
-- `stable-preview-auth-aware-home-hero-ctas-20260704-1421`
+- `stable-live-signout-home-redirect-20260704-1310`
+- `stable-live-auth-aware-home-hero-ctas-20260704-1459`
 - `stable-live-public-content-brand-polish-20260704-1649`
+- `stable-preview-browse-music-hero-20260704-2042`
+- `stable-preview-browse-music-catalogue-layout-20260704-2124`
+- `stable-live-browse-music-catalogue-layout-20260704-2128`
 
 ## 4. Immediate next tasks
 
-1. Complete Phase A.3.5 Browse Music hero and final A.3.4 acceptance checks.
-2. Run the final trusted DJ invite smoke test:
+1. Tidy the remaining public pages before trusted DJ invites:
+   - Request DJ Access page.
+   - Let’s Work / Commercial Inquiry page.
+2. Fix required logged-in DJ experience issues:
+   - Approved-DJ homepage Latest Tracks should show `Download MP3` instead of Add to Cart and hide prices.
+   - Promo-only tracks hidden from Browse Music but visible in Promo Crate must allow approved-DJ MP3 download.
+   - Promo Crate wording, heading and first-use guidance.
+   - DJ detail/back links/breadcrumbs.
+   - Download MP3 reassurance copy.
+   - Mobile Promo Crate and detail layout.
+   - Empty, error and loading states.
+   - No accidental shop/customer controls.
+   - No WAV or buy buttons.
+3. Confirm test-account separation:
+   - Admin account.
+   - Approved DJ account.
+   - True non-DJ customer account.
+4. Investigate customer login/logout only using a true non-DJ customer account.
+5. Run a final trusted DJ invite smoke test:
    - Public Request DJ Access.
-   - Invitation email and password setup.
-   - Approved DJ login and Promo Crate.
-   - Preview, More Details and protected MP3 download.
-   - MP3-only DJ detail page with no WAV action.
+   - Application submission.
+   - Approval and invitation email.
+   - Password setup.
+   - Approved DJ login.
+   - Promo Crate.
+   - Promo-only hidden-from-shop track appears and downloads MP3.
+   - Preview and More Details.
+   - Protected MP3 download.
+   - DJ detail remains MP3-only with no WAV action.
    - Sign Out returns Home.
-   - Mobile/hamburger check with no demo bypass.
-3. Prepare the first trusted-DJ invite message, email wording and “what to expect” notes.
-4. Complete a small public-quality pass only where needed for trusted invites:
-   - Remove duplicate track-detail genre/metadata and stale wording.
-   - Check breadcrumbs/back links and public-versus-DJ terminology.
-   - Review mobile CTA/button consistency.
-5. Start an audit-only site-wide speed and legacy-cycling review before removing any old layer.
+   - Mobile and hamburger check.
+   - No demo/preview bypass.
+6. Prepare the first trusted DJ invite wording:
+   - Email/message.
+   - What to expect.
+   - Login and download instructions.
+   - Requested support/promo action.
+7. Then start the Phase B speed/legacy cycling audit-first pass.
 
 ## 5. Priority roadmap
 
 ### Phase A — Final DJ Invite + Public Site Quality
 
-Goal: make the public and DJ experience polished enough for trusted DJ use.
+Completed Phase A public polish:
 
-- Phase A.2 Public Content + Brand Polish is live accepted and stable-live tagged:
-  - Replaced the repetitive homepage offer boxes with Latest Tracks, About Play Productions and Join the List sections.
-  - Latest Tracks reuses the existing catalogue, cart and preview-player utilities.
-  - Join the List initially used a safe contact CTA with no automatic email collection.
-  - Removed the duplicate top-of-page genre on public and DJ track details while retaining metadata and release date.
-  - Aligned public/customer/DJ typography and key account buttons with the established action-button style.
-  - Standardised visible public, footer and safe admin-header logo treatment to the Play Productions lime.
-- Phase A follow-up refinements:
-  - Latest Tracks: centre card actions, move price to the right where space allows and reduce card height/scale, especially on mobile. Blend the future reference style with the existing Play Productions button system.
-  - About Play Productions: remove duplicated heading treatment, prepare an image-friendly split layout and add a suitable image later.
-  - Join the List: use customer newsletter wording only—release updates and occasional Play Productions announcements. Keep DJ promo communications separate.
-  - Header/footer typography: increase navigation-link size, align it with hero/action typography and standardise footer headings and links.
-  - Button system: align Checkout, My Account, DJ Login and Sign Out sizing with hero/action buttons; resize the cart only as needed for balance.
-- Phase A.3 Public Style System + Newsletter Foundation is in preview:
-  - Increased and aligned header navigation, footer typography and account/action button sizing.
-  - Restored the accessible inline cart icon in the final auth-aware header renderer.
-  - Refined Latest Tracks card proportions, metadata/price alignment and centred actions.
-  - Reduced About to one heading and prepared an image-friendly split layout without inventing an image.
-  - Added a customer newsletter form using the existing validated anonymous enquiry write path with `type` and `listType` set to `customer-newsletter`.
-  - Customer newsletter interest is separate from DJ applications and never changes `djAccess`.
-  - No automated email sending or dedicated newsletter-admin workflow exists yet; those remain future work.
-- Phase A.3.1 Public Style/Layout Correction is in preview:
-  - Refined the accessible cart control and public `Customer Login` label.
-  - Compacted Latest Tracks, restored square artwork and balanced card actions.
-  - Changed the About heading and layout, with a safe mobile More Info control.
-  - Foreground About imagery should use a square source (recommended at least 1200 × 1200); a future section background should use a wide landscape source (recommended 1920 × 1080 or wider) with a dark readability treatment.
-  - Refined Stay Connected form placement and mailing-list success wording.
-  - Added a Commercial Inquiry card routed to the existing Let’s Work contact flow.
-  - No backend, payment, admin or newsletter automation changes were introduced.
-- Phase A.3.2 Public Layout/Button + DJ Login Correction is in preview:
-  - Refined header action separators and reduced the cart control width.
-  - Kept square Latest Tracks artwork while balancing desktop and mobile action sizing.
-  - Standardised homepage section headings to the white hero-heading type treatment.
-  - Tightened newsletter consent, button and mailing-list success presentation.
-  - Reused the existing Browse Music `commercial-store-panel` pattern and commercial contact route on Home.
-  - Reduced and aligned the Customer Portal sign-in action.
-  - Simplified DJ Login to one heading, a direct Home › DJ Login breadcrumb, clearer access guidance and a compact two-action form row.
-  - No authentication rules, approval checks, backend, payment, admin or download logic changed.
-- Phase A.3.3 Header Architecture, Typography + Commercial Panel Correction is in preview:
-  - Reordered public/customer navigation so DJ Login and Admin Login are main navigation links while Cart, Checkout and customer account actions remain grouped on the right.
-  - Approved DJs retain protected Promo Crate navigation, a public Admin Login link and Sign Out as the only right-side action.
-  - Reused the measured hero heading treatment—Oswald 400, `1.02` line-height, `-.045em` letter-spacing and white text—for section, login and customer-account headings.
-  - Removed the duplicate Customer Portal heading treatment and moved an honest customer release-update preference panel above My Music; preference persistence remains future work.
-  - Hardened customer and DJ sign-out redirects to Home with `finally` handling.
-  - Refined Stay Connected labels, consent wording and right-aligned action placement.
-  - Standardised homepage, Browse Music and track-detail commercial panels to one heading, full-width copy and a right-aligned enquiry action.
-  - Improved DJ Login body typography while preserving Firebase approval and password-reset behaviour.
-  - No backend, payment, admin startup, approval or protected-download logic changed.
-- Phase A.3.4 Header Button State + Promo Crate Heading Correction is in preview:
-  - Restored boxed DJ Login and Admin Login actions in the public logged-out main navigation.
-  - Removed the remaining divider before Cart.
-  - Limited Admin Login to the public logged-out state; customer and approved-DJ desktop/mobile navigation omit it, and it is not part of the shared footer.
-  - Reduced the Promo Crate catalogue heading to one `Promo Crate` heading using the measured Oswald hero treatment.
-  - Tightened Stay Connected padding and empty-status spacing while moving Join the List slightly lower.
-  - No authentication, approval, download, backend, payment or admin-startup logic changed.
-- Phase A.3.5 Browse Music Hero is in preview:
-  - Added a hero-style Browse Music introduction using the supplied studio image at `public/assets/browse-music-hero.png`.
-  - Uses the accepted Oswald heading treatment and the copy: “Original releases for personal listening and private use. Preview tracks, add them to your cart and download securely.”
-  - Preserves catalogue filters, Preview, More Details, Add to Cart and Coming Soon behaviour below the hero.
-  - Retains A.3.4 public-only Admin Login, boxed public DJ/Admin Login links, divider-free Cart group and single Promo Crate heading.
-  - No authentication, protected-download, backend, payment or admin-startup logic changed.
-- Keep the Phase B speed/legacy cycling review as the next high-priority audit-first pass.
-- Finish and live-tag the auth-aware homepage release.
-- Complete the final trusted-DJ journey and invite pack.
-- Clean up public/DJ track-detail metadata, headings, wording and navigation.
-- Check the full public/customer/DJ mobile and hamburger journey.
-- Standardise brand typography across the public header, footer, hero CTAs, customer portal, DJ portal and admin header.
-- Align Checkout, My Account, DJ Login, Sign Out and account controls with the stronger hero/action button system.
-- Keep the existing cart concept, adjusting its size only when the wider button system is standardised.
-- Replace yellow logo treatments with the Play Productions lime across public, footer, admin, DJ and customer surfaces.
-- Keep Coming Soon and public catalogue behaviour stable.
-- Make the homepage leaner:
-  - Remove or redesign the Music/listen, DJ promo/DJs and Create/Let’s Work boxes below the hero.
-  - Put Latest Tracks directly below the hero.
-  - Add a concise About Play Productions section.
-  - Add a newsletter/join-the-list section.
-  - Preserve role-aware hero CTAs.
+- Homepage content, studio hero, auth-aware CTAs and role-aware navigation.
+- Latest Tracks, About, Stay Connected / Join the List and Commercial Inquiry.
+- Shared Play Productions typography, button, logo, header and footer refinements.
+- Customer newsletter interest kept separate from DJ applications.
+- Public-only DJ Login and Admin Login treatment.
+- Single Promo Crate heading.
+- Browse Music hero with supplied studio image and accepted copy.
+- Browse Music breadcrumb, single Catalogue heading, five-track internal scroll and sticky desktop header.
+- Public catalogue, Coming Soon, track-detail and cart behaviour preserved.
+
+Remaining Phase A work:
+
+- Request DJ Access page polish.
+- Let’s Work / Commercial Inquiry page polish.
+- Approved-DJ homepage Latest Tracks behaviour.
+- Promo-only protected MP3 download fix.
+- Logged-in DJ homepage, Promo Crate and detail experience polish.
+- Test-account separation and customer-login validation.
+- Final trusted DJ invite smoke test.
+- Trusted DJ invite pack.
+
+### Next sprint — DJ Invite + Logged-In Experience
+
+- Tidy Request DJ Access:
+  - Hero/header style, copy, form labels and mobile layout.
+  - Submit/validation, success and error states.
+  - Clear application, approval and invitation expectations.
+  - Remove stale `DJ Promo` terminology where `Request DJ Access` or `Promo Crate` is correct.
+  - Preserve the existing application, approval/rejection and invitation-email flow.
+- Tidy Let’s Work / Commercial Inquiry:
+  - Hero/header style, wording, form labels and mobile layout.
+  - Submit/validation, success and error states.
+  - Align copy with Commercial Inquiry panels on Home, Browse Music and detail pages.
+  - Preserve the existing enquiry flow.
+- Make homepage Latest Tracks DJ-aware only when `users/<uid>.djAccess === true`:
+  - Hide prices.
+  - Replace Add to Cart with `Download MP3`.
+  - Keep Preview and More Details.
+  - Never show WAV/master, Buy or Add to Cart actions.
+  - Leave public/customer and Coming Soon behaviour unchanged.
+- Support promo-only tracks:
+  - Admin can show a track in Promo Crate while hiding it from the public shop.
+  - Approved DJs can preview, open details and download its protected MP3.
+  - Public/customer Browse Music does not show it.
+  - Diagnose shop-visibility gates, MP3 field mapping and Track Admin/renderer/endpoint flag mismatches.
+  - Preserve Firebase ID-token checks and private Storage paths.
+  - Keep DJ delivery MP3-only.
+- Separate and document test accounts:
+  - Admin.
+  - Approved DJ.
+  - Normal non-DJ customer.
+  - Investigate the `chris@utensils.co.uk` customer sign-in issue only after confirming the account role.
+  - A true non-DJ customer must see Cart, Checkout, My Account and Sign Out, but not Promo Crate or Request DJ Access.
+- Polish the logged-in DJ journey:
+  - Clear Promo Crate landing and first-use copy.
+  - Explain that previews may be limited while downloads are full MP3s.
+  - Clear Download MP3 reassurance and support/contact route.
+  - Correct back links and breadcrumbs.
+  - Mobile view plus empty, error and loading states.
+  - No accidental customer/shop controls, WAV or buy buttons.
+- Run the full journey:
+  - Request access → approve → invite → set password → login → Promo Crate → preview/download → detail page → sign out.
+- Prepare the trusted DJ invite pack:
+  - Short email/message.
+  - What to do after login.
+  - Download instructions.
+  - Friendly social/support ask.
+  - Contact route if something breaks.
 
 ### Phase B — Speed, Legacy Cycling + Performance Cleanup
 
+Starts after the DJ invite/logged-in sprint unless a major blocker appears.
+
 Goal: stop stale screens and old layouts flashing while improving perceived speed.
 
-- Audit startup and render chains for public, DJ, customer and admin pages.
-- Identify the final renderer and responsibility of each RC/module layer.
-- Isolate or remove obsolete layers one responsibility at a time.
-- Reduce duplicated imports, renderers, delayed callbacks and Firestore reads.
+- Audit public, DJ, customer and admin startup/render chains.
+- Identify each final renderer and responsibility.
+- Map duplicated imports, delayed callbacks and Firestore reads.
+- Remove obsolete layers one responsibility at a time.
 - Prevent stale login, dashboard, portal and Promo Crate flashes.
-- Measure page weight and startup timing before and after changes.
-- Work preview-first with small rollback-safe changes; do not perform a broad rewrite.
+- Measure page weight and startup timing before and after.
+- Work preview-first with small rollback-safe changes.
+- No broad rewrite, MutationObserver/timing-loop fix or admin-startup regression.
 
 ### Phase C — DJ Contacts, Download Tracking + Promo Metrics
 
-Goal: grow DJ promotion and make engagement measurable.
-
 - Expand contacts for DJs, radio, labels, blogs and playlist curators.
 - Track DJ downloads and download history by DJ/contact.
-- Add track-level interest and DJ engagement statistics.
-- Add Promo Crate usage metrics and a lightweight promo dashboard.
-- Track campaign/outreach notes, consent/source, follow-up status and responses.
-- Add useful customer behaviour metrics only where inexpensive and relevant.
+- Add track interest, DJ engagement, campaign and outreach metrics.
+- Track consent/source, support notes, plays, feedback, social tags and follow-up status.
 
 ### Phase D — SEO, Analytics + Search Setup
 
-Goal: make the public site discoverable and measurable.
-
-- Audit page titles, descriptions, canonical URLs and indexing.
+- Audit titles, descriptions, canonical URLs and indexing.
 - Improve track-detail SEO and Open Graph/social previews.
-- Generate and submit a sitemap.
-- Add or review `robots.txt`.
-- Configure Google Search Console and indexing checks.
-- Configure GA4 or an agreed privacy-conscious analytics setup.
-- Add lightweight SEO/analytics reporting where it supports decisions.
+- Generate and submit a sitemap and review `robots.txt`.
+- Configure Search Console and agreed privacy-conscious analytics.
 
 ### Phase E — Admin Productivity + Catalogue Management
 
-Goal: improve day-to-day admin work after DJ/public growth basics.
-
 - Admin asset open/copy/export/download actions.
 - Admin-only full MP3 preview where useful.
-- Missing Data inline editing and stronger filtering/search/refresh.
+- Missing Data inline editing and stronger filtering/search.
 - Settings-managed genre, style, subgenre, mood and tag lists.
-- Improve Add Track, bulk updates and catalogue defaults.
-- Continue Track Admin and Music Library polish.
-- Add lightweight business, release and operational dashboard widgets.
+- Improve Add Track, bulk updates, catalogue defaults and operational widgets.
+- Newsletter admin/export workflow while keeping customer newsletter and DJ promo lists separate.
 
 ### Phase F — Customer Purchase + Account Flow
 
-Goal: complete the paid customer journey after DJ, performance and marketing foundations.
-
-- Harden cart, checkout and Stripe/payment flow.
-- Add purchase history and reliable account downloads.
-- Deliver paid MP3/WAV files and order/download emails.
-- Store licence/order records.
-- Add sales, fees, revenue and fulfilment reporting.
+- Smoke-test and harden customer registration, login/logout, cart and checkout.
+- Complete Stripe/payment and fulfilment only when deliberately scheduled.
+- Add purchase history, account downloads and paid MP3/WAV delivery.
+- Store licence/order records and reporting.
 
 ### Phase G — Storage + Maintenance
-
-Goal: keep the platform safe and maintainable.
 
 - Storage usage and orphan-asset audits.
 - Asset replacement history and safe cleanup tools.
 - Firebase API-key restrictions and GitHub/dependency alert cleanup.
-- Firestore/Storage rules reviews and operational health checks.
+- Firestore/Storage rules and operational health reviews.
 
 ### Phase H — Custom Vinyl Record Cutting
 
-Goal: build Vinyl Cutting before Mixing & Mastering.
-
-- Public service page and approved content/pricing.
-- Quote/request and project-intake flow.
+- Build before Mixing & Mastering.
+- Public service page, content/pricing and quote/project-intake flow.
 - Admin project tracking.
 
 ### Phase I — Mixing & Mastering
 
-Goal: launch only when the service is ready to present and fulfil professionally.
-
+- Launch only when ready to present and fulfil professionally.
 - Public stereo mixing, mastering and mix-plus-master page.
-- Custom quote/project intake and reference upload.
-- Admin project tracking.
+- Custom quote/project intake, reference upload and admin tracking.
 
 ## 6. Future backlog
 
 ### Public experience
 
 - Persistent cross-page preview player.
-- Wider button/font consistency after Phase A.
-- Additional homepage storytelling and social proof.
-- Final detail-page and catalogue visual refinements.
+- Remaining public style/button consistency.
+- Additional storytelling and social proof.
+- About imagery:
+  - Foreground square image, ideally at least 1200 × 1200.
+  - Optional wide background image, 1920 × 1080 or larger, with a dark readability treatment.
 
 ### DJ and promotion
 
@@ -263,7 +262,7 @@ Goal: launch only when the service is ready to present and fulfil professionally
 
 ### Customer and sales
 
-- Customer preferences, downloads and account recovery polish.
+- Customer preferences, recovery and account/download polish.
 - Paid fulfilment retries and support tooling.
 - Commercial/exclusive-rights enquiry tracking without complex licensing.
 
@@ -275,16 +274,17 @@ Goal: launch only when the service is ready to present and fulfil professionally
 
 ## 7. Known issues / watch-outs
 
-- Old RC/module layers can still cause visual cycling or repeated work. Audit the final renderer before changing UI.
-- Do not reintroduce `admin-live-fields.js`.
-- Do not reintroduce `coreReady` waiting logic.
-- Do not reintroduce “Live admin data timed out”.
+- Promo-only tracks can currently fail MP3 download despite appearing in Promo Crate; this blocks trusted DJ invitations.
+- Do not require public-shop visibility for a valid approved-DJ promo download.
+- Confirm MP3 field/path mapping and Track Admin visibility flags before changing the protected endpoint.
+- Do not expose private Storage paths or weaken Firebase ID-token checks.
+- Keep DJs MP3-only; preserve WAV/master fields for paid fulfilment and archive use.
+- Use separate admin, approved-DJ and non-DJ customer test accounts.
+- Old RC/module layers can cause visual cycling or repeated work; identify the final owner before changing UI.
+- Do not reintroduce `admin-live-fields.js`, `coreReady` waiting or `Live admin data timed out`.
 - Do not introduce MutationObserver-based fixes or persistent timing loops.
 - Preserve the current admin login/startup and no-black-screen guard.
-- Preserve strict DJ approval: only `users/<uid>.djAccess === true` enables Promo Crate mode.
-- Preserve protected MP3 downloads and do not expose private Storage paths.
-- Preserve WAV/master fields for paid fulfilment and archive use; DJs remain MP3-only.
-- Avoid large rewrites. Make small, responsibility-based, preview-tested changes.
+- Avoid broad rewrites; use small responsibility-based preview changes.
 
 ## 8. Deployment and safety rules
 
@@ -328,4 +328,4 @@ For every future pass:
 
 ## Archived historical module notes
 
-Detailed Module 2 implementation history has been condensed. Git history and `docs/ADMIN_STARTUP_AUDIT.md` remain the references for deep startup, renderer and recovery details.
+Detailed Module 2 and public-polish implementation history is available in Git history. `docs/ADMIN_STARTUP_AUDIT.md` remains the deep reference for admin startup, renderer and recovery details.

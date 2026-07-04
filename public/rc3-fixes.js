@@ -25,7 +25,27 @@ if(rc3Page==="music.html"){
     hero.querySelector("p:last-child").textContent="Original releases for personal listening and private use. Preview tracks, add them to your cart and download securely.";
   }
   const catalogue=document.querySelector("#catalogue");
+  const catalogueHeading=catalogue?.querySelector(".compact-heading");
+  if(catalogueHeading){
+    catalogueHeading.classList.add("catalogue-heading");
+    catalogueHeading.innerHTML='<h2>Catalogue</h2><span id="storeCount" class="store-count"></span>';
+  }
+  const breadcrumb=document.querySelector(".breadcrumb-bar strong");
+  if(breadcrumb)breadcrumb.textContent="Browse Music";
+  const trackGrid=document.querySelector("#trackGrid");
+  const columnHead=trackGrid?.previousElementSibling?.classList.contains("store-column-head")?trackGrid.previousElementSibling:null;
+  if(trackGrid&&!trackGrid.closest(".catalogue-scroll")){
+    const scroll=document.createElement("div");
+    scroll.className="catalogue-scroll";
+    (columnHead||trackGrid).before(scroll);
+    if(columnHead)scroll.append(columnHead);
+    scroll.append(trackGrid);
+  }
   catalogue?.insertAdjacentHTML("beforeend",'<aside class="commercial-store-panel"><h2>Commercial Inquiry</h2><p>Standard downloads are for personal/private use. If you want to record vocals, use a track commercially, or discuss exclusive/commercial rights, get in touch.</p><a class="button ghost" href="contact.html?subject=commercial">Commercial Enquiry</a></aside>');
+}
+
+if(rc3Page==="track.html"){
+  document.querySelector('.breadcrumb-bar a[href="music.html"]')?.replaceChildren("Browse Music");
 }
 
 if(rc3Page==="portal.html"){

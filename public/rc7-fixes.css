@@ -12,6 +12,14 @@
 body:has(#catalogue) .store-hero.music-hero{width:100%!important;max-width:none!important;min-height:360px!important;aspect-ratio:2.5/1;padding:clamp(34px,5vw,64px)!important;display:flex!important;align-items:flex-start!important;justify-content:center!important;flex-direction:column!important;border:1px solid #2a2a2a!important;border-radius:8px!important;background-image:linear-gradient(90deg,rgba(5,5,5,.94) 0%,rgba(5,5,5,.74) 35%,rgba(5,5,5,.22) 66%,rgba(5,5,5,.1) 100%),url("assets/browse-music-hero.png")!important;background-position:center center!important;background-size:cover!important;background-repeat:no-repeat!important;overflow:hidden}
 body:has(#catalogue) .store-hero.music-hero h1{max-width:560px;margin:0 0 16px!important;color:#f2f2f2!important;font-family:Oswald,Inter,sans-serif!important;font-size:clamp(2.7rem,5vw,5rem)!important;font-weight:400!important;line-height:1.02!important;letter-spacing:-.045em!important;text-transform:none!important}
 body:has(#catalogue) .store-hero.music-hero p{width:auto!important;max-width:600px!important;margin:0!important;color:#d0d0d0!important;font:400 1rem/1.7 Inter,Arial,sans-serif!important;text-shadow:0 1px 12px #000}
+#catalogue{margin-top:12px!important;padding-top:20px!important}
+#catalogue .catalogue-heading{align-items:flex-end;margin-bottom:12px!important}
+#catalogue .catalogue-heading h2{margin:0!important;color:#f2f2f2!important;font-family:Oswald,Inter,sans-serif!important;font-size:clamp(2rem,3.6vw,3.6rem)!important;font-weight:400!important;line-height:1.02!important;letter-spacing:-.045em!important;text-transform:none!important}
+#catalogue .store-tools{margin:0 0 12px!important}
+#catalogue .catalogue-scroll{max-height:455px;overflow-y:auto;overflow-x:hidden;overscroll-behavior:contain;scrollbar-color:#536d1c #111;border:1px solid #2a2a2a;border-radius:6px;background:#101010}
+#catalogue .catalogue-scroll .store-column-head{position:sticky;z-index:4;top:0;margin:0;padding:11px 12px;background:rgba(13,13,13,.98);border-bottom:1px solid #333;box-shadow:0 5px 14px rgba(0,0,0,.32)}
+#catalogue .catalogue-scroll .compact-track-list{border-top:0}
+#catalogue .commercial-store-panel{margin-top:14px}
 .primary-nav a,.portal-actions a,.portal-actions button,.site-footer,.auth-card,.portal-page-wide{font-family:Oswald,Inter,sans-serif!important}
 .primary-nav a,.portal-actions a,.portal-actions button,.site-footer a,.auth-card .button,.portal-page-wide .button{text-transform:uppercase!important;letter-spacing:.035em!important}
 .primary-nav a{font-size:13px!important;font-weight:600!important}
@@ -146,6 +154,9 @@ body:has(.dj-login-breadcrumb)>.breadcrumb-bar:not(.dj-login-breadcrumb){display
  body:has(#catalogue) .store-hero.music-hero{min-height:380px!important;aspect-ratio:auto;padding:32px 22px!important;background-position:58% center!important}
  body:has(#catalogue) .store-hero.music-hero h1{font-size:2.65rem!important}
  body:has(#catalogue) .store-hero.music-hero p{max-width:290px!important;font-size:.92rem!important}
+ #catalogue{padding-top:16px!important}
+ #catalogue .catalogue-heading{align-items:center;flex-direction:row}
+ #catalogue .catalogue-scroll{max-height:410px}
  .dj-page .store-tools{grid-template-columns:1fr!important}
  .dj-page .store-tools label:first-child{grid-column:auto!important}
  .social-brand-links.rc4-socials{grid-template-columns:repeat(2,1fr)!important}

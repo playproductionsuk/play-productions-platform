@@ -1,5 +1,15 @@
 # Play Productions Project Roadmap
 
+## Phase A.3.6 — Browse Music catalogue refinement
+
+- Phase A.3.5 Browse Music hero was accepted in preview, tagged `stable-preview-browse-music-hero-20260704-2042`, and deployed to production Hosting pending live smoke testing.
+- The Browse Music breadcrumb now uses `Browse Music`; track detail breadcrumbs retain the same catalogue context.
+- Duplicate catalogue labels are consolidated into one Oswald `Catalogue` heading with tighter spacing.
+- The catalogue shows approximately five desktop rows before using an internal mouse, keyboard, or touch scroll area.
+- The desktop column header is sticky inside the catalogue window. At compact breakpoints the existing card layout hides that header, so the responsive catalogue uses a shorter scroll window without adding fragile JavaScript.
+- Commercial Inquiry remains immediately below the catalogue and is reached sooner.
+- Phase B speed/legacy cycling remains the next high-priority audit-first pass after this public refinement is accepted.
+
 ## 1. Current stable live state
 
 - Production admin works at `/admin.html`; `/admin.html?preview=1` remains the emergency preview fallback.

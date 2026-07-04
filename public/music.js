@@ -29,6 +29,7 @@ function availability(track, health) {
 function row(track) {
   const health = trackHealth(track);
   const sellable = health.readyToBuy;
+  const unavailableLabel = track.status === "coming-soon" ? "Coming Soon" : "Unavailable";
   const tags = (track.moodTags || []).slice(0, 2).join(" · ");
   return `<article class="store-track" data-id="${escapeHtml(track.id)}">
     <div class="store-art">
@@ -40,7 +41,9 @@ function row(track) {
     <span class="price">${availability(track, health)}</span>
     <div class="store-track-actions">
       <a class="button ghost" href="track.html?id=${encodeURIComponent(track.id)}">More Details</a>
-      ${sellable ? '<button class="button primary" data-add>Add to Cart</button>' : '<span class="availability-note">Personal download unavailable</span>'}
+      ${sellable
+        ? '<button class="button primary" data-add>Add to Cart</button>'
+        : `<button class="button ghost store-unavailable-action" type="button" disabled>${unavailableLabel}</button>`}
     </div>
   </article>`;
 }

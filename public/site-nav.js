@@ -62,57 +62,99 @@ async function enhanceApprovedDjNavigation() {
       import("https://www.gstatic.com/firebasejs/11.9.1/firebase-firestore.js")
     ]);
     const auth = getAuth(firebaseApp);
+    let authRevision = 0;
+
+    const renderNavigation = (mode, account) => {
+      const primaryNav = header.querySelector(".primary-nav");
+      const actions = header.querySelector(".portal-actions");
+      if (!primaryNav || !actions) return;
+      globalThis.playNavDebug = {
+        uid: account?.uid || null,
+        mode,
+        lastRenderer: "site-nav.renderNavigation",
+        renderedAt: new Date().toISOString()
+      };
+      console.info("[Play Nav] render", globalThis.playNavDebug);
+
+      if (mode === "dj") {
+        const promoDetail = page === "track.html" && new URLSearchParams(location.search).get("promo") === "1";
+        primaryNav.innerHTML = [
+          ["index.html", "Home", page === "index.html"],
+          ["dj-promo.html", "Promo Crate", page === "dj-promo.html" || promoDetail],
+          ["contact.html", "Let’s Work", page === "contact.html"]
+        ].map(([href, label, active]) => `<a class="${active ? "active" : ""}" href="${href}">${label}</a>`).join("");
+        actions.innerHTML = '<button id="djSignOut" class="button ghost" type="button">Sign out</button>';
+        actions.querySelector("#djSignOut").onclick = async event => {
+          event.currentTarget.disabled = true;
+          await signOut(auth);
+          location.replace("dj-login.html");
+        };
+        return;
+      }
+
+      primaryNav.innerHTML = [
+        ["index.html", "Home"],
+        ["music.html", "Browse Music"],
+        ["dj-access.html", "Request DJ Access"],
+        ["contact.html", "Let’s Work"]
+      ].map(([href, label]) => {
+        const active = page === href || (page === "track.html" && href === "music.html");
+        return `<a class="${active ? "active" : ""}" href="${href}">${label}</a>`;
+      }).join("");
+      actions.innerHTML = `
+        <button class="cart-link" data-cart-open aria-label="Open cart">Cart <span class="cart-count">0</span></button>
+        <a href="portal.html">My Account</a>
+        ${account
+          ? '<button id="customerNavSignOut" class="button ghost" type="button">Sign out</button>'
+          : '<a href="dj-login.html">DJ Login</a>'}
+        <a class="cart-menu-link" href="checkout.html">Checkout</a>`;
+      actions.querySelector("#customerNavSignOut")?.addEventListener("click", async event => {
+        event.currentTarget.disabled = true;
+        await signOut(auth);
+        location.replace("index.html");
+      });
+      window.dispatchEvent(new Event("play-public-navigation-rendered"));
+    };
 
     onAuthStateChanged(auth, async account => {
+      const revision = ++authRevision;
       let approved = false;
+      let resolvedDjAccess = null;
+      console.info("[Play Nav] auth state", {
+        uid: account?.uid || null,
+        email: account?.email || null,
+        revision
+      });
       if (account) {
         try {
           const profile = await getDoc(doc(db, "users", account.uid));
-          approved = profile.exists() && profile.data().djAccess === true;
+          resolvedDjAccess = profile.exists() ? profile.data().djAccess : undefined;
+          approved = profile.exists() && resolvedDjAccess === true;
+          console.info("[Play Nav] DJ access resolved", {
+            uid: account.uid,
+            documentExists: profile.exists(),
+            djAccess: resolvedDjAccess,
+            approved,
+            revision
+          });
         } catch (error) {
           console.warn("DJ navigation approval could not be verified.", error);
         }
       }
-
-      const promoLink = header.querySelector('.primary-nav a[href="dj-access.html"], .primary-nav a[href="dj-promo.html"]');
-      if (promoLink) {
-        promoLink.href = approved ? "dj-promo.html" : "dj-access.html";
-        promoLink.textContent = approved ? "Promo Crate" : "Request DJ Access";
-        const promoDetail = page === "track.html" && new URLSearchParams(location.search).get("promo") === "1";
-        promoLink.classList.toggle(
-          "active",
-          approved ? page === "dj-promo.html" || promoDetail : page === "dj-access.html" || page === "dj-login.html" || promoDetail
-        );
+      if (revision !== authRevision) {
+        console.info("[Play Nav] stale auth result discarded", {
+          uid: account?.uid || null,
+          revision,
+          currentRevision: authRevision
+        });
+        return;
       }
 
-      const actions = header.querySelector(".portal-actions");
-      const djLogin = actions?.querySelector('a[href="dj-login.html"]');
-      const existingSignOut = actions?.querySelector("#djNavSignOut");
-      if (approved) {
-        header.querySelector('.primary-nav a[href="music.html"]')?.remove();
-        const signOutButton = existingSignOut
-          || actions?.querySelector("#djSignOut")
-          || document.createElement("button");
-        signOutButton.id = page === "dj-promo.html" ? "djSignOut" : "djNavSignOut";
-        signOutButton.type = "button";
-        signOutButton.className = "button ghost";
-        signOutButton.textContent = "Sign out";
-        signOutButton.onclick = async () => {
-          signOutButton.disabled = true;
-          await signOut(auth);
-          location.replace("dj-login.html");
-        };
-        actions?.replaceChildren(signOutButton);
-      } else if (!approved && existingSignOut) {
-        const loginLink = document.createElement("a");
-        loginLink.href = "dj-login.html";
-        loginLink.textContent = "DJ Login";
-        existingSignOut.replaceWith(loginLink);
-      }
+      renderNavigation(approved ? "dj" : "customer", account);
+      globalThis.playNavDebug.djAccess = resolvedDjAccess;
+      globalThis.playNavDebug.approved = approved;
 
       if (page === "track.html" && new URLSearchParams(location.search).get("promo") === "1") {
-        const musicLink = header.querySelector('.primary-nav a[href="music.html"]');
-        musicLink?.classList.remove("active");
         const backLink = document.querySelector(".track-product .back-link");
         if (backLink) {
           backLink.href = approved ? "dj-promo.html" : "dj-access.html";
@@ -188,9 +230,19 @@ import("./cart.js").then(({ getCart, removeFromCart, cartTotal }) => {
       }
     });
   }
-  document.querySelector("[data-cart-open]")?.addEventListener("click", openDrawer);
+  const bindCartButton = () => {
+    const button = document.querySelector("[data-cart-open]");
+    if (!button || button.dataset.cartBound === "true") return;
+    button.dataset.cartBound = "true";
+    button.addEventListener("click", openDrawer);
+  };
+  const refreshPublicNavigation = () => {
+    bindCartButton();
+    updateCount();
+  };
+  refreshPublicNavigation();
+  window.addEventListener("play-public-navigation-rendered", refreshPublicNavigation);
   window.addEventListener("cartchange", updateCount);
-  updateCount();
 });
 
 import("./site-settings.js").then((module) => {

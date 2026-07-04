@@ -30,7 +30,7 @@ if(rc3Page==="portal.html"){
   const music=document.querySelector("#myMusic");
   const welcome=document.querySelector("#welcome");
   const setAccountCopy=()=>{
-    if(welcome&&!welcome.dataset.rc3&&/Preview|Signed in/i.test(welcome.textContent)){welcome.dataset.rc3="true";welcome.innerHTML='<strong>Your account</strong><br><span>Download your music, review your orders and manage release update preferences.</span> <small class="status-pill">Preview mode</small>'}
+    if(welcome&&!welcome.dataset.rc3&&/Preview|Signed in/i.test(welcome.textContent)){welcome.dataset.rc3="true";welcome.innerHTML='<strong>Your account</strong><br><span>Download your music, review your orders and manage release update preferences.</span>'}
   };
   new MutationObserver(setAccountCopy).observe(welcome,{childList:true,subtree:true});
   setAccountCopy();

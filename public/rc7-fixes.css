@@ -14,6 +14,7 @@
 .store-column-head{grid-template-columns:58px minmax(170px,2fr) 100px 68px minmax(105px,1fr) 72px 226px!important}
 .store-track-actions{width:226px!important;min-width:226px!important;gap:4px!important}
 .store-track-actions .button{padding:6px 8px!important;font-size:9px!important;min-width:0!important}
+.store-track-actions .store-unavailable-action{opacity:.56;cursor:not-allowed;white-space:nowrap}
 
 .dj-page .store-tools{display:grid!important;grid-template-columns:minmax(240px,2fr) repeat(4,minmax(120px,1fr))!important;gap:8px!important;margin:25px 0 22px!important}
 .dj-page .store-tools input,.dj-page .store-tools select{width:100%!important;height:45px!important;padding:0 13px!important}

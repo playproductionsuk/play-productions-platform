@@ -164,9 +164,66 @@ hero/action/cart/account button consistency. Purchase/customer-account work
 remains in Phase B; admin asset tooling and storage cleanup remain in Phases
 E/F.
 
+### Customer portal navigation cleanup
+
+A separate preview-first cleanup follows the accepted DJ release:
+
+- The first Customer Portal cleanup preview failed because destructive DJ-nav
+  mutations and overlapping asynchronous profile checks could leak a previous
+  approved-DJ state into a normal customer session.
+- Navigation is rebuilt completely for the latest auth state, guarded by an
+  auth revision. Only a current, successful `users/<uid>.djAccess === true`
+  result renders Promo Crate mode; missing, false, failed or stale checks render
+  customer/public shop navigation.
+- Customer sign-out returns to Home, never the DJ login route, and customer
+  portal loads clear stale DJ navigation rather than inheriting prior context.
+- The failed retest showed Promo Crate after the intended customer login.
+  Preview diagnostics now report the actual Firebase UID, raw resolved
+  `djAccess`, selected nav mode and final renderer. Because the protected crate
+  independently checks the same strict flag, successful crate entry means the
+  active UID must be audited for `djAccess: true` or a retained approved-DJ
+  session before changing the access rule.
+- Stable live DJ Invite Readiness tag
+  `stable-live-dj-invite-readiness-access-nav-20260703-1930` records the
+  accepted production state. The minor Request DJ Access active highlight
+  after DJ sign-out remains public-polish backlog.
+- Remove the legacy `Preview customer portal` control and `Preview mode` badge.
+- Keep one customer sign-out control in the shared header and remove the
+  duplicate page-level sign-out.
+- Normal authenticated customers retain Browse Music, Request DJ Access,
+  Cart, Checkout and My Account navigation.
+- Promo Crate navigation applies only when `users/<uid>.djAccess === true`;
+  authentication alone never selects the DJ portal state.
+- Keep the portal shell visible immediately after successful customer
+  authentication even if a later orders/projects data read fails, so sign-in
+  does not appear stuck.
+- Preserve the full purchase/customer-account build-out for Enhancement Phase
+  B and broader button/font consistency for Enhancement Phase A.
+
 Enhancement Phases A–F retain their existing names and order. Module 3 remains
 the future Mixing & Mastering public section, and Module 4 remains the future
 Custom Vinyl Record Cutting public section.
+
+### Enhancement Phase A — Public Site Quality Pass 1
+
+- Keep Coming Soon catalogue rows aligned with normal releases.
+- Replace public `Personal download unavailable` copy with a disabled
+  Coming Soon/Unavailable purchase action while preserving Preview and More
+  Details.
+- Keep purchasable price and Add to Cart behaviour unchanged.
+- Validate catalogue actions at desktop and mobile breakpoints.
+- Keep broader button/font consistency and general public polish as later
+  Phase A work.
+
+### Enhancement Phase B — Customer account validation
+
+- Customer-state testing requires a true non-DJ account where
+  `users/<uid>.djAccess !== true`.
+- The previously tested UID resolved to `djAccess: true` and correctly received
+  approved-DJ Promo Crate navigation; do not patch around that expected state.
+- Keep the full purchase/customer-account flow as later Phase B work.
+- `account.js` now guards missing elements before attaching listeners so shared
+  or delayed portal rendering cannot throw a null `addEventListener` error.
 
 Module 2E.4 preview was a partial improvement but was not accepted: search/user/sign-out were still inside page content rather than the real navigation header, DJ Database could remain highlighted after another tab opened, and the Track Editor grouping still separated closely related availability controls. Module 2E.4.1 corrects those specific issues.
 

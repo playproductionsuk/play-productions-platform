@@ -9,6 +9,7 @@
 
 .brand-hero-content,.store-hero,.page-shell>.contact-grid>section:first-child{width:100%!important;max-width:980px!important}
 .brand-hero-copy,.store-hero p,.page-shell .subcopy{width:100%!important;max-width:900px!important}
+.brand-hero{background-image:linear-gradient(90deg,rgba(7,7,7,.97) 0%,rgba(7,7,7,.8) 43%,rgba(7,7,7,.18) 72%),url("assets/hero-play-productions-studio.png")!important;background-position:64% center!important;background-size:cover!important}
 
 .store-track{grid-template-columns:58px minmax(170px,2fr) 100px 68px minmax(105px,1fr) 72px 226px!important}
 .store-column-head{grid-template-columns:58px minmax(170px,2fr) 100px 68px minmax(105px,1fr) 72px 226px!important}
@@ -53,6 +54,7 @@
  .dashboard-status-restored .setup-status-grid{grid-template-columns:1fr 1fr!important}
 }
 @media(max-width:560px){
+ .brand-hero{background-position:68% center!important}
  .dj-page .store-tools{grid-template-columns:1fr!important}
  .dj-page .store-tools label:first-child{grid-column:auto!important}
  .social-brand-links.rc4-socials{grid-template-columns:repeat(2,1fr)!important}

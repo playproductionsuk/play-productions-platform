@@ -12,7 +12,7 @@ document.querySelectorAll(".trust-strip>div,.feature-strip>div").forEach((item,i
 });
 
 const actions=document.querySelector(".portal-actions");
-if(actions&&!actions.querySelector(".cart-menu-link")){
+if(actions&&!actions.querySelector(".cart-menu-link")&&globalThis.playDjApproved!==true){
   actions.insertAdjacentHTML("beforeend",'<a class="cart-menu-link" href="checkout.html">Cart</a>');
 }
 

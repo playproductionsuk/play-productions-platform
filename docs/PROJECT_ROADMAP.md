@@ -535,8 +535,26 @@ Do not add competing renderers, persistent loops or MutationObservers.
 - True non-DJ customer navigation was validated with `Lisa@DBMLippy.co.uk`: no Promo Crate was shown and direct DJ Promo access remained blocked.
 - Final pre-DJ-invite polish is in preview: public, customer and approved-DJ Sign Out actions should clear Firebase Auth and return to Home rather than the DJ Promo login page.
 
+### Final DJ/customer public CTA polish
+
+- Homepage hero imagery now uses the new Play Productions studio image for public, customer and approved-DJ states.
+- Auth-aware homepage hero and CTA preview is accepted and pending live validation.
+- The new Play Productions studio hero image is accepted.
+- Homepage hero CTAs are auth-aware using the existing strict `users/<uid>.djAccess === true` check:
+  - Logged out: Browse Music + Request DJ Access.
+  - Authenticated customer: Browse Music.
+  - Approved DJ: Promo Crate.
+- Customer header and footer navigation now remove Request DJ Access while authenticated; it returns in the logged-out public state.
+- Approved DJ mode owns the header even for accounts that also have customer/shop state, and the legacy checkout append is gated out when `djAccess === true`.
+- Mobile navigation shares the existing auth-aware header state.
+- The footer keeps public catalogue and access links; authenticated customers retain Browse Music without the access prompt, while approved DJs see Promo Crate.
+- Final mobile/footer alignment and the trusted DJ invite journey remain part of preview acceptance.
+
 Remaining backlog:
 
+- Review, remove or redesign the three boxes below the homepage hero: Music/listen, DJ promo/DJs and Create/Letâ€™s Work. Consider replacing them with more distinctive homepage content now that the header and hero flow are clear.
+- Final trusted DJ invite smoke test and invite-pack preparation.
+- Final mobile/hamburger check across public, customer and approved-DJ journeys.
 - Broader button and font consistency.
 - Active navigation highlight polish after sign-out.
 - Site-wide legacy/cycling cleanup.

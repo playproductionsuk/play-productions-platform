@@ -50,6 +50,43 @@ if (header) {
   });
 }
 
+let currentPublicRole = "public";
+
+function renderRoleAwareHomeCtas(role = "public") {
+  currentPublicRole = role;
+
+  if (page === "index.html") {
+    const actions = document.querySelector(".brand-hero .hero-actions");
+    if (actions) {
+      const ctas = role === "dj"
+        ? [["dj-promo.html", "Promo Crate", "primary"]]
+        : role === "customer"
+          ? [["music.html", "Browse Music", "primary"]]
+          : [
+              ["music.html", "Browse Music", "primary"],
+              ["dj-access.html", "Request DJ Access", "ghost"]
+            ];
+      actions.innerHTML = ctas
+        .map(([href, label, style]) => `<a class="button ${style}" href="${href}">${label}</a>`)
+        .join("");
+    }
+  }
+
+  const footerMusicLink = document.querySelector('.site-footer .footer-column a[href="music.html"],.site-footer .footer-column a[href="dj-promo.html"]');
+  const footerDjAccessLink = document.querySelector('.site-footer .footer-column a[href="dj-access.html"]');
+  if (footerMusicLink) {
+    footerMusicLink.href = role === "dj" ? "dj-promo.html" : "music.html";
+    footerMusicLink.textContent = role === "dj" ? "Promo Crate" : "Browse Music";
+  }
+  if (footerDjAccessLink) footerDjAccessLink.hidden = role !== "public";
+
+  globalThis.playHomeCtaDebug = {
+    role,
+    renderer: "site-nav.renderRoleAwareHomeCtas",
+    renderedAt: new Date().toISOString()
+  };
+}
+
 async function enhanceApprovedDjNavigation() {
   if (!header) return;
 
@@ -89,13 +126,14 @@ async function enhanceApprovedDjNavigation() {
           await signOut(auth);
           location.replace("index.html");
         };
+        renderRoleAwareHomeCtas("dj");
         return;
       }
 
       primaryNav.innerHTML = [
         ["index.html", "Home"],
         ["music.html", "Browse Music"],
-        ["dj-access.html", "Request DJ Access"],
+        ...(!account ? [["dj-access.html", "Request DJ Access"]] : []),
         ["contact.html", "Let’s Work"]
       ].map(([href, label]) => {
         const active = page === href || (page === "track.html" && href === "music.html");
@@ -113,6 +151,7 @@ async function enhanceApprovedDjNavigation() {
         await signOut(auth);
         location.replace("index.html");
       });
+      renderRoleAwareHomeCtas(account ? "customer" : "public");
       window.dispatchEvent(new Event("play-public-navigation-rendered"));
     };
 
@@ -209,6 +248,7 @@ const footerMusic = renderedFooter?.querySelector('.footer-column a[href="music.
 const footerDjAccess = renderedFooter?.querySelector('.footer-column a[href="dj-access.html"]');
 if (footerMusic) footerMusic.textContent = "Browse Music";
 if (footerDjAccess) footerDjAccess.textContent = "Request DJ Access";
+renderRoleAwareHomeCtas(currentPublicRole);
 
 import("./cart.js").then(({ getCart, removeFromCart, cartTotal }) => {
   const updateCount = () => document.querySelectorAll(".cart-count").forEach((item) => {

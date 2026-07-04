@@ -50,10 +50,11 @@ Useful release references:
 - `stable-live-public-site-coming-soon-row-20260704-1248`
 - `stable-preview-signout-home-redirect-20260704-1305`
 - `stable-preview-auth-aware-home-hero-ctas-20260704-1421`
+- `stable-live-public-content-brand-polish-20260704-1649`
 
 ## 4. Immediate next tasks
 
-1. Complete the live smoke test for the auth-aware homepage/header/footer release and create its stable-live tag.
+1. Complete Phase A.3.5 Browse Music hero and final A.3.4 acceptance checks.
 2. Run the final trusted DJ invite smoke test:
    - Public Request DJ Access.
    - Invitation email and password setup.
@@ -75,10 +76,10 @@ Useful release references:
 
 Goal: make the public and DJ experience polished enough for trusted DJ use.
 
-- Phase A.2 Public Content + Brand Polish preview is accepted and production deployment is pending live smoke:
+- Phase A.2 Public Content + Brand Polish is live accepted and stable-live tagged:
   - Replaced the repetitive homepage offer boxes with Latest Tracks, About Play Productions and Join the List sections.
   - Latest Tracks reuses the existing catalogue, cart and preview-player utilities.
-  - Join the List is a contact CTA only; no newsletter backend or automatic email collection has been introduced.
+  - Join the List initially used a safe contact CTA with no automatic email collection.
   - Removed the duplicate top-of-page genre on public and DJ track details while retaining metadata and release date.
   - Aligned public/customer/DJ typography and key account buttons with the established action-button style.
   - Standardised visible public, footer and safe admin-header logo treatment to the Play Productions lime.
@@ -88,6 +89,55 @@ Goal: make the public and DJ experience polished enough for trusted DJ use.
   - Join the List: use customer newsletter wording only—release updates and occasional Play Productions announcements. Keep DJ promo communications separate.
   - Header/footer typography: increase navigation-link size, align it with hero/action typography and standardise footer headings and links.
   - Button system: align Checkout, My Account, DJ Login and Sign Out sizing with hero/action buttons; resize the cart only as needed for balance.
+- Phase A.3 Public Style System + Newsletter Foundation is in preview:
+  - Increased and aligned header navigation, footer typography and account/action button sizing.
+  - Restored the accessible inline cart icon in the final auth-aware header renderer.
+  - Refined Latest Tracks card proportions, metadata/price alignment and centred actions.
+  - Reduced About to one heading and prepared an image-friendly split layout without inventing an image.
+  - Added a customer newsletter form using the existing validated anonymous enquiry write path with `type` and `listType` set to `customer-newsletter`.
+  - Customer newsletter interest is separate from DJ applications and never changes `djAccess`.
+  - No automated email sending or dedicated newsletter-admin workflow exists yet; those remain future work.
+- Phase A.3.1 Public Style/Layout Correction is in preview:
+  - Refined the accessible cart control and public `Customer Login` label.
+  - Compacted Latest Tracks, restored square artwork and balanced card actions.
+  - Changed the About heading and layout, with a safe mobile More Info control.
+  - Foreground About imagery should use a square source (recommended at least 1200 × 1200); a future section background should use a wide landscape source (recommended 1920 × 1080 or wider) with a dark readability treatment.
+  - Refined Stay Connected form placement and mailing-list success wording.
+  - Added a Commercial Inquiry card routed to the existing Let’s Work contact flow.
+  - No backend, payment, admin or newsletter automation changes were introduced.
+- Phase A.3.2 Public Layout/Button + DJ Login Correction is in preview:
+  - Refined header action separators and reduced the cart control width.
+  - Kept square Latest Tracks artwork while balancing desktop and mobile action sizing.
+  - Standardised homepage section headings to the white hero-heading type treatment.
+  - Tightened newsletter consent, button and mailing-list success presentation.
+  - Reused the existing Browse Music `commercial-store-panel` pattern and commercial contact route on Home.
+  - Reduced and aligned the Customer Portal sign-in action.
+  - Simplified DJ Login to one heading, a direct Home › DJ Login breadcrumb, clearer access guidance and a compact two-action form row.
+  - No authentication rules, approval checks, backend, payment, admin or download logic changed.
+- Phase A.3.3 Header Architecture, Typography + Commercial Panel Correction is in preview:
+  - Reordered public/customer navigation so DJ Login and Admin Login are main navigation links while Cart, Checkout and customer account actions remain grouped on the right.
+  - Approved DJs retain protected Promo Crate navigation, a public Admin Login link and Sign Out as the only right-side action.
+  - Reused the measured hero heading treatment—Oswald 400, `1.02` line-height, `-.045em` letter-spacing and white text—for section, login and customer-account headings.
+  - Removed the duplicate Customer Portal heading treatment and moved an honest customer release-update preference panel above My Music; preference persistence remains future work.
+  - Hardened customer and DJ sign-out redirects to Home with `finally` handling.
+  - Refined Stay Connected labels, consent wording and right-aligned action placement.
+  - Standardised homepage, Browse Music and track-detail commercial panels to one heading, full-width copy and a right-aligned enquiry action.
+  - Improved DJ Login body typography while preserving Firebase approval and password-reset behaviour.
+  - No backend, payment, admin startup, approval or protected-download logic changed.
+- Phase A.3.4 Header Button State + Promo Crate Heading Correction is in preview:
+  - Restored boxed DJ Login and Admin Login actions in the public logged-out main navigation.
+  - Removed the remaining divider before Cart.
+  - Limited Admin Login to the public logged-out state; customer and approved-DJ desktop/mobile navigation omit it, and it is not part of the shared footer.
+  - Reduced the Promo Crate catalogue heading to one `Promo Crate` heading using the measured Oswald hero treatment.
+  - Tightened Stay Connected padding and empty-status spacing while moving Join the List slightly lower.
+  - No authentication, approval, download, backend, payment or admin-startup logic changed.
+- Phase A.3.5 Browse Music Hero is in preview:
+  - Added a hero-style Browse Music introduction using the supplied studio image at `public/assets/browse-music-hero.png`.
+  - Uses the accepted Oswald heading treatment and the copy: “Original releases for personal listening and private use. Preview tracks, add them to your cart and download securely.”
+  - Preserves catalogue filters, Preview, More Details, Add to Cart and Coming Soon behaviour below the hero.
+  - Retains A.3.4 public-only Admin Login, boxed public DJ/Admin Login links, divider-free Cart group and single Promo Crate heading.
+  - No authentication, protected-download, backend, payment or admin-startup logic changed.
+- Keep the Phase B speed/legacy cycling review as the next high-priority audit-first pass.
 - Finish and live-tag the auth-aware homepage release.
 - Complete the final trusted-DJ journey and invite pack.
 - Clean up public/DJ track-detail metadata, headings, wording and navigation.

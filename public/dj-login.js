@@ -15,14 +15,6 @@ const demo = false;
 const reason = new URLSearchParams(location.search).get("reason");
 const auth = firebaseReady ? getAuth(firebaseApp) : null;
 
-document.querySelector(".auth-card .subcopy").textContent =
-  "Use the email address from your approved DJ application and the password you created from your secure invitation.";
-
-form.insertAdjacentHTML(
-  "afterend",
-  '<button id="forgotDjPassword" class="button ghost" type="button">Forgot password?</button>'
-);
-
 function setStatus(message, isError = false) {
   status.textContent = message;
   status.classList.toggle("error", isError);

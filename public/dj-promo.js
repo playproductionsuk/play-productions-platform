@@ -28,6 +28,10 @@ const player = document.querySelector("#audioPlayer");
 let signOutButton = document.querySelector("#djSignOut");
 const auth = firebaseApp ? getAuth(firebaseApp) : null;
 const demo = false;
+
+const promoHeading = document.querySelector(".dj-pool .section-heading");
+promoHeading?.querySelector(".eyebrow")?.remove();
+if (promoHeading?.querySelector("h2")) promoHeading.querySelector("h2").textContent = "Promo Crate";
 if (signOutButton) signOutButton.style.display = "none";
 let tracks = [];
 let user;

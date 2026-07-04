@@ -19,11 +19,13 @@ if(actions&&!actions.querySelector(".cart-menu-link")&&globalThis.playDjApproved
 if(rc3Page==="music.html"){
   const hero=document.querySelector(".store-hero");
   if(hero){
-    hero.querySelector("h1").textContent="Browse All Music";
+    hero.classList.add("music-hero");
+    hero.querySelector(".eyebrow")?.remove();
+    hero.querySelector("h1").textContent="Browse Music";
     hero.querySelector("p:last-child").textContent="Original releases for personal listening and private use. Preview tracks, add them to your cart and download securely.";
   }
   const catalogue=document.querySelector("#catalogue");
-  catalogue?.insertAdjacentHTML("beforeend",'<aside class="commercial-store-panel"><p class="eyebrow">Artists & commercial use</p><h2>Interested in using one of these tracks commercially?</h2><p>Standard downloads are for personal/private use. If you want to record vocals, use a track commercially, or discuss exclusive/commercial rights, get in touch.</p><a class="button ghost" href="contact.html?subject=commercial">Commercial Enquiry</a></aside>');
+  catalogue?.insertAdjacentHTML("beforeend",'<aside class="commercial-store-panel"><h2>Commercial Inquiry</h2><p>Standard downloads are for personal/private use. If you want to record vocals, use a track commercially, or discuss exclusive/commercial rights, get in touch.</p><a class="button ghost" href="contact.html?subject=commercial">Commercial Enquiry</a></aside>');
 }
 
 if(rc3Page==="portal.html"){

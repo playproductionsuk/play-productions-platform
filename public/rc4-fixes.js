@@ -11,7 +11,7 @@ if(!document.body.classList.contains("admin-page")){
 if(rc4Page==="music.html"){
   document.querySelector("#latestGrid")?.closest(".compact-section")?.remove();
   const hero=document.querySelector(".store-hero");
-  if(hero){hero.querySelector("h1").textContent="Browse All Music";hero.querySelector("p:last-child").textContent="Original releases for personal listening and private use. Preview tracks, add them to your cart and download securely."}
+  if(hero){hero.querySelector("h1").textContent="Browse Music";hero.querySelector("p:last-child").textContent="Original releases for personal listening and private use. Preview tracks, add them to your cart and download securely."}
 }
 
 const socialDefaults={

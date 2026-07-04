@@ -14,9 +14,12 @@ const commercial = document.querySelector(".commercial-panel");
 const related = document.querySelector(".related-section");
 if (commercial && related) related.insertAdjacentElement("beforebegin", commercial);
 if (commercial) {
-  commercial.querySelector(".eyebrow")?.replaceChildren("Artists / Commercial Use");
+  commercial.querySelector(".eyebrow")?.remove();
+  commercial.querySelector("h2")?.replaceChildren("Commercial Inquiry");
   const paragraph = commercial.querySelector("p:not(.eyebrow)");
   if (paragraph) {
     paragraph.textContent = "Standard purchases are personal digital downloads for private listening. Artists wanting to record vocals, arrange placements or discuss commercial licensing should enquire separately.";
   }
+  const button = commercial.querySelector("button");
+  if (button) button.textContent = "Commercial Enquiry";
 }

@@ -30,7 +30,7 @@
         <a href="dj-access.html">DJ Promo</a>
         <a href="contact.html">Let’s Work</a>
       </nav>
-      <div class="portal-actions"><a href="portal.html">My Account</a><a href="dj-login.html">DJ Login</a></div>
+      <div class="portal-actions"><a href="portal.html">Customer Login</a><a href="dj-login.html">DJ Login</a></div>
     </div>
   </header>
 
@@ -49,33 +49,41 @@
 
     <section class="home-latest" aria-labelledby="latestTitle">
       <div class="compact-heading">
-        <div><p class="eyebrow">Latest tracks</p><h2 id="latestTitle">New from Play Productions</h2></div>
-        <a class="button ghost" href="music.html">Browse Music</a>
+        <h2 id="latestTitle">Latest Tracks</h2>
+        <a class="button primary" href="music.html">Browse Music</a>
       </div>
       <div id="latestGrid" class="home-latest-grid"><p class="loading">Loading latest tracks…</p></div>
     </section>
 
     <section class="home-about" aria-labelledby="aboutTitle">
-      <div>
-        <p class="eyebrow">About</p>
-        <h2 id="aboutTitle">About Play Productions</h2>
-      </div>
-      <div class="home-about-copy">
+      <div class="home-section-heading"><h2 id="aboutTitle">About</h2></div>
+      <div class="home-about-copy" id="aboutCopy">
         <p>Play Productions is an independent music producer creating original music across UK Garage, Grime, Hip Hop, Jungle, Drum & Bass and experimental electronic music.</p>
         <p>The journey began at around eleven years old with a pair of bedroom turntables and a passion for underground music. By the mid-teens, Play Productions had become part of a local UK Garage crew, producing mixtapes for the local scene before stepping behind the microphone as an MC. That experience led to performing in clubs from the age of seventeen, developing an understanding of music that could only be learned from playing to real crowds.</p>
         <p>Today, that same passion has evolved into music production. In recent years, the focus has been on writing, producing, mixing and mastering original music, combining decades of experience with modern production techniques and a commitment to quality over quantity.</p>
         <p>Whether producing original releases, collaborating with other artists or providing professional mixing and mastering services, the goal has always remained the same: to create music with authenticity, energy and attention to detail.</p>
       </div>
+      <button class="about-more button ghost" type="button" aria-expanded="false" aria-controls="aboutCopy">More Info</button>
     </section>
 
     <section class="home-newsletter" aria-labelledby="newsletterTitle">
-      <div>
-        <p class="eyebrow">Stay connected</p>
-        <h2 id="newsletterTitle">Join the list</h2>
-        <p>Get release updates, DJ promo news and occasional Play Productions announcements.</p>
-        <small>Email signup automation is coming later. For now, send a quick request and I’ll record your interest personally.</small>
+      <div class="home-newsletter-intro">
+        <h2 id="newsletterTitle">Stay Connected</h2>
+        <p>Get release updates and occasional Play Productions announcements.</p>
       </div>
-      <a class="button primary" href="contact.html?subject=join-the-list">Join the list</a>
+      <form id="newsletterForm" class="newsletter-form">
+        <label><span>Name</span><input name="name" autocomplete="name" required></label>
+        <label><span>Email</span><input name="email" type="email" autocomplete="email" required></label>
+        <label class="newsletter-consent"><input name="consent" type="checkbox" required> Send me occasional Play Productions updates.</label>
+        <button class="button primary" type="submit">Join the list</button>
+        <p id="newsletterStatus" class="status-message" aria-live="polite"></p>
+      </form>
+    </section>
+
+    <section class="commercial-store-panel home-commercial" aria-labelledby="commercialTitle">
+      <h2 id="commercialTitle">Commercial Inquiry</h2>
+      <p>Standard downloads are for personal/private use. If you want to record vocals, use a track commercially, or discuss exclusive/commercial rights, get in touch.</p>
+      <a class="button ghost" href="contact.html?subject=commercial">Commercial Enquiry</a>
     </section>
 
     <section class="feature-strip" aria-label="Store benefits">

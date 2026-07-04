@@ -8,6 +8,11 @@ setTimeout(()=>document.documentElement.classList.add("ui-ready"),1500);
 
 const page = location.pathname.split("/").pop() || "index.html";
 const header = document.querySelector(".premium-nav,.public-header");
+const cartControl = `<button class="cart-link" data-cart-open aria-label="Open cart">
+  <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M3 4h2l2.2 10.2a2 2 0 0 0 2 1.6h7.7a2 2 0 0 0 2-1.6L20 8H6" stroke-width="1.8"/><path d="M10 8V5.8a2.2 2.2 0 0 1 4.4 0V8" stroke-width="1.8"/><circle cx="10" cy="19" r="1"/><circle cx="17" cy="19" r="1"/></svg>
+  <span class="cart-utility-copy"><strong>Cart</strong><small></small></span>
+  <span class="cart-count">0</span>
+</button>`;
 
 if (header) {
   header.className = "premium-nav";
@@ -16,6 +21,8 @@ if (header) {
     ["music.html", "Browse Music"],
     ["dj-access.html", "Request DJ Access"],
     ["contact.html", "Let’s Work"],
+    ["dj-login.html", "DJ Login"],
+    ["/admin.html", "Admin Login"],
   ];
   header.innerHTML = `
     <a class="brand" href="index.html" aria-label="Play Productions home">
@@ -24,12 +31,16 @@ if (header) {
     <button class="menu-toggle" data-menu-toggle aria-expanded="false" aria-label="Open navigation"><span></span></button>
     <div class="nav-panel" data-menu-panel>
       <nav class="primary-nav">
-        ${links.map(([href, label]) => `<a class="${page === href || (page === "track.html" && href === "music.html") ? "active" : ""}" href="${href}">${label}</a>`).join("")}
+        ${links.map(([href, label]) => {
+          const active = page === href || (page === "track.html" && href === "music.html");
+          const loginButton = href === "dj-login.html" || href === "/admin.html";
+          return `<a class="${active ? "active " : ""}${loginButton ? "nav-login-button" : ""}" href="${href}">${label}</a>`;
+        }).join("")}
       </nav>
       <div class="portal-actions">
-        <button class="cart-link" data-cart-open aria-label="Open cart">Cart <span class="cart-count">0</span></button>
-        <a href="portal.html">My Account</a>
-        <a href="dj-login.html">DJ Login</a>
+        ${cartControl}
+        <a class="cart-menu-link" href="checkout.html">Checkout</a>
+        <a href="portal.html">Customer Login</a>
       </div>
     </div>`;
 
@@ -123,8 +134,11 @@ async function enhanceApprovedDjNavigation() {
         actions.innerHTML = '<button id="djSignOut" class="button ghost" type="button">Sign out</button>';
         actions.querySelector("#djSignOut").onclick = async event => {
           event.currentTarget.disabled = true;
-          await signOut(auth);
-          location.replace("index.html");
+          try {
+            await signOut(auth);
+          } finally {
+            location.replace("/index.html");
+          }
         };
         renderRoleAwareHomeCtas("dj");
         return;
@@ -134,22 +148,28 @@ async function enhanceApprovedDjNavigation() {
         ["index.html", "Home"],
         ["music.html", "Browse Music"],
         ...(!account ? [["dj-access.html", "Request DJ Access"]] : []),
-        ["contact.html", "Let’s Work"]
+        ["contact.html", "Let’s Work"],
+        ["dj-login.html", "DJ Login"],
+        ...(!account ? [["/admin.html", "Admin Login"]] : [])
       ].map(([href, label]) => {
         const active = page === href || (page === "track.html" && href === "music.html");
-        return `<a class="${active ? "active" : ""}" href="${href}">${label}</a>`;
+        const loginButton = !account && (href === "dj-login.html" || href === "/admin.html");
+        return `<a class="${active ? "active " : ""}${loginButton ? "nav-login-button" : ""}" href="${href}">${label}</a>`;
       }).join("");
       actions.innerHTML = `
-        <button class="cart-link" data-cart-open aria-label="Open cart">Cart <span class="cart-count">0</span></button>
-        <a href="portal.html">My Account</a>
+        ${cartControl}
+        <a class="cart-menu-link" href="checkout.html">Checkout</a>
+        <a href="portal.html">${account ? "My Account" : "Customer Login"}</a>
         ${account
           ? '<button id="customerNavSignOut" class="button ghost" type="button">Sign out</button>'
-          : '<a href="dj-login.html">DJ Login</a>'}
-        <a class="cart-menu-link" href="checkout.html">Checkout</a>`;
+          : ""}`;
       actions.querySelector("#customerNavSignOut")?.addEventListener("click", async event => {
         event.currentTarget.disabled = true;
-        await signOut(auth);
-        location.replace("index.html");
+        try {
+          await signOut(auth);
+        } finally {
+          location.replace("/index.html");
+        }
       });
       renderRoleAwareHomeCtas(account ? "customer" : "public");
       window.dispatchEvent(new Event("play-public-navigation-rendered"));

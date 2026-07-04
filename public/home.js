@@ -1,4 +1,4 @@
-import { loadTracks, money, escapeHtml, trackHealth } from "./platform-data.js";
+import { loadTracks, money, escapeHtml, trackHealth, createEnquiry } from "./platform-data.js";
 import { addToCart } from "./cart.js";
 import { createPreviewDock } from "./preview-player.js";
 
@@ -23,9 +23,11 @@ function card(track) {
       ${track.previewUrl ? `<button class="home-track-preview" type="button" aria-label="Preview ${escapeHtml(track.title)}">Preview</button>` : ""}
     </div>
     <div class="home-track-copy">
-      ${track.style ? `<p class="eyebrow">${escapeHtml(track.style)}</p>` : ""}
-      <h3>${escapeHtml(track.title)}</h3>
-      <span>${availability(track, health)}</span>
+      <div>
+        ${track.style ? `<p class="eyebrow">${escapeHtml(track.style)}</p>` : ""}
+        <h3>${escapeHtml(track.title)}</h3>
+      </div>
+      <span class="home-track-price">${availability(track, health)}</span>
     </div>
     <div class="home-track-actions">
       <a class="button ghost" href="track.html?id=${encodeURIComponent(track.id)}">More Details</a>
@@ -105,3 +107,40 @@ if (grid) {
     console.error(error);
   }
 }
+
+const newsletterForm = document.querySelector("#newsletterForm");
+newsletterForm?.addEventListener("submit", async event => {
+  event.preventDefault();
+  const button = newsletterForm.querySelector('button[type="submit"]');
+  const status = document.querySelector("#newsletterStatus");
+  const values = Object.fromEntries(new FormData(newsletterForm));
+  button.disabled = true;
+  status.textContent = "Joining the list…";
+  try {
+    await createEnquiry({
+      type: "customer-newsletter",
+      listType: "customer-newsletter",
+      source: "homepage",
+      name: String(values.name || "").trim(),
+      email: String(values.email || "").trim(),
+      mailingConsent: values.consent === "on",
+      consentText: "Release updates and occasional Play Productions announcements.",
+      applicationDate: new Date().toISOString()
+    });
+    newsletterForm.reset();
+    status.textContent = "Thanks — you’re on the Play Productions mailing list.";
+  } catch (error) {
+    console.error(error);
+    status.textContent = "That didn’t send. Please check your details and try again.";
+  } finally {
+    button.disabled = false;
+  }
+});
+
+const aboutMore = document.querySelector(".about-more");
+aboutMore?.addEventListener("click", () => {
+  const expanded = aboutMore.getAttribute("aria-expanded") === "true";
+  aboutMore.setAttribute("aria-expanded", String(!expanded));
+  document.querySelector(".home-about")?.classList.toggle("about-expanded", !expanded);
+  aboutMore.textContent = expanded ? "More Info" : "Show Less";
+});

@@ -41,7 +41,7 @@ async function handleSignOut() {
   button.textContent = "Signing out…";
   try {
     await signOut(auth);
-    location.replace("dj-login.html");
+    location.replace("index.html");
   } catch (error) {
     document.querySelector("#djDownloadStatus").textContent =
       error.message || "We could not sign you out. Please try again.";
@@ -278,7 +278,7 @@ list.addEventListener("click", async event => {
 
 if (signOutButton) signOutButton.onclick = async () => {
   if (demo) {
-    location.href = "dj-login.html?demo=1";
+    location.href = "index.html";
     return;
   }
 
@@ -286,7 +286,7 @@ if (signOutButton) signOutButton.onclick = async () => {
   signOutButton.textContent = "Signing out…";
   try {
     await signOut(auth);
-    location.replace("dj-login.html");
+    location.replace("index.html");
   } catch (error) {
     document.querySelector("#djDownloadStatus").textContent =
       error.message || "We could not sign you out. Please try again.";

@@ -527,6 +527,28 @@ Do not add competing renderers, persistent loops or MutationObservers.
 
 ## 9. Notes for future Codex passes
 
+### Public Site Quality Pass 1 live acceptance
+
+- Public Site Quality Pass 1 is live-accepted and tagged at `stable-live-public-site-coming-soon-row-20260704-1248`.
+- Coming Soon catalogue rows use a disabled Coming Soon action without overlapping Preview or More Details.
+- Purchasable tracks retain their price, preview, detail and Add to Cart flow.
+- True non-DJ customer navigation was validated with `Lisa@DBMLippy.co.uk`: no Promo Crate was shown and direct DJ Promo access remained blocked.
+- Final pre-DJ-invite polish is in preview: public, customer and approved-DJ Sign Out actions should clear Firebase Auth and return to Home rather than the DJ Promo login page.
+
+Remaining backlog:
+
+- Broader button and font consistency.
+- Active navigation highlight polish after sign-out.
+- Site-wide legacy/cycling cleanup.
+- Final mobile DJ journey smoke test.
+- Detail-page duplicate genre cleanup.
+- Persistent cross-page player.
+- Admin asset export/download.
+- Settings-managed dropdowns.
+- Missing Data inline editing.
+- Storage/orphan asset tooling.
+- Full purchase/customer account flow.
+
 Before editing:
 
 - Inspect the current stable files rather than relying on old conversation context.

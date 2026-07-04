@@ -87,7 +87,7 @@ async function enhanceApprovedDjNavigation() {
         actions.querySelector("#djSignOut").onclick = async event => {
           event.currentTarget.disabled = true;
           await signOut(auth);
-          location.replace("dj-login.html");
+          location.replace("index.html");
         };
         return;
       }

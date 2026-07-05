@@ -1,5 +1,16 @@
 # Play Productions Project Roadmap
 
+## Phase A.4 — DJ Invite + Logged-In Experience
+
+Preview-first implementation started:
+
+- Request DJ Access and Let’s Work pages have a new shared public-enquiry presentation, clearer copy and improved form/status treatment.
+- Approved-DJ homepage Latest Tracks now switch from price/cart actions to the shared protected `Download MP3` flow while retaining Preview and More Details.
+- Promo Crate and homepage DJ downloads share one protected client utility and never expose private Storage paths.
+- Promo-only diagnosis: public-shop visibility is not required by `/api/dj-download`. The client could send a public slug even when the Firestore document ID differed, while the endpoint performs an exact document lookup. Firestore-loaded tracks now retain `firestoreId`, and protected downloads use it before slug/legacy ID. Allowed status, DJ visibility and `mp3Path/previewPath` still require authenticated verification on the affected record.
+- Smoke tests must use separate admin, approved-DJ and true non-DJ customer accounts. Do not infer customer behaviour from an account carrying DJ/admin roles.
+- Phase B remains the next audit-first technical phase after this sprint.
+
 ## 1. Current stable live state
 
 - Production admin works at `/admin.html`; `/admin.html?preview=1` remains the emergency preview fallback.

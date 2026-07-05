@@ -1,12 +1,16 @@
 import { loadTracks, money, escapeHtml, trackHealth, createEnquiry } from "./platform-data.js";
 import { addToCart } from "./cart.js";
 import { createPreviewDock } from "./preview-player.js";
+import { firebaseApp } from "./platform-data.js";
+import { getAuth } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-auth.js";
+import { hasProtectedDjMp3, requestProtectedDjMp3 } from "./dj-download.js";
 
 const grid = document.querySelector("#latestGrid");
 const dock = document.querySelector("#playerDock");
 const player = document.querySelector("#audioPlayer");
 let tracks = [];
 let playingId = "";
+let approvedDj = false;
 
 function availability(track, health) {
   if (track.status === "coming-soon") return "Coming soon";
@@ -17,6 +21,7 @@ function card(track) {
   const health = trackHealth(track);
   const sellable = health.readyToBuy;
   const unavailable = track.status === "coming-soon" ? "Coming Soon" : "Unavailable";
+  const djDownloadable = track.showInDjPool === true && hasProtectedDjMp3(track);
   return `<article class="home-track-card" data-id="${escapeHtml(track.id)}">
     <div class="home-track-art">
       <img src="${escapeHtml(track.coverUrl || "icons/fallback.png")}" alt="Cover art for ${escapeHtml(track.title)}">
@@ -27,13 +32,15 @@ function card(track) {
         ${track.style ? `<p class="eyebrow">${escapeHtml(track.style)}</p>` : ""}
         <h3>${escapeHtml(track.title)}</h3>
       </div>
-      <span class="home-track-price">${availability(track, health)}</span>
+      ${approvedDj ? "" : `<span class="home-track-price">${availability(track, health)}</span>`}
     </div>
     <div class="home-track-actions">
-      <a class="button ghost" href="track.html?id=${encodeURIComponent(track.id)}">More Details</a>
-      ${sellable
-        ? '<button class="button primary" type="button" data-add>Add to Cart</button>'
-        : `<button class="button ghost" type="button" disabled>${unavailable}</button>`}
+      <a class="button ghost" href="track.html?id=${encodeURIComponent(track.id)}${approvedDj ? "&promo=1" : ""}">More Details</a>
+      ${approvedDj
+        ? `<button class="button ${djDownloadable ? "primary" : "ghost"}" type="button" data-dj-download ${djDownloadable ? "" : "disabled"}>${djDownloadable ? "Download MP3" : "MP3 unavailable"}</button>`
+        : sellable
+          ? '<button class="button primary" type="button" data-add>Add to Cart</button>'
+          : `<button class="button ghost" type="button" disabled>${unavailable}</button>`}
     </div>
   </article>`;
 }
@@ -86,6 +93,16 @@ grid?.addEventListener("click", event => {
     });
     event.target.textContent = "Added ✓";
   }
+  const download = event.target.closest("[data-dj-download]");
+  if (download && !download.disabled) {
+    download.disabled = true;
+    requestProtectedDjMp3(firebaseApp ? getAuth(firebaseApp).currentUser : null, track)
+      .catch(error => {
+        const status = document.querySelector("#homeDjDownloadStatus");
+        if (status) status.textContent = error.message;
+        download.disabled = false;
+      });
+  }
 });
 
 if (grid) {
@@ -102,11 +119,19 @@ if (grid) {
     grid.innerHTML = tracks.length
       ? tracks.map(card).join("")
       : '<p class="empty">New music is on the way.</p>';
+    if (!document.querySelector("#homeDjDownloadStatus")) {
+      grid.insertAdjacentHTML("afterend", '<p id="homeDjDownloadStatus" class="status-message home-dj-download-status" aria-live="polite"></p>');
+    }
   } catch (error) {
     grid.innerHTML = '<p class="empty">Latest tracks could not be loaded.</p>';
     console.error(error);
   }
 }
+
+window.addEventListener("play-dj-navigation-change", event => {
+  approvedDj = event.detail?.approved === true;
+  if (grid && tracks.length) grid.innerHTML = tracks.map(card).join("");
+});
 
 const newsletterForm = document.querySelector("#newsletterForm");
 newsletterForm?.addEventListener("submit", async event => {

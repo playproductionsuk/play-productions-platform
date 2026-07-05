@@ -48,6 +48,33 @@ if(rc3Page==="track.html"){
   document.querySelector('.breadcrumb-bar a[href="music.html"]')?.replaceChildren("Browse Music");
 }
 
+if(rc3Page==="dj-access.html"){
+  const page=document.querySelector(".contact-grid");
+  page?.classList.add("public-enquiry-page","dj-access-page");
+  const intro=page?.querySelector("section:first-child");
+  intro?.querySelector(".eyebrow")?.replaceChildren("For DJs, selectors and radio");
+  intro?.querySelector("h1")?.replaceChildren("Request DJ Access");
+  const copy=intro?.querySelector(".subcopy");
+  if(copy)copy.textContent="Apply for access to the Play Productions Promo Crate. Approved DJs can preview tracks and download MP3 promos for radio, club play, playlists and social support.";
+  const offers=intro?.querySelector(".offer-line");
+  if(offers)offers.innerHTML="<span>Individual approved login</span><span>Protected MP3 promos</span><span>Optional release emails</span>";
+  const form=document.querySelector("#djAccessForm");
+  form?.insertAdjacentHTML("afterbegin",'<div class="form-intro"><h2>Tell me about your DJ work</h2><p>Applications are reviewed before access is approved.</p></div>');
+  document.querySelector(".breadcrumb-bar strong")?.replaceChildren("Request DJ Access");
+}
+
+if(rc3Page==="contact.html"){
+  const page=document.querySelector(".contact-grid");
+  page?.classList.add("public-enquiry-page","lets-work-page");
+  const intro=page?.querySelector("section:first-child");
+  intro?.querySelector(".eyebrow")?.remove();
+  intro?.querySelector("h1")?.replaceChildren("Let’s Work");
+  const copy=intro?.querySelector(".subcopy");
+  if(copy)copy.textContent="For custom production, commercial use, sync, licensing, collaborations or project enquiries, send a quick message and I’ll get back to you.";
+  const panel=document.querySelector("#contactForm")?.closest(".panel");
+  panel?.insertAdjacentHTML("afterbegin",'<div class="form-intro"><h2>Send an enquiry</h2><p>Share the essentials and any useful links or references.</p></div>');
+}
+
 if(rc3Page==="portal.html"){
   const music=document.querySelector("#myMusic");
   const welcome=document.querySelector("#welcome");

@@ -114,6 +114,23 @@ body:has(.dj-login-breadcrumb)>.breadcrumb-bar:not(.dj-login-breadcrumb){display
 .dj-public-links{margin-top:22px!important}
 #djAccessForm{align-self:start!important}
 #djAccessForm .status-message{min-height:0!important}
+.public-enquiry-page{align-items:start!important;gap:clamp(24px,5vw,70px)!important;padding-top:clamp(30px,5vw,72px)!important;padding-bottom:clamp(45px,7vw,90px)!important}
+.public-enquiry-page>section:first-child{padding-top:14px}
+.public-enquiry-page .page-title{max-width:620px;margin:8px 0 18px!important;color:#f2f2f2!important;font-family:Oswald,Inter,sans-serif!important;font-size:clamp(3rem,6vw,5.8rem)!important;font-weight:400!important;line-height:1.02!important;letter-spacing:-.045em!important;text-transform:none!important}
+.public-enquiry-page .subcopy{max-width:650px!important;color:#c9c9c9!important;font:400 1rem/1.75 Inter,Arial,sans-serif!important}
+.public-enquiry-page .offer-line{display:flex;flex-wrap:wrap;gap:8px;margin:24px 0!important}
+.public-enquiry-page .offer-line span{padding:8px 11px;border:1px solid #3b4826;border-radius:999px;background:#12160d;color:#d9f6a5;font-size:.78rem}
+.public-enquiry-page .panel,#djAccessForm.panel{padding:clamp(22px,3vw,34px)!important;border:1px solid #303030!important;border-radius:8px!important;background:linear-gradient(145deg,#171717,#101010)!important}
+.public-enquiry-page .form-intro{margin-bottom:22px;padding-bottom:18px;border-bottom:1px solid #2b2b2b}
+.public-enquiry-page .form-intro h2{margin:0 0 7px;color:#f2f2f2;font-family:Oswald,Inter,sans-serif;font-size:clamp(1.6rem,2.7vw,2.35rem);font-weight:400;line-height:1.02;letter-spacing:-.035em;text-transform:none}
+.public-enquiry-page .form-intro p{margin:0;color:#aaa;line-height:1.6}
+.public-enquiry-page form{gap:16px!important}
+.public-enquiry-page form label{gap:7px!important;color:#ddd!important;font:600 .79rem/1.4 Inter,Arial,sans-serif!important}
+.public-enquiry-page form input,.public-enquiry-page form select,.public-enquiry-page form textarea{font:400 .92rem/1.45 Inter,Arial,sans-serif!important}
+.public-enquiry-page form textarea{min-height:145px!important;resize:vertical}
+.public-enquiry-page form>button[type="submit"],#djAccessForm>button{min-width:190px!important;justify-self:end!important}
+.public-enquiry-page .status-message:not(:empty){padding:11px 13px;border-left:3px solid #a6f000;background:#151b0d;color:#e4ffc2}
+.home-dj-download-status:not(:empty){margin:12px 0 0;padding:10px 12px;border-left:3px solid #a6f000;background:#151b0d;color:#e4ffc2}
 
 .social-brand-links.rc4-socials{width:100%!important;grid-template-columns:repeat(6,minmax(0,1fr))!important}
 .social-brand-links.rc4-socials a{width:100%!important}
@@ -159,6 +176,11 @@ body:has(.dj-login-breadcrumb)>.breadcrumb-bar:not(.dj-login-breadcrumb){display
  #catalogue .catalogue-scroll{max-height:410px}
  .dj-page .store-tools{grid-template-columns:1fr!important}
  .dj-page .store-tools label:first-child{grid-column:auto!important}
+ .public-enquiry-page{padding-top:22px!important;gap:28px!important}
+ .public-enquiry-page>section:first-child{padding-top:0}
+ .public-enquiry-page .page-title{font-size:3rem!important}
+ .public-enquiry-page .form-row{grid-template-columns:1fr!important}
+ .public-enquiry-page form>button[type="submit"],#djAccessForm>button{width:100%!important;min-width:0!important;justify-self:stretch!important}
  .social-brand-links.rc4-socials{grid-template-columns:repeat(2,1fr)!important}
  .dashboard-status-restored .setup-status-grid{grid-template-columns:1fr!important}
  .home-latest-grid{grid-template-columns:1fr}

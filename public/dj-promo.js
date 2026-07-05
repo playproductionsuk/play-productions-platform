@@ -7,6 +7,7 @@ import {
   loadTracks
 } from "./platform-data.js";
 import { createPreviewDock } from "./preview-player.js";
+import { hasProtectedDjMp3, requestProtectedDjMp3 } from "./dj-download.js";
 import {
   getAuth,
   onAuthStateChanged,
@@ -130,7 +131,7 @@ async function loadPromos() {
     tracks = (await loadTracks()).filter(track => track.showInDjPool);
   } else {
     const snapshot = await getDocs(query(collection(db, "tracks"), where("showInDjPool", "==", true)));
-    tracks = snapshot.docs.map(item => normaliseTrack({ id: item.id, ...item.data() }));
+    tracks = snapshot.docs.map(item => normaliseTrack({ ...item.data(), firestoreId: item.id }));
   }
   [...new Set(tracks.map(track => track.style).filter(Boolean))]
     .forEach(value => document.querySelector("#djGenre").add(new Option(value, value)));
@@ -172,7 +173,7 @@ function render() {
 
   list.innerHTML = shown.length
     ? shown.map(track => {
-        const mp3Available = Boolean(track.mp3Path || track.previewPath);
+        const mp3Available = hasProtectedDjMp3(track);
         const unavailable = !mp3Available
           ? '<small class="availability-note">MP3 promo download is not available yet.</small>'
           : demo
@@ -259,16 +260,7 @@ list.addEventListener("click", async event => {
 
   download.disabled = true;
   try {
-    const token = await user.getIdToken();
-    const downloadId = track.slug || track.id;
-    const response = await fetch(
-      `/api/dj-download?track=${encodeURIComponent(downloadId)}&format=mp3`,
-      { headers: { Authorization: `Bearer ${token}` } }
-    );
-    const contentType = response.headers.get("content-type") || "";
-    const data = contentType.includes("application/json") ? await response.json() : { error: await response.text() };
-    if (!response.ok) throw new Error(data.error || "MP3 promo download failed.");
-    location.href = data.url;
+    await requestProtectedDjMp3(user, track);
   } catch (error) {
     document.querySelector("#djDownloadStatus").textContent = error.message;
     download.disabled = false;

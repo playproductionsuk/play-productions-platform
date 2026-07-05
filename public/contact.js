@@ -16,8 +16,11 @@ form?.addEventListener("submit", async event => {
   button.disabled = true;
   status.textContent = "Sending your enquiry…";
   try {
+    const values = Object.fromEntries(new FormData(form));
     await createEnquiry({
-      ...Object.fromEntries(new FormData(form)),
+      ...values,
+      newsletterConsent: form.newsletterConsent.checked,
+      listType: form.newsletterConsent.checked ? "customer-newsletter" : "",
       type: "general-contact"
     });
     form.reset();

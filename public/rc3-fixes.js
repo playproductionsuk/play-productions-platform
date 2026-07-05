@@ -16,6 +16,112 @@ if(actions&&!actions.querySelector(".cart-menu-link")&&globalThis.playDjApproved
   actions.insertAdjacentHTML("beforeend",'<a class="cart-menu-link" href="checkout.html">Cart</a>');
 }
 
+function addImageHero(className,title,content){
+  const main=document.querySelector("main.page-shell");
+  const layout=main?.querySelector(".contact-grid");
+  if(!main||!layout||main.querySelector(".public-image-hero"))return;
+  layout.insertAdjacentHTML("beforebegin",`<section class="public-image-hero ${className}"><div class="public-image-hero-content"><h1>${title}</h1>${content}</div></section>`);
+}
+
+function polishSocialEditor(root,addSelector,label){
+  if(!root)return;
+  const heading=root.querySelector("legend, :scope>span");
+  if(heading)heading.textContent=label;
+  const list=root.querySelector(".social-link-list");
+  const hidden=root.querySelector('input[name="socialLinks"][type="hidden"]');
+  const legacyAdd=root.querySelector(addSelector);
+  if(!list||!hidden||!legacyAdd)return;
+  const add=legacyAdd.cloneNode(true);
+  legacyAdd.replaceWith(add);
+  add.textContent="Add social link";
+  add.className="button primary social-editor-trigger";
+  let entries=[];
+  try{entries=JSON.parse(hidden.value||"[]").filter(item=>item?.url)}catch{}
+  list.replaceChildren();
+  const sync=()=>{hidden.value=JSON.stringify(entries)};
+  const renderConfirmed=entry=>{
+    const item=document.createElement("div");
+    item.className="social-link-confirmed";
+    const copy=document.createElement("div");
+    const platform=document.createElement("strong");
+    platform.textContent=entry.type;
+    const link=document.createElement("a");
+    link.href=entry.url;
+    link.target="_blank";
+    link.rel="noopener";
+    link.textContent=entry.url;
+    copy.append(platform,link);
+    const remove=document.createElement("button");
+    remove.type="button";
+    remove.className="social-link-remove";
+    remove.setAttribute("aria-label",`Remove ${entry.type} social link`);
+    remove.textContent="×";
+    remove.addEventListener("click",()=>{
+      entries=entries.filter(itemEntry=>itemEntry!==entry);
+      item.remove();
+      sync();
+    });
+    item.append(copy,remove);
+    list.appendChild(item);
+  };
+  const closeEditor=editor=>{
+    editor.remove();
+    add.hidden=false;
+  };
+  const openEditor=()=>{
+    if(root.querySelector(".social-link-editor"))return;
+    add.hidden=true;
+    const editor=document.createElement("div");
+    editor.className="social-link-editor";
+    const platformLabel=document.createElement("label");
+    platformLabel.textContent="Platform";
+    const select=document.createElement("select");
+    ["Instagram","TikTok","Facebook","Mixcloud","SoundCloud","Website","Other"].forEach(name=>{
+      const option=document.createElement("option");
+      option.textContent=name;
+      select.appendChild(option);
+    });
+    platformLabel.appendChild(select);
+    const urlLabel=document.createElement("label");
+    urlLabel.textContent="URL";
+    const url=document.createElement("input");
+    url.type="url";
+    url.placeholder="https://";
+    urlLabel.appendChild(url);
+    const confirm=document.createElement("button");
+    confirm.type="button";
+    confirm.className="button primary social-link-confirm";
+    confirm.textContent="Add";
+    confirm.addEventListener("click",()=>{
+      const value=url.value.trim();
+      if(!value||!url.checkValidity()){
+        url.setCustomValidity(value?"Enter a complete link including https://":"Enter a social or website link.");
+        url.reportValidity();
+        url.setCustomValidity("");
+        return;
+      }
+      const entry={type:select.value,url:value};
+      entries.push(entry);
+      renderConfirmed(entry);
+      sync();
+      closeEditor(editor);
+    });
+    const cancel=document.createElement("button");
+    cancel.type="button";
+    cancel.className="social-link-remove";
+    cancel.setAttribute("aria-label","Cancel adding social link");
+    cancel.textContent="×";
+    cancel.addEventListener("click",()=>closeEditor(editor));
+    editor.append(platformLabel,urlLabel,confirm,cancel);
+    list.appendChild(editor);
+    url.focus();
+  };
+  entries.forEach(renderConfirmed);
+  sync();
+  add.addEventListener("click",openEditor);
+  root.insertBefore(add,hidden);
+}
+
 if(rc3Page==="music.html"){
   const hero=document.querySelector(".store-hero");
   if(hero){
@@ -41,7 +147,7 @@ if(rc3Page==="music.html"){
     if(columnHead)scroll.append(columnHead);
     scroll.append(trackGrid);
   }
-  catalogue?.insertAdjacentHTML("beforeend",'<aside class="commercial-store-panel"><h2>Commercial Inquiry</h2><p>Standard downloads are for personal/private use. If you want to record vocals, use a track commercially, or discuss exclusive/commercial rights, get in touch.</p><a class="button ghost" href="contact.html?subject=commercial">Commercial Enquiry</a></aside>');
+  catalogue?.insertAdjacentHTML("beforeend",'<aside class="commercial-store-panel"><h2>Commercial Enquiry</h2><p>Standard downloads are for personal/private use. If you want to record vocals, use a track commercially, or discuss exclusive/commercial rights, get in touch.</p><a class="button ghost" href="contact.html?subject=commercial">Commercial Enquiry</a></aside>');
 }
 
 if(rc3Page==="track.html"){
@@ -49,30 +155,42 @@ if(rc3Page==="track.html"){
 }
 
 if(rc3Page==="dj-access.html"){
+  addImageHero(
+    "request-dj-hero",
+    'Play It. Share It.<span>Turn It Up.</span>',
+    `<p>If you're a DJ, radio presenter, content creator or someone who genuinely loves breaking new music, apply for DJ Access to unlock the Promo Crate and download exclusive promotional tracks before they're publicly released.</p>
+    <p>All I ask is that you play the music, share it where you can and tag Play Productions whenever you do. Every set, radio show and social post helps get independent music in front of new listeners, and I genuinely appreciate every bit of support.</p>
+    <div class="public-hero-footer"><p>Prefer to chat first? You'll also find links to all of my social channels below.</p><a class="button primary" href="dj-login.html">Already approved? DJ Login</a></div>`
+  );
   const page=document.querySelector(".contact-grid");
-  page?.classList.add("public-enquiry-page","dj-access-page");
+  page?.classList.add("public-enquiry-page","dj-access-page","hero-form-only");
   const intro=page?.querySelector("section:first-child");
-  intro?.querySelector(".eyebrow")?.replaceChildren("For DJs, selectors and radio");
-  intro?.querySelector("h1")?.replaceChildren("Request DJ Access");
-  const copy=intro?.querySelector(".subcopy");
-  if(copy)copy.textContent="Apply for access to the Play Productions Promo Crate. Approved DJs can preview tracks and download MP3 promos for radio, club play, playlists and social support.";
-  const offers=intro?.querySelector(".offer-line");
-  if(offers)offers.innerHTML="<span>Individual approved login</span><span>Protected MP3 promos</span><span>Optional release emails</span>";
+  intro?.remove();
+  page?.insertAdjacentHTML("afterbegin",'<nav class="social-brand-links enquiry-social-links" aria-label="Play Productions social links"></nav>');
   const form=document.querySelector("#djAccessForm");
-  form?.insertAdjacentHTML("afterbegin",'<div class="form-intro"><h2>Tell me about your DJ work</h2><p>Applications are reviewed before access is approved.</p></div>');
+  const messageField=form?.querySelector('textarea[name="message"]')?.closest("label");
+  const dynamicSocials=form?.querySelector("fieldset:has(#djSocialLinks)");
+  form?.querySelectorAll('[name="socialLinks"]:not([type="hidden"])').forEach(input=>input.closest("label")?.remove());
+  if(messageField&&dynamicSocials)messageField.insertAdjacentElement("afterend",dynamicSocials);
+  polishSocialEditor(dynamicSocials,"#addDjSocial","Social and web links (optional)");
   document.querySelector(".breadcrumb-bar strong")?.replaceChildren("Request DJ Access");
 }
 
 if(rc3Page==="contact.html"){
+  addImageHero(
+    "lets-work-hero",
+    'Let’s Build<span>Something Great.</span>',
+    `<p>Whether you're looking for a producer, want to collaborate on a project, need professional mixing or mastering, or have a question about licensing or commercial use, I'd love to hear what you're working on.</p>
+    <p>Use the form below to get in touch with as much detail as you can, and I'll get back to you as soon as possible.</p>
+    <div class="public-hero-footer"><p>Prefer to chat first? You'll also find links to all of my social media channels below.</p></div>`
+  );
   const page=document.querySelector(".contact-grid");
-  page?.classList.add("public-enquiry-page","lets-work-page");
+  page?.classList.add("public-enquiry-page","lets-work-page","hero-form-only");
   const intro=page?.querySelector("section:first-child");
-  intro?.querySelector(".eyebrow")?.remove();
-  intro?.querySelector("h1")?.replaceChildren("Let’s Work");
-  const copy=intro?.querySelector(".subcopy");
-  if(copy)copy.textContent="For custom production, commercial use, sync, licensing, collaborations or project enquiries, send a quick message and I’ll get back to you.";
-  const panel=document.querySelector("#contactForm")?.closest(".panel");
-  panel?.insertAdjacentHTML("afterbegin",'<div class="form-intro"><h2>Send an enquiry</h2><p>Share the essentials and any useful links or references.</p></div>');
+  intro?.remove();
+  page?.insertAdjacentHTML("afterbegin",'<nav class="social-brand-links enquiry-social-links" aria-label="Play Productions social links"></nav>');
+  page?.insertAdjacentHTML("beforeend",'<aside class="commercial-store-panel contact-commercial"><h2>Commercial Enquiry</h2><p>Standard downloads are for personal/private use. If you want to record vocals, use a track commercially, or discuss exclusive/commercial rights, get in touch.</p><a class="button ghost" href="contact.html?subject=commercial">Commercial Enquiry</a></aside>');
+  polishSocialEditor(document.querySelector("#contactSocials")?.closest("label"),"#addContactSocial","Social and web links (optional)");
 }
 
 if(rc3Page==="portal.html"){

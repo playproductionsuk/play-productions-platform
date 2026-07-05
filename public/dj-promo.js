@@ -28,7 +28,7 @@ const dock = document.querySelector("#playerDock");
 const player = document.querySelector("#audioPlayer");
 let signOutButton = document.querySelector("#djSignOut");
 const auth = firebaseApp ? getAuth(firebaseApp) : null;
-const demo = false;
+const demo = new URLSearchParams(location.search).get("demo") === "1";
 
 const promoHeading = document.querySelector(".dj-pool .section-heading");
 promoHeading?.querySelector(".eyebrow")?.remove();

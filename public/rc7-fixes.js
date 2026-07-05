@@ -1,6 +1,12 @@
 import { getCart } from "./cart.js";
 
 const page=location.pathname.split("/").pop()||"index.html";
+const brandLogo="assets/play-productions-logo.png";
+document.querySelectorAll(".premium-nav .brand img,.public-header .brand img,.site-footer .footer-brand img").forEach(img=>{
+  img.src=brandLogo;
+  img.alt="Play Productions";
+  img.classList.add("brand-logo");
+});
 document.querySelectorAll(".cart-menu-link").forEach(link=>link.textContent="Checkout");
 
 if(page==="music.html"){

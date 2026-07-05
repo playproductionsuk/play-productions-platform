@@ -1,5 +1,108 @@
 # Play Productions Project Roadmap
 
+## Phase A.4.8 — Commercial Enquiry Panel Consistency
+
+Status: in progress on Firebase preview only.
+
+- Standardise the Commercial Enquiry panel across public track details and approved-DJ track details.
+- Keep DJ detail pages MP3-only while providing the same separate commercial enquiry route.
+- Add the shared Commercial Enquiry panel at the bottom of the DJ Promo Crate without duplicating it.
+- Continue enforcing UK `Enquiry` spelling in visible public copy.
+- Preserve public cart, Coming Soon, preview, protected DJ download and access-control behaviour.
+- DJ approval invitation remains pending as a separate Functions/email pass.
+- Next: run the final trusted DJ invitation journey from application through protected MP3 download.
+- Phase B speed and legacy-cycling audit remains after the trusted DJ journey.
+
+## Phase A.4.7 — Social Link Editor UX and Enquiry Spelling
+
+Status: in progress on Firebase preview only.
+
+- Use one shared add/confirm/remove social-link experience on Request DJ Access and Let’s Work.
+- Start with a compact Add social link trigger instead of an empty editor row.
+- Convert added links into confirmed display rows while preserving the existing `{type, url}` JSON payload.
+- Align Let’s Work form typography with Request DJ Access.
+- Correct visible public copy from Inquiry to UK English Enquiry without renaming routes or stored fields.
+- Keep close/remove controls lightweight, accessible and keyboard-operable.
+- DJ approval invitation remains pending as a separate Functions/email pass.
+- Next: run the final trusted DJ invitation journey from application through protected MP3 download.
+- Phase B speed and legacy-cycling audit remains after the trusted DJ journey.
+
+## Phase A.4.6 — Social Link Controls Polish
+
+Status: in progress on Firebase preview only.
+
+- Align DJ Access and Let’s Work labels to `Social and web links (optional)`.
+- Present Platform, URL, Add social link and remove controls as one compact desktop row.
+- Use the lime primary style for compact Add social link controls on both forms.
+- Use the lime primary style for the Already approved? DJ Login hero action.
+- Preserve existing dynamic add/remove behaviour, JSON field mapping and form submission.
+- DJ approval invitation remains pending as a separate Functions/email pass.
+- Next: run the final trusted DJ invitation journey from application through protected MP3 download.
+- Phase B speed and legacy-cycling audit remains after the trusted DJ journey.
+
+## Phase A.4.5 — DJ Access and Transparent Logo Refinement
+
+Status: in progress on Firebase preview only.
+
+- Remove the duplicate static DJ social/profile field.
+- Keep the existing dynamic platform/URL editor and move it below the play/promote textarea.
+- Roll out the user-supplied transparent lime logo across shared public header/footer states.
+- Replace redundant footer identity text with the logo and centre public DJ/Admin access beneath it.
+- Preserve the existing `brand-logo-playing` audio animation and event ownership.
+- DJ approval invitation remains pending in `functions/index.js`; no Functions edit or deployment in this pass.
+- Rejection email remains future/lower priority.
+- Next: run the final trusted DJ invitation journey from application through protected MP3 download.
+- Phase B speed and legacy-cycling audit remains after the trusted DJ journey.
+
+## Phase A.4.4 — Forms, Logo and DJ Email Refinement
+
+Status: in progress on Firebase preview only.
+
+- Remove the duplicate Customer Portal label from Customer Login.
+- Finalise mobile About collapse spacing.
+- Restore responsive social links and full-width form alignment on Request DJ Access and Let’s Work.
+- Restore the Commercial Inquiry panel below the Let’s Work form.
+- Pending: prepare a clean transparent version of the supplied lime Play Productions logo before replacing the shared header/footer identity. Do not use the `gpt-image-1.5` CLI fallback unless explicitly approved later.
+- Centre public-only DJ/Admin footer access beneath the logo.
+- Pending: DJ approval invitation copy is owned by `functions/index.js`; do not edit it until explicitly approved. Any later change requires a separate Functions review and deployment.
+- Rejection email remains future/lower priority.
+- Next: run the final trusted DJ invitation journey from application through protected MP3 download.
+- Phase B speed and legacy-cycling audit remains after the trusted DJ journey.
+
+## Phase A.4.3 — Login and Contact Layout Refinement
+
+Status: in progress on Firebase preview only.
+
+- Restyle Customer Login to match the accepted DJ Login visual system.
+- Add safe Firebase customer password-reset support.
+- Finalise the compact mobile About collapse spacing.
+- Move the complete Request DJ Access message into its hero and tighten the application form.
+- Move the complete Let’s Work message into its hero and tighten the enquiry form.
+- Keep customer newsletter consent separate from DJ promo consent.
+- Correct DJ Login terminology to `Open Promo Crate`.
+- Next: run the final trusted DJ invitation journey from application through protected MP3 download.
+- Phase B speed and legacy-cycling audit remains after the trusted DJ journey.
+
+## Phase A.4.2 — Customer Actions, Content + Public Heroes
+
+- Preview-only refinement started on top of A.4.1.
+- Customer account actions now have an explicit Cart → Checkout → My Account → Sign Out visual order on desktop and mobile.
+- Mobile About collapsed copy is shorter, with More Info positioned closer to the visible content while preserving Show Less.
+- Applied `Play_Productions_Website_Content_Updates.md` to Browse Music, Request DJ Access and Let’s Work.
+- Added supplied Request DJ Access and Let’s Work hero artwork under `public/assets/`.
+- Home, Browse Music, Request DJ Access and Let’s Work now share a compact responsive hero-height system.
+- Next: complete the final trusted DJ journey smoke test, then begin the Phase B audit-first speed/legacy cycling review.
+
+## Phase A.4.1 — Auth-Aware Navigation, CTA + About Refinement
+
+- Phase A.4 passed live smoke testing and is tagged `stable-live-dj-invite-logged-in-experience-20260705-1053`.
+- Preview-only correction started:
+  - Approved-DJ Latest Tracks CTA routes to `Promo Crate`.
+  - Authenticated customers omit DJ Login and retain Cart → Checkout → My Account → Sign Out.
+  - Public DJ Login and Admin Login moved from the header to the footer identity area and remain hidden from customer/DJ states.
+  - About now uses the supplied portrait image and approved personal copy in a responsive image-left/text-right layout.
+- Next: complete the trusted DJ journey smoke test, then begin the Phase B audit-first speed/legacy cycling review.
+
 ## Phase A.4 — DJ Invite + Logged-In Experience
 
 Preview-first implementation started:

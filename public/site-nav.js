@@ -21,23 +21,20 @@ if (header) {
     ["music.html", "Browse Music"],
     ["dj-access.html", "Request DJ Access"],
     ["contact.html", "Let’s Work"],
-    ["dj-login.html", "DJ Login"],
-    ["/admin.html", "Admin Login"],
   ];
   header.innerHTML = `
     <a class="brand" href="index.html" aria-label="Play Productions home">
-      <img src="assets/branding/play-headphones-logo.png" alt="Play Productions">
+      <img src="assets/play-productions-logo.png" alt="Play Productions">
     </a>
     <button class="menu-toggle" data-menu-toggle aria-expanded="false" aria-label="Open navigation"><span></span></button>
     <div class="nav-panel" data-menu-panel>
       <nav class="primary-nav">
         ${links.map(([href, label]) => {
           const active = page === href || (page === "track.html" && href === "music.html");
-          const loginButton = href === "dj-login.html" || href === "/admin.html";
-          return `<a class="${active ? "active " : ""}${loginButton ? "nav-login-button" : ""}" href="${href}">${label}</a>`;
+          return `<a class="${active ? "active" : ""}" href="${href}">${label}</a>`;
         }).join("")}
       </nav>
-      <div class="portal-actions">
+      <div class="portal-actions public-account-actions">
         ${cartControl}
         <a class="cart-menu-link" href="checkout.html">Checkout</a>
         <a href="portal.html">Customer Login</a>
@@ -81,15 +78,22 @@ function renderRoleAwareHomeCtas(role = "public") {
         .map(([href, label, style]) => `<a class="button ${style}" href="${href}">${label}</a>`)
         .join("");
     }
+    const latestCta = document.querySelector(".home-latest .compact-heading > a");
+    if (latestCta) {
+      latestCta.href = role === "dj" ? "dj-promo.html" : "music.html";
+      latestCta.textContent = role === "dj" ? "Promo Crate" : "Browse Music";
+    }
   }
 
   const footerMusicLink = document.querySelector('.site-footer .footer-column a[href="music.html"],.site-footer .footer-column a[href="dj-promo.html"]');
   const footerDjAccessLink = document.querySelector('.site-footer .footer-column a[href="dj-access.html"]');
+  const footerAccess = document.querySelector(".site-footer .footer-access");
   if (footerMusicLink) {
     footerMusicLink.href = role === "dj" ? "dj-promo.html" : "music.html";
     footerMusicLink.textContent = role === "dj" ? "Promo Crate" : "Browse Music";
   }
   if (footerDjAccessLink) footerDjAccessLink.hidden = role !== "public";
+  if (footerAccess) footerAccess.hidden = role !== "public";
 
   globalThis.playHomeCtaDebug = {
     role,
@@ -131,6 +135,7 @@ async function enhanceApprovedDjNavigation() {
           ["dj-promo.html", "Promo Crate", page === "dj-promo.html" || promoDetail],
           ["contact.html", "Let’s Work", page === "contact.html"]
         ].map(([href, label, active]) => `<a class="${active ? "active" : ""}" href="${href}">${label}</a>`).join("");
+        actions.className = "portal-actions dj-account-actions";
         actions.innerHTML = '<button id="djSignOut" class="button ghost" type="button">Sign out</button>';
         actions.querySelector("#djSignOut").onclick = async event => {
           event.currentTarget.disabled = true;
@@ -148,14 +153,12 @@ async function enhanceApprovedDjNavigation() {
         ["index.html", "Home"],
         ["music.html", "Browse Music"],
         ...(!account ? [["dj-access.html", "Request DJ Access"]] : []),
-        ["contact.html", "Let’s Work"],
-        ["dj-login.html", "DJ Login"],
-        ...(!account ? [["/admin.html", "Admin Login"]] : [])
+        ["contact.html", "Let’s Work"]
       ].map(([href, label]) => {
         const active = page === href || (page === "track.html" && href === "music.html");
-        const loginButton = !account && (href === "dj-login.html" || href === "/admin.html");
-        return `<a class="${active ? "active " : ""}${loginButton ? "nav-login-button" : ""}" href="${href}">${label}</a>`;
+        return `<a class="${active ? "active" : ""}" href="${href}">${label}</a>`;
       }).join("");
+      actions.className = `portal-actions ${account ? "customer-account-actions" : "public-account-actions"}`;
       actions.innerHTML = `
         ${cartControl}
         <a class="cart-menu-link" href="checkout.html">Checkout</a>
@@ -261,9 +264,13 @@ if (!footer) {
   footer = document.createElement("footer");
   document.body.appendChild(footer);
 }
-footer.outerHTML = `<footer class="site-footer"><div class="footer-grid"><div class="footer-brand"><img src="assets/branding/play-headphones-logo.png" alt=""><h2>Play Productions</h2><p>Independent Producer</p></div><div class="footer-column"><strong>Navigation</strong><a href="music.html">Music</a><a data-page-feature="services" href="services.html">Mixing & Mastering</a><a data-page-feature="vinyl" href="vinyl.html">Vinyl Cutting</a><a href="dj-access.html">DJ Promo</a><a href="contact.html">Let’s Work</a></div><div class="footer-column"><strong>Follow</strong><a href="https://www.tiktok.com/@playproductionsuk" target="_blank" rel="noopener">TikTok</a><a href="https://www.instagram.com/playproductionsuk" target="_blank" rel="noopener">Instagram</a><a href="https://www.facebook.com/playproductionsuk" target="_blank" rel="noopener">Facebook</a></div><div class="footer-column"><strong>Listen</strong><a href="https://open.spotify.com/artist/1GBNSQahIk3AGMX7zOJRMJ?si=hBkcpzdkTxKRFuiTbPRioA" target="_blank" rel="noopener">Spotify</a><a href="https://music.apple.com/gb/artist/play-productions/1567918963" target="_blank" rel="noopener">Apple Music</a><a href="https://on.soundcloud.com/Ut0DXvRutAUJrom3Si" target="_blank" rel="noopener">SoundCloud</a></div></div><div class="footer-bottom">© ${new Date().getFullYear()} Play Productions</div></footer>`;
+footer.outerHTML = `<footer class="site-footer"><div class="footer-grid"><div class="footer-brand"><img src="assets/play-productions-logo.png" alt="Play Productions"></div><div class="footer-column"><strong>Navigation</strong><a href="music.html">Music</a><a data-page-feature="services" href="services.html">Mixing & Mastering</a><a data-page-feature="vinyl" href="vinyl.html">Vinyl Cutting</a><a href="dj-access.html">DJ Promo</a><a href="contact.html">Let’s Work</a></div><div class="footer-column"><strong>Follow</strong><a href="https://www.tiktok.com/@playproductionsuk" target="_blank" rel="noopener">TikTok</a><a href="https://www.instagram.com/playproductionsuk" target="_blank" rel="noopener">Instagram</a><a href="https://www.facebook.com/playproductionsuk" target="_blank" rel="noopener">Facebook</a></div><div class="footer-column"><strong>Listen</strong><a href="https://open.spotify.com/artist/1GBNSQahIk3AGMX7zOJRMJ?si=hBkcpzdkTxKRFuiTbPRioA" target="_blank" rel="noopener">Spotify</a><a href="https://music.apple.com/gb/artist/play-productions/1567918963" target="_blank" rel="noopener">Apple Music</a><a href="https://on.soundcloud.com/Ut0DXvRutAUJrom3Si" target="_blank" rel="noopener">SoundCloud</a></div></div><div class="footer-bottom">© ${new Date().getFullYear()} Play Productions</div></footer>`;
 
 const renderedFooter = document.querySelector(".site-footer");
+renderedFooter?.querySelector(".footer-brand")?.insertAdjacentHTML(
+  "beforeend",
+  '<div class="footer-access"><a class="button ghost" href="dj-login.html">DJ Login</a><a class="button ghost" href="/admin.html">Admin Login</a></div>'
+);
 const footerMusic = renderedFooter?.querySelector('.footer-column a[href="music.html"]');
 const footerDjAccess = renderedFooter?.querySelector('.footer-column a[href="dj-access.html"]');
 if (footerMusic) footerMusic.textContent = "Browse Music";

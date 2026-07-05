@@ -1,3 +1,58 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Let’s Work | Play Productions</title><meta name="description" content="Contact Play Productions about music, production, collaborations, mixing, mastering and custom work."><link rel="canonical" href="https://www.playproductions.co.uk/contact.html"><meta property="og:type" content="website"><meta property="og:title" content="Let’s Work | Play Productions"><meta property="og:description" content="Tell Play Productions about your next record, release or project."><meta property="og:image" content="https://www.playproductions.co.uk/og-image.jpg"><meta name="twitter:card" content="summary_large_image"><link rel="icon" href="favicon.ico"><link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet"><link rel="stylesheet" href="style.css"><link rel="stylesheet" href="platform.css"><link rel="stylesheet" href="design-v2.css"></head><body>
-<header class="premium-nav"><a class="brand" href="index.html"><img src="logo.png" alt="Play Productions"></a><button class="menu-toggle" data-menu-toggle aria-expanded="false" aria-label="Open navigation"><span></span></button><div class="nav-panel" data-menu-panel><nav class="primary-nav"><a href="index.html">Home</a><a href="music.html">Music</a><a href="services.html">Mixing & Mastering</a><a href="vinyl.html">Vinyl Cutting</a><a href="dj-access.html">DJ Promo</a><a class="active" href="contact.html">Let’s Work</a></nav><div class="portal-actions"><a href="portal.html">My Account</a><a href="dj-login.html">DJ Login</a></div></div></header>
-<main class="page-shell"><div class="contact-grid"><section><p class="eyebrow">Let’s work</p><h1 class="page-title">Tell me what you’re making.</h1><p class="subcopy">Music, production, collaborations or custom work—send the shape of the idea and I’ll reply personally.</p><div class="social-brand-links"><a href="https://www.instagram.com/playproductionsuk" target="_blank" rel="noopener">Instagram ↗</a><a href="https://www.facebook.com/profile.php?id=100090479952042" target="_blank" rel="noopener">Facebook ↗</a><a href="https://www.tiktok.com/@playproductionsuk" target="_blank" rel="noopener">TikTok ↗</a></div></section><section class="panel"><form id="contactForm" class="form-stack"><div class="form-row"><label>Your name<input name="name" required></label><label>Email<input name="email" type="email" required></label></div><label>What is this about?<select name="subject"><option>General enquiry</option><option>Production / collaboration</option><option>Music or commercial rights</option><option>DJ / radio</option><option>Something else</option></select></label><label>Social link (optional)<input name="socialLink" type="url"></label><label>Tell me about it<textarea name="message" required></textarea></label><button class="button primary" type="submit">Send enquiry →</button><p id="contactStatus" class="status-message"></p></form></section></div></main><footer><img src="logo.png" alt="" class="footer-logo"><div class="socials"><a href="music.html">Music</a><a href="services.html">Mixing & Mastering</a><a href="vinyl.html">Vinyl</a></div><p>© <span id="year"></span> Play Productions</p></footer><script type="module" src="contact.js"></script><script src="site-nav.js"></script></body></html>
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Let’s Work | Play Productions</title>
+  <meta name="description" content="Contact Play Productions about music production, collaboration, mixing, mastering or commercial use.">
+  <link rel="icon" href="favicon.ico">
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="platform.css">
+  <link rel="stylesheet" href="design-v2.css">
+</head>
+<body>
+  <header class="premium-nav"></header>
+  <main class="page-shell">
+    <div class="contact-grid">
+      <section>
+        <p class="eyebrow">Let’s work</p>
+        <h1 class="page-title">Tell me what you’re making.</h1>
+        <p class="subcopy">Music, production, collaborations or custom work—send the shape of the idea and I’ll reply personally.</p>
+        <div class="social-brand-links">
+          <a href="https://www.instagram.com/playproductionsuk" target="_blank" rel="noopener">Instagram ↗</a>
+          <a href="https://www.facebook.com/playproductionsuk" target="_blank" rel="noopener">Facebook ↗</a>
+          <a href="https://www.tiktok.com/@playproductionsuk" target="_blank" rel="noopener">TikTok ↗</a>
+        </div>
+      </section>
+      <section class="panel">
+        <form id="contactForm" class="form-stack">
+          <div class="form-intro"><h2>Send an enquiry</h2><p>Share the essentials and any useful links or references.</p></div>
+          <div class="form-row form-row-three">
+            <label>Your name<input name="name" autocomplete="name" required></label>
+            <label>Email<input name="email" type="email" autocomplete="email" required></label>
+            <label>What is this about?
+              <select name="subject">
+                <option>General enquiry</option>
+                <option>Production / collaboration</option>
+                <option>Music or commercial rights</option>
+                <option>DJ / radio</option>
+                <option>Something else</option>
+              </select>
+            </label>
+          </div>
+          <label>Tell me about it<textarea name="message" required></textarea></label>
+          <label>Social media / web links <span class="field-optional">(optional)</span><input name="socialLink" type="url" placeholder="https://"></label>
+          <div class="form-action-row">
+            <label class="consent-line"><input name="newsletterConsent" type="checkbox"> Send me occasional Play Productions updates.</label>
+            <button class="button primary" type="submit">Send enquiry</button>
+          </div>
+          <p id="contactStatus" class="status-message" aria-live="polite"></p>
+        </form>
+      </section>
+    </div>
+  </main>
+  <footer></footer>
+  <script type="module" src="contact.js"></script>
+  <script src="site-nav.js"></script>
+</body>
+</html>

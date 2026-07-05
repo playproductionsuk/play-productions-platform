@@ -53,6 +53,16 @@ function renderPromoAction(track) {
     <p id="djDetailStatus" class="status-message" aria-live="polite"></p>`;
   document.querySelector(".track-product-info")?.appendChild(panel);
 
+  const related = document.querySelector(".related-section");
+  const commercial = document.createElement("aside");
+  commercial.className = "commercial-store-panel track-commercial-panel dj-detail-commercial";
+  commercial.innerHTML = `
+    <h2>Commercial Enquiry</h2>
+    <p>DJ promo access covers DJ, radio and promotional play. Recording, release, sync or other commercial use needs a separate agreement.</p>
+    <a class="button ghost" href="contact.html?subject=commercial">Commercial Enquiry</a>`;
+  if (related) related.insertAdjacentElement("beforebegin", commercial);
+  else document.querySelector("#beatContent")?.appendChild(commercial);
+
   const button = panel.querySelector("#djDetailDownload");
   const status = panel.querySelector("#djDetailStatus");
   const mp3Available = Boolean(track.mp3Path || track.previewPath);

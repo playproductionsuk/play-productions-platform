@@ -11,7 +11,7 @@ if(!document.body.classList.contains("admin-page")){
 if(rc4Page==="music.html"){
   document.querySelector("#latestGrid")?.closest(".compact-section")?.remove();
   const hero=document.querySelector(".store-hero");
-  if(hero){hero.querySelector("h1").textContent="Browse Music";hero.querySelector("p:last-child").textContent="Original releases for personal listening and private use. Preview tracks, add them to your cart and download securely."}
+  if(hero)hero.innerHTML='<h1>Original Music.<span>Yours to Keep.</span></h1><div class="music-hero-copy"><p>Discover original music from Play Productions. Preview every track before you buy, then download high-quality files complete with artwork for your personal collection.</p><p>Create a free account to keep your purchases in one place, making it easy to re-download your music whenever you need it. No subscriptions. No streaming restrictions. Just music that belongs in your collection.</p></div>';
 }
 
 const socialDefaults={
@@ -35,10 +35,10 @@ document.querySelectorAll(".footer-column a").forEach(link=>{
 window.addEventListener("sitesettings",event=>{
   const live={...socialSettings,...(event.detail.socialLinks||{})};
   document.querySelectorAll(".footer-column a").forEach(link=>{const key=Object.keys(socialLabels).find(name=>socialLabels[name]===link.textContent.trim());if(key)link.href=live[key]});
-  if(rc4Page==="contact.html")document.querySelectorAll(".rc4-socials a").forEach((link,index)=>link.href=live[Object.keys(socialLabels)[index]]);
+  if(["contact.html","dj-access.html"].includes(rc4Page))document.querySelectorAll(".rc4-socials a").forEach((link,index)=>link.href=live[Object.keys(socialLabels)[index]]);
 });
 
-if(rc4Page==="contact.html"){
+if(["contact.html","dj-access.html"].includes(rc4Page)){
   const links=document.querySelector(".social-brand-links");
   if(links){links.classList.add("rc4-socials");links.innerHTML=Object.entries(socialLabels).map(([key,label])=>`<a href="${socialSettings[key]}" target="_blank" rel="noopener"><img src="icons/${iconNames[key]}" alt="">${label}</a>`).join("")}
 }

@@ -1,1 +1,57 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>DJ Promo Access | Play Productions</title><meta name="description" content="Request access to the private Play Productions DJ promo pool."><meta name="robots" content="noindex,follow"><link rel="icon" href="favicon.ico"><link rel="stylesheet" href="style.css"><link rel="stylesheet" href="platform.css"><link rel="stylesheet" href="design-v2.css"></head><body><header class="premium-nav"><a class="brand" href="index.html"><img src="headphones.svg" alt="Play Productions"></a><button class="menu-toggle" data-menu-toggle aria-expanded="false" aria-label="Open navigation"><span></span></button><div class="nav-panel" data-menu-panel><nav class="primary-nav"><a href="index.html">Home</a><a href="music.html">Music</a><a href="services.html">Mixing & Mastering</a><a href="vinyl.html">Vinyl Cutting</a><a class="active" href="dj-access.html">DJ Promo</a><a href="contact.html">Let’s Work</a></nav><div class="portal-actions"><a href="portal.html">My Account</a><a href="dj-login.html">DJ Login</a></div></div></header><main class="page-shell"><div class="contact-grid"><section><p class="eyebrow">DJ promo pool</p><h1 class="page-title">Request access</h1><p class="subcopy">The promo pool is for working DJs, selectors and radio presenters. Approved applicants receive their own login and selected free WAV downloads for DJ, radio and promotional use.</p><div class="offer-line"><span>Individual login</span><span>Selected WAV promos</span><span>Optional release emails</span></div><p class="subcopy">If you play a release, sharing it and tagging Play Productions is always appreciated—never demanded.</p><p class="subcopy">Already approved? <a class="text-link" href="dj-login.html">DJ login →</a></p></section><form id="djAccessForm" class="panel form-stack"><div class="form-row"><label>Your name<input name="name" required></label><label>DJ / artist name<input name="djName" required></label></div><label>Email<input name="email" type="email" required></label><div class="form-row"><label>Instagram<input name="instagram" placeholder="@username or link"></label><label>TikTok<input name="tiktok" placeholder="@username or link"></label></div><label>Facebook or other social<input name="otherSocial" placeholder="Profile, Mixcloud, SoundCloud or station link"></label><label>Where do you play or promote music?<textarea name="message" placeholder="Clubs, radio, online mixes, events or channels…" required></textarea></label><label class="consent-line"><input name="mailingConsent" type="checkbox"> I’d like new-release promo emails and understand I can unsubscribe at any time.</label><button class="button primary">Request DJ access →</button><p id="djAccessStatus" class="status-message"></p></form></div></main><script type="module" src="dj-access.js"></script><script src="site-nav.js"></script></body></html>
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>DJ Promo Access | Play Productions</title>
+  <meta name="description" content="Request access to the private Play Productions DJ promo crate.">
+  <meta name="robots" content="noindex,follow">
+  <link rel="icon" href="favicon.ico">
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="platform.css">
+  <link rel="stylesheet" href="design-v2.css">
+</head>
+<body>
+  <header class="premium-nav">
+    <a class="brand" href="index.html"><img src="headphones.svg" alt="Play Productions"></a>
+    <button class="menu-toggle" data-menu-toggle aria-expanded="false" aria-label="Open navigation"><span></span></button>
+    <div class="nav-panel" data-menu-panel>
+      <nav class="primary-nav">
+        <a href="index.html">Home</a>
+        <a href="music.html">Music</a>
+        <a href="services.html">Mixing &amp; Mastering</a>
+        <a href="vinyl.html">Vinyl Cutting</a>
+        <a class="active" href="dj-access.html">DJ Promo</a>
+        <a href="contact.html">Let’s Work</a>
+      </nav>
+      <div class="portal-actions"><a href="portal.html">My Account</a><a href="dj-login.html">DJ Login</a></div>
+    </div>
+  </header>
+  <main class="page-shell">
+    <div class="contact-grid">
+      <section>
+        <p class="eyebrow">DJ promo crate</p>
+        <h1 class="page-title">Request access</h1>
+        <p class="subcopy">Apply for access to selected promotional music from Play Productions.</p>
+      </section>
+      <form id="djAccessForm" class="panel form-stack">
+        <div class="form-intro"><h2>Request DJ Access</h2><p>Tell me where you play, broadcast or promote music.</p></div>
+        <div class="form-row form-row-three">
+          <label>Your name<input name="name" autocomplete="name" required></label>
+          <label>DJ / artist name<input name="djName" required></label>
+          <label>Email<input name="email" type="email" autocomplete="email" required></label>
+        </div>
+        <label>Where do you play or promote music?<textarea name="message" placeholder="Clubs, radio, online mixes, events or channels…" required></textarea></label>
+        <label>Social / profile links <span class="field-optional">(optional)</span><input name="socialLinks" placeholder="Instagram, TikTok, Mixcloud, SoundCloud, website or station links"></label>
+        <div class="form-action-row">
+          <label class="consent-line"><input name="mailingConsent" type="checkbox"> I’d like new release promo emails and understand I can unsubscribe at any time.</label>
+          <button class="button primary" type="submit">Request DJ Access</button>
+        </div>
+        <p id="djAccessStatus" class="status-message" aria-live="polite"></p>
+      </form>
+    </div>
+  </main>
+  <script type="module" src="dj-access.js"></script>
+  <script src="site-nav.js"></script>
+</body>
+</html>

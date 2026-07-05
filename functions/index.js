@@ -26,6 +26,16 @@ function json(res, status, body) {
   res.status(status).set("Content-Type", "application/json").send(JSON.stringify(body));
 }
 
+function escapeEmailHtml(value) {
+  return String(value || "").replace(/[&<>"']/g, character => ({
+    "&": "&amp;",
+    "<": "&lt;",
+    ">": "&gt;",
+    '"': "&quot;",
+    "'": "&#39;"
+  })[character]);
+}
+
 function siteOrigin(req) {
   const origin = req.get("origin");
   return allowedOrigins.has(origin) ? origin : "https://www.playproductions.co.uk";
@@ -275,10 +285,15 @@ async function createDjUser(req, res) {
   }
 
   const loginUrl = "https://www.playproductions.co.uk/dj-login.html";
+  const promoCrateUrl = "https://www.playproductions.co.uk/dj-promo.html";
+  const logoUrl = "https://www.playproductions.co.uk/assets/play-productions-logo.png";
   const setupLink = await admin.auth().generatePasswordResetLink(email, {
     url: loginUrl,
     handleCodeInApp: false
   });
+  const firstName = String(details.name || details.djName || "").trim().split(/\s+/)[0];
+  const greeting = firstName ? `Hi ${firstName},` : "Hi there,";
+  const htmlGreeting = escapeEmailHtml(greeting);
 
   const now = admin.firestore.FieldValue.serverTimestamp();
   const mailRef = db.collection("mail").doc();
@@ -294,17 +309,76 @@ async function createDjUser(req, res) {
   batch.set(mailRef, {
     to: [email],
     message: {
-      subject: "Your Play Productions DJ promo access is approved",
+      subject: "🎉 Welcome to the Play Productions Promo Crate!",
       text: [
-        "Your DJ promo access has been approved.",
-        "Use the secure link below to set your password, then sign in to the Play Productions DJ promo crate.",
+        greeting,
         "",
-        `Set your password: ${setupLink}`,
-        `DJ login: ${loginUrl}`,
+        "Good news… you’re in. 🎉",
         "",
-        "This private access is for the Play Productions DJ promo crate."
+        "Thanks for applying for DJ Access. I’ve had a look through your application and I’m really pleased to welcome you to the Play Productions Promo Crate.",
+        "",
+        "The whole idea is simple: I make the music, you help get it heard. Whether that’s in clubs, on the radio, in mixes, livestreams, social media posts, or just rattling your car speakers on the way to work… every play helps independent music reach new ears.",
+        "",
+        "✅ Step 1: Set your password",
+        "",
+        "Before you can access the Promo Crate, you’ll need to set a password for your account.",
+        "",
+        setupLink,
+        "",
+        "Once that’s done, you’re ready to go.",
+        "",
+        "🎧 Step 2: Explore the Promo Crate",
+        "",
+        "Head over to the Promo Crate and start digging.",
+        "",
+        promoCrateUrl,
+        "",
+        "You’ll find promotional MP3 downloads that are available exclusively to approved DJs and creators. Public previews on the website are shortened, but your downloads are the full-quality promotional tracks, ready for your sets, shows and content.",
+        "",
+        "❤️ One small favour…",
+        "",
+        "If you play a track anywhere, I’d genuinely love to see it.",
+        "",
+        "Tag @PlayProductions whenever you post a mix, a clip, a livestream, a radio show, or even a video of you blasting it in the car. There’s absolutely no pressure or awkward obligations—it just helps independent music travel further, and seeing people enjoying something I’ve created honestly makes all the late nights in the studio worth it.",
+        "",
+        "💬 Need a hand?",
+        "",
+        "The website’s still growing, so if something doesn’t work quite as expected, or you’ve got an idea that would make it better, just drop me an email at chris@playproductions.co.uk. I’m always happy to help.",
+        "",
+        `You can also sign in any time using the DJ Login link in the footer: ${loginUrl}`,
+        "",
+        "Thanks again for the support—it genuinely means a lot.",
+        "",
+        "Enjoy the music.",
+        "",
+        "Chris",
+        "",
+        logoUrl
       ].join("\n"),
-      html: `<p>Your DJ promo access has been approved.</p><p>Use the secure link below to set your password, then sign in to the Play Productions DJ promo crate.</p><p><a href="${setupLink}">Set your password securely</a></p><p><a href="${loginUrl}">Open the DJ login page</a></p><p>This private access is for the Play Productions DJ promo crate.</p>`
+      html: `
+        <p>${htmlGreeting}</p>
+        <p><strong>Good news… you’re in. 🎉</strong></p>
+        <p>Thanks for applying for DJ Access. I’ve had a look through your application and I’m really pleased to welcome you to the Play Productions Promo Crate.</p>
+        <p>The whole idea is simple: I make the music, you help get it heard. Whether that’s in clubs, on the radio, in mixes, livestreams, social media posts, or just rattling your car speakers on the way to work… every play helps independent music reach new ears.</p>
+        <h2 style="font-size:18px;line-height:1.35;">✅ Step 1: Set your password</h2>
+        <p>Before you can access the Promo Crate, you’ll need to set a password for your account.</p>
+        <p><a href="${setupLink}">👉 Set your password securely</a></p>
+        <p>Once that’s done, you’re ready to go.</p>
+        <h2 style="font-size:18px;line-height:1.35;">🎧 Step 2: Explore the Promo Crate</h2>
+        <p>Head over to the Promo Crate and start digging.</p>
+        <p><a href="${promoCrateUrl}">👉 Open the Promo Crate</a></p>
+        <p>You’ll find promotional MP3 downloads that are available exclusively to approved DJs and creators. Public previews on the website are shortened, but your downloads are the full-quality promotional tracks, ready for your sets, shows and content.</p>
+        <h2 style="font-size:18px;line-height:1.35;">❤️ One small favour…</h2>
+        <p>If you play a track anywhere, I’d genuinely love to see it.</p>
+        <p>Tag @PlayProductions whenever you post a mix, a clip, a livestream, a radio show, or even a video of you blasting it in the car. There’s absolutely no pressure or awkward obligations—it just helps independent music travel further, and seeing people enjoying something I’ve created honestly makes all the late nights in the studio worth it.</p>
+        <h2 style="font-size:18px;line-height:1.35;">💬 Need a hand?</h2>
+        <p>The website’s still growing, so if something doesn’t work quite as expected, or you’ve got an idea that would make it better, just drop me an email at <a href="mailto:chris@playproductions.co.uk">chris@playproductions.co.uk</a>. I’m always happy to help.</p>
+        <p>You can also sign in any time using the <a href="${loginUrl}"><strong>DJ Login</strong></a> link in the footer of the website, or right at the bottom on mobile.</p>
+        <p>Thanks again for the support—it genuinely means a lot.</p>
+        <p>Enjoy the music.</p>
+        <p>Chris</p>
+        <img src="${logoUrl}" alt="Play Productions" width="180" style="display:block;max-width:180px;height:auto;">
+      `
     },
     userUid: user.uid,
     enquiryId,

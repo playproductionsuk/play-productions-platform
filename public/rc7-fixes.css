@@ -98,6 +98,7 @@ body:has(#catalogue) .music-hero-copy{display:grid;gap:10px;max-width:650px}
 .commercial-store-panel>p,.commercial-panel>p{grid-column:1;max-width:none!important;margin:0!important;color:#bbb;line-height:1.65}
 .commercial-store-panel>.button,.commercial-panel>.button{grid-column:2;grid-row:1/3;align-self:center;justify-self:end;width:auto!important;min-width:170px;justify-content:center}
 .track-commercial-panel,.dj-crate-commercial{width:100%;margin-top:14px!important}
+.dj-detail-commercial h2,.dj-detail-commercial>p{text-align:left!important}
 .cart-link svg{width:23px!important;height:23px!important;stroke:#a6f000!important;flex:0 0 auto}
 .cart-link svg circle{fill:#a6f000!important;stroke:none!important}
 

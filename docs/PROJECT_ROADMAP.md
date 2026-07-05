@@ -2,7 +2,22 @@
 
 ## Active next task — Final Trusted DJ Invite Journey Smoke Test
 
-Status: test-first; do not begin a new polish sprint until this journey is proven.
+Status: trusted DJ journey blocker fixed and accepted in Firebase preview; production deployment remains pending approval.
+
+Live test progress:
+
+- Firebase Functions approval-email template deployed successfully.
+- Fresh revoked applicant `dbmlippy@gmail.com` submitted a new application successfully.
+- Admin received the complete application, approval succeeded and the account linked with `djAccess`.
+- New approval email, real Firebase password setup link, password setup, hosted logo and new DJ login passed.
+- Approved-DJ navigation and Promo Crate access passed.
+- Preview and protected MP3 downloads from the Promo Crate passed.
+- Promo-only hidden-from-shop track `1Fam` appeared and downloaded successfully from the Promo Crate.
+- `1Fam` More Details rendered correctly, remained MP3-only and exposed no WAV, cart, purchase or private Storage path.
+- `1Fam` now downloads successfully from both the Promo Crate and DJ detail page in preview. The DJ detail flow prioritises `track.firestoreId`, matching the working Promo Crate identifier order, before falling back to slug/legacy ID.
+- Public Browse Music still hides `1Fam`; normal purchasable tracks retain Add to Cart.
+- Logged-out Promo Crate access redirects to DJ Login, and the direct promo detail route keeps Download MP3 disabled with a clear approved-DJ sign-in message.
+- Production `?demo=1` remains safe: sample rows only, disabled MP3 downloads and no protected audio paths.
 
 - Submit a fresh Request DJ Access application and confirm it appears in admin.
 - Approve the application and confirm the invitation email, secure password setup and DJ Login path.
@@ -13,6 +28,12 @@ Status: test-first; do not begin a new polish sprint until this journey is prove
 - Verify no customer/shop controls leak into the approved-DJ experience.
 - Next brief: `Final Trusted DJ Invite Journey Smoke Test`.
 
+Backlog captured during the test:
+
+- Admin Productivity / DJ contacts: flag a new pending request as `Previously revoked applicant` when its email matches prior rejected/revoked records. Show prior dates/statuses and private admin notes to authorised admins only; do not automatically block reapplication.
+- Email branding: create and host a dedicated black version of the Play Productions logo for email use, preserving the accepted dimensions and placement beneath `Enjoy the music. / Chris`. Continue using a hosted HTTPS image rather than an attachment or base64 data.
+- Phase C: add deliberate DJ download tracking/metrics after the invite path is stable.
+
 ## Phase A.4.8 — Commercial Enquiry Panel Consistency
 
 Status: completed and live accepted.
@@ -22,7 +43,7 @@ Status: completed and live accepted.
 - Add the shared Commercial Enquiry panel at the bottom of the DJ Promo Crate without duplicating it.
 - Continue enforcing UK `Enquiry` spelling in visible public copy.
 - Preserve public cart, Coming Soon, preview, protected DJ download and access-control behaviour.
-- DJ approval invitation template is prepared but awaits a separately approved Functions deployment.
+- DJ approval invitation template is deployed and passed its first live email/password-setup check.
 - Next: run the final trusted DJ invitation journey from application through protected MP3 download.
 - Phase B speed and legacy-cycling audit remains after the trusted DJ journey.
 
@@ -397,7 +418,7 @@ Goal: stop stale screens and old layouts flashing while improving perceived spee
 
 ## 7. Known issues / watch-outs
 
-- Promo-only tracks can currently fail MP3 download despite appearing in Promo Crate; this blocks trusted DJ invitations.
+- Resolved in preview: promo-only DJ detail downloads now use the Firestore document ID before slug/legacy fallbacks, matching the Promo Crate flow.
 - Do not require public-shop visibility for a valid approved-DJ promo download.
 - Confirm MP3 field/path mapping and Track Admin visibility flags before changing the protected endpoint.
 - Do not expose private Storage paths or weaken Firebase ID-token checks.

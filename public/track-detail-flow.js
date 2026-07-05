@@ -98,7 +98,7 @@ function renderPromoAction(track) {
         status.textContent = "Preparing protected MP3…";
         try {
           const token = await user.getIdToken();
-          const downloadId = track.slug || track.id;
+          const downloadId = track.firestoreId || track.slug || track.id;
           const response = await fetch(`/api/dj-download?track=${encodeURIComponent(downloadId)}&format=mp3`, {
             headers: { Authorization: `Bearer ${token}` }
           });

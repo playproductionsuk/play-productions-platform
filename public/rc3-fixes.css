@@ -5,8 +5,8 @@
 .store-hero .eyebrow{display:none}
 .store-hero h1{margin-bottom:7px!important}
 .trust-strip div,.feature-strip div{position:relative;padding-left:54px!important}
-.trust-icon{position:absolute;left:18px;top:50%;width:22px;height:22px;transform:translateY(-50%);color:#a6f000}
-.trust-icon svg{width:100%;height:100%;fill:none;stroke:currentColor;stroke-width:1.8}
+.trust-icon{position:absolute;left:18px;top:50%;width:22px;height:22px;transform:translateY(-50%);color:#a6f000!important}
+.trust-icon svg{width:100%;height:100%;fill:none;stroke:#a6f000!important;stroke-width:1.8}
 .commercial-store-panel{margin-top:22px;padding:26px;border:1px solid #354421;border-radius:8px;background:linear-gradient(135deg,#151811,#111)}
 .commercial-store-panel p{max-width:760px;color:#bbb}
 .commercial-store-panel .button{margin-top:9px}

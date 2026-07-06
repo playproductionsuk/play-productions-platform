@@ -160,7 +160,7 @@ if(rc3Page==="dj-access.html"){
     'Play It. Share It.<span>Turn It Up.</span>',
     `<p>If you're a DJ, radio presenter, content creator or someone who genuinely loves breaking new music, apply for DJ Access to unlock the Promo Crate and download exclusive promotional tracks before they're publicly released.</p>
     <p>All I ask is that you play the music, share it where you can and tag Play Productions whenever you do. Every set, radio show and social post helps get independent music in front of new listeners, and I genuinely appreciate every bit of support.</p>
-    <div class="public-hero-footer"><p>Prefer to chat first? You'll also find links to all of my social channels below.</p><a class="button primary" href="dj-login.html">Already approved? DJ Login</a></div>`
+    <div class="public-hero-footer"><p>You can also reach me through the social links below.</p><a class="button primary" href="dj-login.html">Already approved? DJ Login</a></div>`
   );
   const page=document.querySelector(".contact-grid");
   page?.classList.add("public-enquiry-page","dj-access-page","hero-form-only");
@@ -182,7 +182,7 @@ if(rc3Page==="contact.html"){
     'Let’s Build<span>Something Great.</span>',
     `<p>Whether you're looking for a producer, want to collaborate on a project, need professional mixing or mastering, or have a question about licensing or commercial use, I'd love to hear what you're working on.</p>
     <p>Use the form below to get in touch with as much detail as you can, and I'll get back to you as soon as possible.</p>
-    <div class="public-hero-footer"><p>Prefer to chat first? You'll also find links to all of my social media channels below.</p></div>`
+    <div class="public-hero-footer"><p>You can also reach me through the social links below.</p></div>`
   );
   const page=document.querySelector(".contact-grid");
   page?.classList.add("public-enquiry-page","lets-work-page","hero-form-only");

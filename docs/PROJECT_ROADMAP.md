@@ -1,8 +1,16 @@
 # Play Productions Project Roadmap
 
-## Active next task — Final Trusted DJ Invite Journey Smoke Test
+## Active next task — Final Pre-Phase-B Public Polish
 
-Status: trusted DJ journey blocker fixed and accepted in Firebase preview; production deployment remains pending approval.
+Status: narrow public hero/homepage polish implemented and validated on Firebase preview. Production acceptance/deployment remains pending. The final trusted DJ invite journey remains passed.
+
+Current polish:
+
+- Homepage About heading removed while preserving its image, copy and mobile More Info / Show Less behaviour.
+- Homepage trust/banner icons aligned to the established site lime.
+- Request DJ Access and Let’s Work hero social lines finalised as `You can also reach me through the social links below.` and matched to the surrounding hero copy.
+- Request DJ Access `Already approved? DJ Login` now inherits the same button treatment as the homepage hero CTAs.
+- Next active phase remains the Phase B speed/legacy-cycling audit after this small public polish is accepted.
 
 Live test progress:
 

@@ -190,7 +190,7 @@ body:has(.dj-login-breadcrumb)>.breadcrumb-bar:not(.dj-login-breadcrumb){display
 .public-enquiry-page .social-link-row .social-link-add{align-self:end;justify-self:start!important;width:auto!important;min-width:112px!important;min-height:42px!important;padding:9px 12px!important;justify-content:center;white-space:nowrap;font-size:9px!important}
 .public-enquiry-page .social-link-row>.icon-button{align-self:end;width:42px;height:42px;border:1px solid #555;background:#111;color:#ddd}
 .public-enquiry-page .social-link-row>.icon-button:hover{border-color:#d85b5b;color:#ff9c9c}
-.public-hero-footer .button.primary{border-color:#a6f000;background:#a6f000;color:#090909;font-family:Oswald,Inter,sans-serif}
+.public-hero-footer .button.primary{border-color:#a6f000;background:#a6f000;color:#090909}
 .public-enquiry-page .social-editor-trigger{display:inline-flex;width:auto!important;min-width:130px!important;min-height:38px!important;margin-top:2px;padding:8px 12px!important;justify-content:center;justify-self:start;font-size:9px!important}
 .public-enquiry-page .social-link-editor{display:grid;grid-template-columns:150px minmax(220px,1fr) auto 30px;align-items:end;gap:8px;padding:11px 12px;border:1px solid #303030;border-radius:5px;background:#111}
 .public-enquiry-page .social-link-editor label{display:grid;gap:6px;margin:0}
@@ -209,8 +209,8 @@ body:has(.dj-login-breadcrumb)>.breadcrumb-bar:not(.dj-login-breadcrumb){display
 .public-image-hero-content h1{margin-bottom:5px!important}
 .public-image-hero-content>p{margin:0!important}
 .public-hero-footer{display:flex;align-items:center;justify-content:space-between;gap:18px;width:100%;max-width:760px;margin-top:3px}
-.public-hero-footer p{margin:0;color:#b9b9b9;font-size:.86rem;line-height:1.5}
-.public-hero-footer .button{flex:0 0 auto;width:auto;min-height:36px;padding:8px 12px;font-size:10px}
+.public-hero-footer p{margin:0}
+.public-hero-footer .button{flex:0 0 auto;width:auto}
 .home-dj-download-status:not(:empty){margin:12px 0 0;padding:10px 12px;border-left:3px solid #a6f000;background:#151b0d;color:#e4ffc2}
 
 .social-brand-links.rc4-socials{width:100%!important;grid-template-columns:repeat(6,minmax(0,1fr))!important}
@@ -297,8 +297,6 @@ body:has(.dj-login-breadcrumb)>.breadcrumb-bar:not(.dj-login-breadcrumb){display
  .public-image-hero h1{font-size:2.45rem}
  .public-image-hero p{font-size:.79rem;line-height:1.42}
  .public-hero-footer{align-items:flex-start;flex-direction:column;gap:8px}
- .public-hero-footer p{font-size:.75rem;line-height:1.4}
- .public-hero-footer .button{min-height:32px;padding:6px 9px}
  .public-image-hero.request-dj-hero{background-position:58% center}
  .public-image-hero.lets-work-hero{background-position:52% center}
  .enquiry-social-links{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:7px}

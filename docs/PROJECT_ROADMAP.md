@@ -1,8 +1,22 @@
 # Play Productions Project Roadmap
 
-## Active next task — Final Pre-Phase-B Public Polish
+## Active next task — Admin Track Management Stabilisation
 
-Status: narrow public hero/homepage polish implemented and validated on Firebase preview. Production acceptance/deployment remains pending. The final trusted DJ invite journey remains passed.
+Status: Phase B.2 remains accepted on preview and is not live. Phase B.3 public module loading cleanup remains on preview. Admin Track Management Stabilisation is preview accepted and ready to be included in the next combined Hosting release after final approval.
+
+Admin track save/edit identity fix:
+
+- Symptom: editing an existing track, such as Ladida, changing preview start/duration and clicking Save Draft could create a duplicate/new Firestore track document instead of updating the existing one.
+- Root cause: Firestore-loaded tracks keep the real document key in `firestoreId`, while the admin editor was using the normalised public/legacy `id` as `#editingId` and save target. Legacy IDs can differ from Firestore document IDs, so edit-mode saves could fall back to a new document.
+- Fix in preview candidate: track action buttons, readiness/missing-data edit paths, editor state and Save Draft now resolve the Firestore document ID first, with slug/legacy fallbacks only for locating the row. Existing-track saves write back to the existing Firestore document; new-track saves continue to create a new slug-based draft/document.
+- Validation hardening: title is now required before saving, and Website + Coming Soon/Published required-field failures mark the relevant fields with the existing red required styling before any Firestore write.
+- Preview acceptance: passed. Existing track tested: La Di Da. Catalogue count stayed at 7 tracks throughout, so no duplicate was created.
+- Persistence confirmed: preview start/duration changed from 28s / 30s to 29s / 31s, saved successfully, reopened correctly, then reverted to 28s / 30s and confirmed again.
+- Required Title validation confirmed: Add Track save was blocked, red/error state appeared, and the required tooltip was shown.
+- Add New Track draft creation was intentionally not tested to avoid creating clutter.
+- Public B.2/B.3 regression remained healthy: Homepage, Browse Music, track detail, DJ Access, Let’s Work and logged-out Promo Crate protection passed.
+- Note: existing/published tracks use the button label `Save Track`; this is accepted and not a blocker.
+- Next decision: after explicit approval, commit the combined B.2/B.3/admin-track-save stack and deploy production Hosting once. Do not deploy Functions for this pass.
 
 Current polish:
 
@@ -10,7 +24,8 @@ Current polish:
 - Homepage trust/banner icons aligned to the established site lime.
 - Request DJ Access and Let’s Work hero social lines finalised as `You can also reach me through the social links below.` and matched to the surrounding hero copy.
 - Request DJ Access `Already approved? DJ Login` now inherits the same button treatment as the homepage hero CTAs.
-- Next active phase remains the Phase B speed/legacy-cycling audit after this small public polish is accepted.
+- Final public polish is live and accepted.
+- The final trusted DJ invite journey remains passed.
 
 Live test progress:
 
@@ -345,6 +360,76 @@ Goal: stop stale screens and old layouts flashing while improving perceived spee
 - Measure page weight and startup timing before and after.
 - Work preview-first with small rollback-safe changes.
 - No broad rewrite, MutationObserver/timing-loop fix or admin-startup regression.
+
+#### Phase B.1 audit findings
+
+- Public pages initially load `style.css`, `platform.css` and `design-v2.css`. `site-nav.js` then appends `current-ui.css` after parsing has reached the end of the page.
+- `current-ui.css` imports twelve later stylesheet generations from `design-v3.css` through `rc7-fixes.css`. `design-v3.css` and `rc6-fixes.css` hide `html:not(.ui-ready)`, while `site-nav.js` adds `ui-ready` on stylesheet load or after a 1.5-second fallback. This creates a credible old-layout → hidden/black → final-layout sequence on a cold or delayed load.
+- The public settings chain imports fourteen shared enhancement modules on every public page: sprint/module layers, footer/cart polish and RC1–RC7. Several append stylesheets already present through `current-ui.css`; `rc4-fixes.js` later removes some of those duplicate link nodes.
+- Homepage measurement in an authenticated warm browser session observed 25 scripts and 17 styles; Browse Music observed 24 scripts and 18 styles; Track detail observed 30 scripts and 18 styles. DOM-ready wall time was approximately 1.9–2.1 seconds in that sample.
+- The current public final owners are:
+  - Global header, role-aware navigation, homepage role CTAs and footer: `site-nav.js`.
+  - Page visibility and social settings: `site-settings.js`, with final social-link presentation in `rc4-fixes.js`.
+  - Homepage catalogue/content: `index.html` + `home.js`; trust icons from `rc3-fixes.js`; final visual rules in `rc7-fixes.css`.
+  - Browse Music data/render: `music.js`; final hero replacement in `rc4-fixes.js`; accumulated catalogue controls in RC1/polish/RC6/RC7.
+  - Track detail base render: `beat.js`; cart/related/player/detail responsibilities split across `track-enhancements.js`, `track-launch.js`, `track-polish.js` and `track-detail-flow.js`; final auth/back-link state in `site-nav.js` and `rc7-fixes.js`.
+  - Request DJ Access / Let’s Work forms: their page modules; final hero/form structure in `rc3-fixes.js`; social links in `rc4-fixes.js`; final layout in `rc7-fixes.css`.
+  - Customer Portal data/render: `account.js`; auth-panel cleanup in `customer-portal-cleanup.js`; global account navigation in `site-nav.js`.
+  - Promo Crate data/access/downloads: `dj-promo.js`; global approved-DJ navigation in `site-nav.js`; final presentation spread across `sprint-dj.js`, RC4, RC6 and RC7.
+- Confirmed duplicate public render paths include repeated header/footer rebuilding, repeated hero copy replacement, repeated catalogue column/action enhancement, repeated track commercial/related ordering and repeated breadcrumb/back-link correction.
+- Public pages perform shared Firebase work even when their page content does not need it. Signed-in pages normally read the user profile for navigation and site settings, then add page-specific reads. Track detail calls `loadTracks()` at least twice; Customer Portal reads orders, projects and tracks in addition to shared profile/settings reads.
+- Live authenticated admin startup is intentionally protected and was not changed. Its final owners remain `admin.html`, `admin-entry.js`, `admin-live-login.js`, `admin-platform.js`, `track-admin-foundation.js` and `admin-dj-workflow.js`.
+- After successful admin authentication, legacy enhancement modules can repeat Firestore reads and overwrite the same views: tracks, enquiries and settings are each fetched by multiple admin/RC modules; RC6/RC7 and the final DJ workflow can all touch DJ Database status/actions. This is the strongest admin cycling risk, but it must be handled in a separately approved admin-safe phase.
+- Unreferenced legacy candidates found by static reverse-reference audit: `admin-bootstrap.js`, `admin-dj.js`, `admin-field-setup.js`, `multipage.css`, `polish-admin.js`, `rc2-admin.js` and `rc2-portal.js`. They remain in place until a preview package proves no runtime or deployment dependency.
+
+#### Safe cleanup order
+
+1. Move the already-approved final public stylesheet entry into document `<head>` and prove identical desktop/mobile rendering before removing any CSS layer.
+2. Build a page-by-page public module manifest. Load only the shared navigation/settings core globally; defer page-specific RC responsibilities to their owning page.
+3. Stop duplicate stylesheet injection first (`polish-01`, `polish-02`, RC1 and RC2) while retaining their active JavaScript behaviour.
+4. Consolidate one public area at a time in this order: homepage, enquiry pages, Browse Music, Track detail, Customer Portal, Promo Crate.
+5. Add request-level caching for `loadTracks()` and site settings within one page lifecycle, then verify public/customer/DJ visibility and protected-download gates.
+6. Quarantine unreferenced files from deployment only after static-reference, preview and smoke-test evidence agrees; delete later in a separate cleanup commit.
+7. Audit authenticated admin modules separately. Preserve admin startup and login guards; first centralise loaded datasets, then make RC consumers use shared data before considering any module removal.
+8. Measure the same representative pages before and after each phase. Preview first, one responsibility per commit, with rollback tags.
+
+#### Phase B.2 public style loading
+
+- Link the existing versioned `current-ui.css` directly from every non-admin page that loads `site-nav.js`, so the accepted final stylesheet chain begins loading from `<head>` before body content can paint.
+- Keep `site-nav.js` as the readiness owner, but detect the existing link and skip duplicate late injection.
+- Preserve the existing `ui-ready` lifecycle and 1.5-second failure fallback; do not add polling, MutationObserver or a new timing loop.
+- Do not remove or consolidate CSS/RC generations in this pass.
+- Validate hard refresh, final visual parity, one `current-ui.css` link per page and unchanged public/customer/DJ behaviour on Firebase preview.
+- Preview validation confirmed one head-owned `current-ui.css` link per page, visible `ui-ready` state, no horizontal overflow, unchanged catalogue/cart/forms/login gates and no application console errors.
+- Next recommended cleanup remains page-specific module loading and duplicated render ownership. Admin startup remains a separate protected pass.
+
+#### Phase B.3 first module-loading slice
+
+| Module | Previously loaded | Actual owner | Safe action |
+| --- | --- | --- | --- |
+| `sprint-pages.js` | Every public/customer/DJ page through `site-settings.js` | Homepage trust-strip placement, Services workflow and Vinyl form options | Import only from `home.js`, `services.js` and `vinyl.js` |
+| `module1-pages.js` | Every public/customer/DJ page through `site-settings.js` | Request DJ Access social fields and DJ Login demo-link compatibility | Import only from `dj-access.js` and `dj-login.js` |
+| `dj-polish-loader.js` | Every public/customer/DJ page through `site-settings.js` | Promo Crate-only `dj-polish-02.css` loader | Import only from `dj-promo.js` |
+| `footer-icons.js` | Every public page | Shared footer social icons | Keep global |
+| `polish-01.js` / `polish-02.js` | Every public page | Shared cart/footer/logo/audio polish plus homepage/music behaviour | Keep global pending responsibility split |
+| RC1–RC7 public modules | Every public page | Mixed shared and page-specific compatibility responsibilities | Keep global until each final owner is proven separately |
+
+- Keep all module files; only relocate their imports to the page entry modules that own their behaviour.
+- Preserve Phase B.2 early stylesheet loading.
+- Preview deployment passed structural and route smoke checks on 6 July 2026. No production deployment was made.
+- Measured module reductions:
+  - Homepage: 25 → 23 scripts; retains only `sprint-pages.js`.
+  - Browse Music: 24 → 21 scripts; loads none of the three gated modules.
+  - Track detail: 30 → 27 scripts; loads none of the three gated modules.
+  - Request DJ Access and DJ Login retain only `module1-pages.js`.
+  - Services and Vinyl retain only `sprint-pages.js`.
+  - Promo Crate retains only `dj-polish-loader.js`.
+  - Let’s Work and Customer Portal load none of the three gated modules.
+- All measured pages reached `ui-ready` without horizontal overflow. Browse Music retained search, More Details and Add to Cart controls; Request DJ Access retained its form/social-field enhancement; logged-out Promo Crate access still redirects to DJ Login.
+- Do not alter Firestore reads, data models, auth, protected downloads, CSS generations or final visual output in this slice.
+- No MutationObserver or timing-loop fix is introduced; existing module internals remain unchanged.
+- Next candidate after preview acceptance: separate shared RC behaviour from catalogue/track/form/portal-specific behaviour one owner at a time.
+- Admin startup remains a separate protected pass.
 
 ### Phase C — DJ Contacts, Download Tracking + Promo Metrics
 

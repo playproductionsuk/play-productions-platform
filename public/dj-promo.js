@@ -1,3 +1,4 @@
+import "./dj-polish-loader.js";
 import {
   firebaseApp,
   firebaseReady,

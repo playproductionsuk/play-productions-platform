@@ -1,10 +1,25 @@
 const assetVersion = "m1-rc7-surgical-20260628";
-const uiStyles = document.createElement("link");
-uiStyles.rel = "stylesheet";
-uiStyles.href = `current-ui.css?v=${assetVersion}`;
-uiStyles.addEventListener("load",()=>document.documentElement.classList.add("ui-ready"));
-document.head.appendChild(uiStyles);
-setTimeout(()=>document.documentElement.classList.add("ui-ready"),1500);
+const markUiReady = () => document.documentElement.classList.add("ui-ready");
+let uiStyles = [...document.querySelectorAll('link[rel="stylesheet"][href]')].find(link => {
+  try {
+    return new URL(link.href, location.href).pathname.endsWith("/current-ui.css");
+  } catch {
+    return false;
+  }
+});
+if (uiStyles?.sheet) {
+  markUiReady();
+} else {
+  if (!uiStyles) {
+    uiStyles = document.createElement("link");
+    uiStyles.rel = "stylesheet";
+    uiStyles.href = `current-ui.css?v=${assetVersion}`;
+    document.head.appendChild(uiStyles);
+  }
+  uiStyles.addEventListener("load", markUiReady, { once: true });
+  uiStyles.addEventListener("error", markUiReady, { once: true });
+}
+setTimeout(markUiReady,1500);
 
 const page = location.pathname.split("/").pop() || "index.html";
 const header = document.querySelector(".premium-nav,.public-header");

@@ -1,3 +1,4 @@
+import "./module1-pages.js";
 import { firebaseApp, firebaseReady, db } from "./platform-data.js";
 import {
   getAuth,

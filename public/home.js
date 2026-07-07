@@ -1,3 +1,4 @@
+import "./sprint-pages.js";
 import { loadTracks, money, escapeHtml, trackHealth, createEnquiry } from "./platform-data.js";
 import { addToCart } from "./cart.js";
 import { createPreviewDock } from "./preview-player.js";

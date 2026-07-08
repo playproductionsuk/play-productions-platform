@@ -2,7 +2,7 @@
 
 ## Active next task — Admin Track Management Stabilisation
 
-Status: Phase B.2 remains accepted on preview and is not live. Phase B.3 public module loading cleanup remains on preview. Admin Track Management Stabilisation is preview accepted and ready to be included in the next combined Hosting release after final approval.
+Status: Phase B.2, Phase B.3 and the first Admin Track Management Save/Edit identity fix were deployed to production Hosting on 7 July 2026. A live Add Track blocker was then reported, fixed on preview and manually accepted. The containment fix is ready for production Hosting release.
 
 Admin track save/edit identity fix:
 
@@ -16,7 +16,15 @@ Admin track save/edit identity fix:
 - Add New Track draft creation was intentionally not tested to avoid creating clutter.
 - Public B.2/B.3 regression remained healthy: Homepage, Browse Music, track detail, DJ Access, Let’s Work and logged-out Promo Crate protection passed.
 - Note: existing/published tracks use the button label `Save Track`; this is accepted and not a blocker.
-- Next decision: after explicit approval, commit the combined B.2/B.3/admin-track-save stack and deploy production Hosting once. Do not deploy Functions for this pass.
+- Live blocker after production deploy: Add Track was reported to reuse/overwrite an existing track identity, affecting `I Had a Feeling` artwork/visibility and a newly added track in the DJ Promo Crate.
+- Root cause found in code: `findTrackByIdentity("")` could match the first track because missing alias fields such as `docId` / `documentId` were coerced to an empty string. A blank Add Track `editingId` could therefore be treated as an existing track, preserving that track’s artwork/media and saving back to that document.
+- Containment fix accepted: blank identity now returns no match; identity matching ignores null/undefined aliases; blank Add Track mode is treated as new mode, stale edit IDs block save, and new-track slug/document collisions block save instead of overwriting.
+- Existing-track edit/save remains accepted: One Fam was opened and saved; it stayed as the same track, no duplicate was created, and Update/Edit reopened the same saved record.
+- Add Track clean form confirmed: after editing an existing track, Add Track opened a genuinely blank new-track form. It did not inherit previous artwork, MP3 path, WAV path, preview/audio path, slug or title. Intentional defaults remain accepted for now: Artist `Play Productions`, price/site default, and preview-duration default.
+- New track without artwork confirmed: Vandalize was added with MP3 and WAV but no artwork. It saved without inheriting old artwork, used the current Play Productions placeholder artwork, did not overwrite another track and appeared as expected in the admin/DJ context.
+- Slug/document collision guard confirmed: adding another `Vandalize` was blocked with the expected duplicate slug/document ID error.
+- Historical data cleanup item: `Touch Me Bootleg` appears to be using old `I Had a Feeling` artwork from the pre-fix overwrite/inheritance incident, and `I Had a Feeling` no longer appears as its own admin/public track. Treat this as manual data cleanup, not an active code blocker. Do not automatically recover or delete records.
+- Next decision: release the accepted containment fix to production Hosting only, then live-smoke test. Do not deploy Functions for this pass.
 
 Current polish:
 
@@ -452,6 +460,11 @@ Goal: stop stale screens and old layouts flashing while improving perceived spee
 - Missing Data inline editing and stronger filtering/search.
 - Settings-managed genre, style, subgenre, mood and tag lists.
 - Improve Add Track, bulk updates, catalogue defaults and operational widgets.
+- Add Settings-tab defaults for new tracks: default artist, default price, default preview start, default preview duration, default Store visibility, default Promo Crate visibility, purchase-enabled state and Latest/Coming Soon defaults where useful. Preview duration may later move globally to 60 seconds.
+- Add clear upload progress indicators for artwork, MP3 and WAV uploads so large saves show 0-100% progress and do not feel frozen.
+- Add explicit media-management controls to replace/remove artwork, replace/remove MP3, replace/remove WAV and clear/replace preview/audio paths without relying on hidden field behaviour.
+- Review placeholder artwork/logo styling for tracks without custom artwork and align it with the latest preferred Play Productions identity.
+- Define clearer workflows for the Release Admin, Promo/Notification Tracking and Order Data/Advanced admin sections; they currently behave more like placeholders than finished workflows.
 - Newsletter admin/export workflow while keeping customer newsletter and DJ promo lists separate.
 
 ### Phase F — Customer Purchase + Account Flow
@@ -522,6 +535,7 @@ Goal: stop stale screens and old layouts flashing while improving perceived spee
 - Do not introduce MutationObserver-based fixes or persistent timing loops.
 - Preserve the current admin login/startup and no-black-screen guard.
 - Avoid broad rewrites; use small responsibility-based preview changes.
+- Historical data cleanup: review `Touch Me Bootleg` / `I Had a Feeling` after the pre-fix Add Track overwrite/inheritance incident. Do not automatically delete or restore records; inspect and clean manually.
 
 ## 8. Deployment and safety rules
 

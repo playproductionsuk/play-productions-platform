@@ -177,33 +177,91 @@ if (trackForm && !document.querySelector("#trackEditorGroups")) {
       <span><b>Compatibility:</b> direct MP3/WAV references retained for older catalogue and fulfilment paths</span>
       <small>These fields are preserved for compatibility. Only change them when you know which downstream service uses them.</small>
     </aside>`);
+
+  const workflowGuides = {
+    availability: {
+      title: "Visibility workflow",
+      items: [
+        "Use these toggles to decide where the track is allowed to appear.",
+        "Website and purchase readiness still depend on the required artwork, MP3/WAV, price and status checks.",
+        "DJ Promo uses the shared MP3 asset; do not add a separate DJ-only upload unless a later phase explicitly changes this."
+      ]
+    },
+    release: {
+      title: "Release workflow",
+      items: [
+        "Clear rights/admin checks first: samples, Tracklib, PRS/PPL and copyright notes.",
+        "Add distribution details next: ISRC, UPC, release ID and store links.",
+        "Finish with release date confirmed, public website updated and any internal notes."
+      ]
+    },
+    promo: {
+      title: "Promo workflow",
+      items: [
+        "This section is manual tracking only. It does not send emails or post to social media.",
+        "Use Mark notification sent only after you have actually sent or logged the promo notification.",
+        "Keep notification and social notes specific enough for future follow-up."
+      ]
+    },
+    advanced: {
+      title: "Advanced workflow",
+      items: [
+        "Treat these fields as compatibility and downstream-platform data.",
+        "Prefer the grouped Web, Assets, Availability and Release sections for everyday edits.",
+        "Only alter legacy MP3/WAV references when deliberately maintaining older catalogue or fulfilment paths."
+      ]
+    }
+  };
+  Object.entries(workflowGuides).forEach(([group, guide]) => {
+    const sectionBody = body(group);
+    if (!sectionBody || sectionBody.querySelector(".track-workflow-guide")) return;
+    sectionBody.insertAdjacentHTML("afterbegin", `
+      <aside class="track-workflow-guide">
+        <strong>${guide.title}</strong>
+        <ul>${guide.items.map(item => `<li>${item}</li>`).join("")}</ul>
+      </aside>
+    `);
+  });
 }
 
 const assetDefinitions = [
   {
     input: "cover",
+    key: "artwork",
+    label: "Artwork",
     values: track => [track?.coverUrl, track?.coverPath, track?.thumbnail],
     placeholderFlag: track => track?.placeholderArtwork === true,
-    connectedText: "Existing artwork connected ✓",
-    missingText: "No artwork connected",
-    uploadText: "Upload artwork",
-    replaceText: "Replace artwork"
+    thumbnail: track => track?.coverUrl || track?.thumbnail || "",
+    connectedText: "Artwork assigned",
+    missingText: "No artwork assigned",
+    uploadText: "Upload Artwork",
+    replaceText: "Replace Artwork",
+    removeText: "Remove Artwork",
+    confirmText: "Remove the artwork assignment from this track?\nThe uploaded file will remain in Storage for now."
   },
   {
     input: "preview",
+    key: "mp3",
+    label: "MP3",
     values: track => [track?.previewUrl, track?.previewPath, track?.mp3Path, track?.mp3Url, track?.url],
-    connectedText: "Existing preview MP3 connected ✓",
-    missingText: "No preview MP3 connected",
-    uploadText: "Upload preview MP3",
-    replaceText: "Replace preview MP3"
+    connectedText: "MP3 assigned",
+    missingText: "No MP3 assigned",
+    uploadText: "Upload MP3",
+    replaceText: "Replace MP3",
+    removeText: "Remove MP3",
+    confirmText: "Remove the MP3 assignment from this track?\nThe uploaded file will remain in Storage for now."
   },
   {
     input: "master",
+    key: "wav",
+    label: "WAV",
     values: track => [track?.masterPath, track?.wavPath],
-    connectedText: "Existing master WAV connected ✓",
-    missingText: "No master WAV connected",
-    uploadText: "Upload master WAV",
-    replaceText: "Replace master WAV"
+    connectedText: "WAV assigned",
+    missingText: "No WAV assigned",
+    uploadText: "Upload WAV",
+    replaceText: "Replace WAV",
+    removeText: "Remove WAV",
+    confirmText: "Remove the WAV assignment from this track?\nThe uploaded file will remain in Storage for now."
   }
 ];
 
@@ -217,44 +275,170 @@ function usableAssetValue(value) {
   return true;
 }
 
+function assetLabel(value) {
+  if (typeof value !== "string") return "";
+  const candidate = value.trim();
+  if (!candidate) return "";
+  try {
+    const url = new URL(candidate, location.origin);
+    const path = decodeURIComponent(url.pathname.split("/").filter(Boolean).pop() || "");
+    if (path) return path;
+  } catch {}
+  return decodeURIComponent(candidate.split("?")[0].split("/").filter(Boolean).pop() || candidate);
+}
+
+let currentAssetTrack = null;
+
+function resetMediaCardState(card, { clearFile = true } = {}) {
+  if (!card) return;
+  card.dataset.mediaAction = "keep";
+  card.classList.remove("pending-replace", "pending-remove");
+  const input = card.querySelector(".asset-file-input");
+  if (clearFile && input) input.value = "";
+  const progress = card.querySelector(".asset-upload-progress");
+  if (progress) {
+    progress.value = 0;
+    progress.hidden = true;
+  }
+  const progressText = card.querySelector(".asset-progress-text");
+  if (progressText) progressText.textContent = "";
+}
+
+function resetMediaPendingState({ refresh = true } = {}) {
+  document.querySelectorAll("#track-group-assets .file-field").forEach(card => resetMediaCardState(card));
+  if (refresh) updateAssetCards(currentAssetTrack);
+}
+
 function updateAssetCards(track = null) {
+  currentAssetTrack = track;
   assetDefinitions.forEach(definition => {
     const input = document.querySelector(`#${definition.input}`);
     const card = input?.closest(".file-field");
     if (!input || !card) return;
     let status = card.querySelector(".asset-connection-status");
     let action = card.querySelector(".asset-upload-action");
+    let controls = card.querySelector(".asset-management-controls");
+    let remove = card.querySelector("[data-media-remove]");
+    let preview = card.querySelector(".asset-current-preview");
+    let progress = card.querySelector(".asset-upload-progress");
+    let progressText = card.querySelector(".asset-progress-text");
     if (!status) {
       status = document.createElement("span");
       status.className = "asset-connection-status";
       input.insertAdjacentElement("beforebegin", status);
     }
     if (!action) {
-      action = document.createElement("span");
+      action = document.createElement("button");
+      action.type = "button";
       action.className = "asset-upload-action";
+      action.dataset.assetInput = definition.input;
       input.insertAdjacentElement("beforebegin", action);
     }
-    const connected = !definition.placeholderFlag?.(track) && definition.values(track).some(usableAssetValue);
-    status.textContent = connected ? definition.connectedText : `${definition.missingText} ✕`;
-    status.classList.toggle("connected", connected);
-    action.textContent = connected ? definition.replaceText : definition.uploadText;
+    if (!preview) {
+      preview = document.createElement("span");
+      preview.className = "asset-current-preview";
+      input.insertAdjacentElement("beforebegin", preview);
+    }
+    if (!controls) {
+      controls = document.createElement("span");
+      controls.className = "asset-management-controls";
+      remove = document.createElement("button");
+      remove.type = "button";
+      remove.className = "asset-remove-action";
+      remove.dataset.mediaRemove = definition.key;
+      controls.appendChild(remove);
+      input.insertAdjacentElement("beforebegin", controls);
+    }
+    if (!progress) {
+      progress = document.createElement("progress");
+      progress.className = "asset-upload-progress";
+      progress.max = 100;
+      progress.value = 0;
+      progress.hidden = true;
+      controls.insertAdjacentElement("afterend", progress);
+    }
+    if (!progressText) {
+      progressText = document.createElement("span");
+      progressText.className = "asset-progress-text";
+      progressText.setAttribute("aria-live", "polite");
+      progress.insertAdjacentElement("afterend", progressText);
+    }
+    remove = card.querySelector("[data-media-remove]");
+    const value = definition.values(track).find(usableAssetValue) || "";
+    const connected = !definition.placeholderFlag?.(track) && Boolean(value);
+    const actionState = card.dataset.mediaAction || "keep";
+    const selectedFile = input.files?.[0];
+    status.textContent = selectedFile ? `Selected: ${selectedFile.name}. Save Track to upload.` : actionState === "remove" ? `${definition.label} will be removed on save` : connected ? definition.connectedText : definition.missingText;
+    status.classList.toggle("connected", connected || Boolean(selectedFile));
+    status.classList.toggle("pending-remove", actionState === "remove");
+    status.classList.toggle("pending-replace", actionState === "replace");
+    const thumbnail = definition.thumbnail?.(track);
+    preview.textContent = "";
+    if (definition.key === "artwork" && connected && thumbnail) {
+      const image = document.createElement("img");
+      image.src = thumbnail;
+      image.alt = "";
+      preview.appendChild(image);
+    }
+    preview.append(document.createTextNode(selectedFile ? `Pending upload: ${selectedFile.name}` : connected ? `Current: ${assetLabel(value) || "assigned"}` : `Current: ${definition.missingText}`));
+    action.textContent = selectedFile ? "Change selected file" : connected ? definition.replaceText : definition.uploadText;
+    action.dataset.assetInput = definition.input;
+    action.setAttribute("aria-label", action.textContent);
+    if (remove) {
+      remove.textContent = definition.removeText;
+      remove.disabled = !connected || actionState === "remove";
+      remove.title = connected ? "Clears the assignment only. Storage file remains." : "No assigned file to remove.";
+    }
     input.classList.add("asset-file-input");
     input.setAttribute("aria-label", action.textContent);
+    card.dataset.mediaKind = definition.key;
+    card.dataset.mediaAction = actionState;
+    if (!action.dataset.assetUploadBound) {
+      action.dataset.assetUploadBound = "true";
+      action.addEventListener("click", event => {
+        event.preventDefault();
+        event.stopPropagation();
+        if (action.getAttribute("aria-disabled") === "true") return;
+        input.click();
+      });
+    }
+    if (!remove?.dataset.assetRemoveBound) {
+      remove.dataset.assetRemoveBound = "true";
+      remove.addEventListener("click", event => {
+        event.preventDefault();
+        event.stopPropagation();
+        if (remove.disabled) return;
+        if (!confirm(definition.confirmText)) return;
+        card.dataset.mediaAction = "remove";
+        card.classList.remove("pending-replace");
+        card.classList.add("pending-remove");
+        input.value = "";
+        updateAssetCards(currentAssetTrack);
+        document.querySelector("#trackForm")?.dispatchEvent(new Event("input", { bubbles: true }));
+      });
+    }
     if (!input.dataset.assetStatusBound) {
       input.dataset.assetStatusBound = "true";
       input.addEventListener("change", () => {
         if (!input.files?.[0]) {
-          updateAssetCards(track);
+          resetMediaCardState(card, { clearFile: false });
+          updateAssetCards(currentAssetTrack);
           return;
         }
-        status.textContent = `New file selected: ${input.files[0].name}`;
-        status.classList.add("connected");
-        action.textContent = "Change selected file";
+        card.dataset.mediaAction = "replace";
+        card.classList.add("pending-replace");
+        card.classList.remove("pending-remove");
+        updateAssetCards(currentAssetTrack);
+        if (remove) remove.disabled = false;
+        document.querySelector("#trackForm")?.dispatchEvent(new Event("input", { bubbles: true }));
       });
     }
   });
 }
 updateAssetCards();
+window.addEventListener("play-track-editor-clear-media", () => resetMediaPendingState({ refresh: true }));
+window.addEventListener("play-track-editor-saved", () => resetMediaPendingState({ refresh: false }));
+window.addEventListener("play-track-editor-cancel", () => resetMediaPendingState({ refresh: false }));
 
 if (trackForm && !document.querySelector("#trackEditorSaveControls")) {
   const editorHeader = document.querySelector("#trackEditor>.admin-section-title");
@@ -264,6 +448,7 @@ if (trackForm && !document.querySelector("#trackEditorSaveControls")) {
   controls.className = "track-editor-save-controls";
   controls.innerHTML = `
     <span class="track-visibility-summary" aria-live="polite"></span>
+    <button type="button" class="button ghost" data-cancel-track-edit>Cancel</button>
     <button type="button" class="button primary" data-save-track-top>Save Track</button>
   `;
   if (editorHeader) editorHeader.insertBefore(controls, closeEditor);
@@ -322,6 +507,8 @@ const dateTbcField = document.querySelector("#dateTbc");
 let slugManuallyEdited = false;
 let seoTitleManuallyEdited = false;
 let seoDescriptionManuallyEdited = false;
+let releaseTitleManuallyEdited = false;
+let lastAutoReleaseTitle = "";
 
 const slugFromTitle = value => String(value || "").toLowerCase().trim()
   .replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "").slice(0, 70);
@@ -357,10 +544,16 @@ seoTitleField?.addEventListener("input", event => {
 seoDescriptionField?.addEventListener("input", event => {
   if (event.isTrusted) seoDescriptionManuallyEdited = true;
 });
+releaseTitleField?.addEventListener("input", event => {
+  if (event.isTrusted && releaseTitleField.value !== lastAutoReleaseTitle) releaseTitleManuallyEdited = true;
+});
 titleField?.addEventListener("input", () => {
   const isNew = !document.querySelector("#editingId")?.value;
   if (!artistField?.value.trim()) artistField.value = "Play Productions";
-  if (!releaseTitleField?.value.trim()) releaseTitleField.value = titleField.value;
+  if (releaseTitleField && !releaseTitleManuallyEdited) {
+    releaseTitleField.value = titleField.value;
+    lastAutoReleaseTitle = titleField.value;
+  }
   if (isNew && !slugManuallyEdited) slugField.value = slugFromTitle(titleField.value);
   if (!seoTitleManuallyEdited && !seoTitleField?.value.trim()) seoTitleField.value = `${titleField.value} | Play Productions`;
 });
@@ -376,23 +569,66 @@ dateTbcField?.addEventListener("change", () => {
   if (dateTbcField.checked && releaseDateField) releaseDateField.value = "";
 });
 
-function defaultTrackPrice() {
+function businessSettings() {
   try {
-    const settings = JSON.parse(localStorage.getItem("playBusinessSettings") || "{}");
-    return Number(settings.defaultTrackPrice || settings.trackDefaultPrice || 1.29);
+    return JSON.parse(localStorage.getItem("playBusinessSettings") || "{}") || {};
   } catch {
-    return 1.29;
+    return {};
   }
+}
+
+function stringSetting(settings, key, fallback = "") {
+  const value = settings[key];
+  return value === undefined || value === null || value === "" ? fallback : String(value);
+}
+
+function numberSetting(settings, key, fallback = 0) {
+  const value = Number(settings[key]);
+  return Number.isFinite(value) ? value : fallback;
+}
+
+function booleanSetting(settings, key, fallback = false) {
+  const value = settings[key];
+  if (value === undefined || value === null || value === "") return fallback;
+  return value === true || value === "true" || value === "on" || value === "1";
+}
+
+function defaultTrackPrice(settings = businessSettings()) {
+  return numberSetting(settings, "defaultTrackPrice", numberSetting(settings, "trackDefaultPrice", 1.29));
+}
+
+function applyCatalogueDefaults() {
+  const settings = businessSettings();
+  const setValue = (id, value) => {
+    const field = document.querySelector(`#${id}`);
+    if (field) field.value = value;
+  };
+  const setChecked = (id, value) => {
+    const field = document.querySelector(`#${id}`);
+    if (field) field.checked = value;
+  };
+  setValue("artist", stringSetting(settings, "defaultTrackArtist", "Play Productions"));
+  setValue("status", stringSetting(settings, "defaultTrackStatus", "draft"));
+  setValue("price", defaultTrackPrice(settings).toFixed(2));
+  setValue("previewStartSeconds", numberSetting(settings, "defaultPreviewStartSeconds", 0));
+  setValue("previewDurationSeconds", numberSetting(settings, "defaultPreviewDurationSeconds", 30));
+  setChecked("showInStore", booleanSetting(settings, "defaultShowInStore", false));
+  setChecked("showInDjPool", booleanSetting(settings, "defaultShowInDjPool", false));
+  setChecked("purchaseEnabled", booleanSetting(settings, "defaultPurchaseEnabled", false));
+  setChecked("showInLatest", booleanSetting(settings, "defaultShowInLatest", false));
+  setChecked("featured", booleanSetting(settings, "defaultFeatured", false));
+  setChecked("dateTbc", booleanSetting(settings, "defaultDateTbc", true));
 }
 
 document.querySelector("#newTrack")?.addEventListener("click", () => {
   setTimeout(() => {
-    if (price && !document.querySelector("#editingId")?.value) price.value = defaultTrackPrice().toFixed(2);
+    if (!document.querySelector("#editingId")?.value) applyCatalogueDefaults();
     slugManuallyEdited = false;
     seoTitleManuallyEdited = false;
     seoDescriptionManuallyEdited = false;
-    if (artistField) artistField.value = "Play Productions";
-    if (dateTbcField) dateTbcField.checked = true;
+    releaseTitleManuallyEdited = false;
+    lastAutoReleaseTitle = "";
+    window.dispatchEvent(new Event("play-track-editor-clear-media"));
     document.querySelectorAll(".track-editor-section").forEach(section => {
       section.open = section.id === "track-group-basics";
       section.classList.remove("is-focused");
@@ -404,16 +640,17 @@ document.querySelector("#newTrack")?.addEventListener("click", () => {
 
 window.addEventListener("play-track-editor-mode", event => {
   const isNew = event.detail?.mode === "new";
+  resetMediaPendingState({ refresh: false });
   updateAssetCards(isNew ? null : event.detail?.track);
   slugManuallyEdited = !isNew;
   seoTitleManuallyEdited = !isNew;
   seoDescriptionManuallyEdited = !isNew;
+  releaseTitleManuallyEdited = !isNew;
+  lastAutoReleaseTitle = isNew ? "" : releaseTitleField?.value || "";
   if (!isNew) return;
   const previewDuration = document.querySelector("#previewDurationSeconds");
   if (previewDuration) previewDuration.value = "30";
-  if (price) price.value = defaultTrackPrice().toFixed(2);
-  if (artistField) artistField.value = "Play Productions";
-  if (dateTbcField) dateTbcField.checked = true;
+  applyCatalogueDefaults();
   document.querySelectorAll(".track-editor-section").forEach(section => {
     section.open = section.id === "track-group-basics";
     section.classList.remove("is-focused");

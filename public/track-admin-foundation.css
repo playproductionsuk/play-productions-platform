@@ -95,7 +95,33 @@
 #track-group-availability .track-editor-section-body>label,#track-group-release .track-editor-section-body>label,#track-group-promo .track-check-grid label{display:flex!important;align-items:center!important;flex-wrap:wrap;column-gap:8px;row-gap:4px}.track-editor-section-body label>.track-field-help,.track-editor-section-body label>#trackPriceHelp{order:20;flex:0 0 100%;max-width:none!important;margin:2px 0 0!important;text-align:left!important;color:#858585;font-size:9px;line-height:1.35}.track-editor-section-body label::after{flex:0 0 auto}
 #track-group-release label:has(input[type="checkbox"])::after,#track-group-promo label:has(input[type="checkbox"])::after{content:"OFF";margin-left:auto;padding:3px 6px;border:1px solid #5b3434;background:#211313;color:#ffaaaa;font-size:9px;font-weight:800}#track-group-release label:has(input[type="checkbox"]:checked)::after,#track-group-promo label:has(input[type="checkbox"]:checked)::after{content:"ON";border-color:#668d19;background:#17200d;color:#caff72}
 #trackEditor>.admin-section-title{align-items:center!important;margin-bottom:8px!important;padding-bottom:8px;border-bottom:1px solid #303030}#trackEditor>.admin-section-title h2{margin:0;white-space:nowrap}.track-editor-save-controls{position:static!important;top:auto!important;flex:1 1 auto;justify-content:flex-end!important;margin-left:auto!important;padding:5px 7px!important;border-color:#292929!important;box-shadow:none!important}.track-editor-save-controls .button{min-height:32px!important;padding:7px 11px!important}.track-visibility-summary{padding:5px 8px;border:1px solid #333;border-radius:3px;background:#111}
+#track-group-assets .file-field{display:flex!important;flex-direction:column;align-items:flex-start;gap:6px}
 #track-group-assets .file-field small{display:none}
+#track-group-assets .asset-current-preview{display:grid;gap:7px;margin:5px 0 8px;color:#b7b7b7;font-size:10px;line-height:1.35;word-break:break-word}
+#track-group-assets .asset-current-preview img{width:74px;height:74px;object-fit:cover;border:1px solid #303030;background:#050505}
+#track-group-assets .asset-management-controls{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:4px}
+#track-group-assets .asset-upload-action,#track-group-assets .asset-remove-action{appearance:none;display:inline-flex;align-items:center;justify-content:center;min-height:34px;width:max-content;padding:8px 11px;border-radius:3px;font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.04em;cursor:pointer}
+#track-group-assets .asset-upload-action{border:1px solid #667449;background:#171b13;color:#dfffa2}
+#track-group-assets .asset-upload-action:not([aria-disabled="true"]):hover,#track-group-assets .asset-upload-action:not([aria-disabled="true"]):focus-visible{border-color:#a6f000;color:#a6f000;outline:none}
+#track-group-assets .asset-remove-action{border:1px solid #6f3030;background:#1b1010;color:#ffb5b5}
+#track-group-assets .asset-remove-action:not(:disabled):hover{border-color:#ff5d5d;color:#ffd0d0}
+#track-group-assets .asset-remove-action:disabled{opacity:.45;cursor:not-allowed}
+#track-group-assets .asset-connection-status.pending-remove{color:#ffbd68}
+#track-group-assets .asset-connection-status.pending-replace{color:#dfffa2}
+#track-group-assets .file-field.pending-replace{border-color:#667449;background:#11170d}
+#track-group-assets .file-field.pending-remove{border-color:#6f3030;background:#171010}
+#track-group-assets .asset-upload-progress{display:block;width:100%;height:9px;margin-top:9px;accent-color:#a6f000}
+#track-group-assets .asset-upload-progress[hidden]{display:none}
+#track-group-assets .asset-progress-text{display:block;min-height:15px;margin-top:5px;color:#d9d9d9;font-size:10px;line-height:1.35}
+#track-group-assets .file-field.is-uploading{border-color:#a6f000;box-shadow:0 0 0 1px rgba(166,240,0,.16)}
+#trackForm.is-saving .asset-upload-action,#trackForm.is-saving .asset-remove-action{opacity:.55;pointer-events:none}
+.settings-card[data-settings-card="catalogue-defaults"] .settings-card-note{margin:0 0 12px;color:#999;font-size:11px;line-height:1.45}
+.settings-card[data-settings-card="catalogue-defaults"] .settings-checkbox{display:flex!important;align-items:center;gap:8px}
+.settings-card[data-settings-card="catalogue-defaults"] input[type="checkbox"]{accent-color:#a6f000}
+.track-workflow-guide{grid-column:1/-1;margin:0 0 4px;padding:12px 13px;border:1px solid #34431e;border-left:3px solid #a6f000;background:#10150d;color:#b8b8b8;font-size:10px;line-height:1.45}
+.track-workflow-guide strong{display:block;margin:0 0 6px;color:#a6f000;font-size:10px;text-transform:uppercase;letter-spacing:.06em}
+.track-workflow-guide ul{display:grid;gap:3px;margin:0;padding-left:17px}
+.track-workflow-guide li{margin:0}
 @media(max-width:1180px){.music-library-filters{position:static}.music-library-table thead th{top:99px!important}}
 @media(max-width:760px){#trackEditor>.admin-section-title{align-items:flex-start!important;flex-wrap:wrap}.track-editor-save-controls{order:3;flex-basis:100%;justify-content:flex-start!important}.track-visibility-summary{width:auto}.music-library-table thead th{top:96px!important}}
 

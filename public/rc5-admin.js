@@ -19,6 +19,7 @@ if(settings&&!settings.dataset.rc5){
     ["brand","Brand & Homepage"],
     ["links","Public Links / Social & Streaming Links"],
     ["pricing","Pricing"],
+    ["catalogue-defaults","Catalogue Defaults"],
     ["seo","SEO Defaults"],
     ["payments","Payments"],
     ["email","Email Notifications"]

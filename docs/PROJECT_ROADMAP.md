@@ -1,8 +1,79 @@
 # Play Productions Project Roadmap
 
-## Active next task — Admin Track Management Stabilisation
+## Phase E combined release readiness — Admin Media Management and Catalogue Defaults
 
-Status: Phase B.2, Phase B.3 and the first Admin Track Management Save/Edit identity fix were deployed to production Hosting on 7 July 2026. A live Add Track blocker was then reported, fixed on preview and manually accepted. The containment fix is ready for production Hosting release.
+Status: preview accepted and ready for production Hosting release.
+
+- Phase E.1–E.4 preview acceptance passed across Admin Media Management, Upload Progress / Save-State Feedback, Catalogue Defaults and Admin Workflow Guidance.
+- Artwork upload, replace and remove passed on a disposable preview test track. Real upload progress appeared, the saved assignment reloaded correctly, replacement worked and removal returned the track to placeholder artwork.
+- MP3 upload and replace passed. Real progress appeared, the assignment saved/reloaded correctly and replacement changed the existing assignment without duplicating the track.
+- WAV upload and replace passed. Real progress appeared, the assignment saved/reloaded correctly and replacement changed the existing assignment without affecting unrelated media.
+- Save lock and double-submit protection passed: Save Track disabled during upload/save, duplicate saves were prevented, controls restored after completion and success feedback appeared.
+- Identity/no-duplicate regression passed: save actions kept the same Firestore document and did not create duplicates.
+- Catalogue Defaults persistence passed. Add Track uses saved defaults only in new-track mode; edit mode continues to load stored track values.
+- Workflow guidance is present in Visibility / Availability, Release Admin, Promo / Notification Tracking and All Data / Advanced.
+- Media-control remediation preview accepted: Upload/Replace buttons open the correct hidden file input, missing assets use Upload labels, assigned assets use Replace labels, pending keep/replace/remove state resets on Cancel/X/new track/track switch/save, explicit Cancel/Discard is present and Release Title follows the full Track Title until manually edited.
+- Remaining media preview/open controls are backlog, not blockers: preview/play assigned MP3, preview/play or inspect assigned WAV, open/download assigned media safely from admin and keep private Storage paths protected.
+- Existing backlog remains: upload cancellation if safely supported later, previous asset/history view, Storage/orphan cleanup tools, catalogue defaults refinement and placeholder artwork review.
+- Phase E combined release is ready for production Hosting only. Do not deploy Functions for this release.
+- Next development decision should be based on this refreshed roadmap after the release and live smoke/manual checks.
+
+## Active next task — Phase E.1 Admin Media Management
+
+Status: The stable-live admin Add Track containment release is complete and accepted. The active preview-first task is now Phase E.1: safe admin media management for artwork, MP3 and WAV assignments.
+
+Phase E.1 media owner map:
+
+- `public/admin-platform.js` owns track identity, save payloads, upload paths, asset preservation and Firestore writes.
+- `public/track-admin-foundation.js` owns the visible Track Editor asset cards and current media state UI.
+- `public/track-admin-foundation.css` owns the admin media-card layout and remove/replace button styling.
+- `public/platform-data.js` owns public/admin asset aliases and readiness resolution.
+
+Phase E.1 implementation in preview candidate:
+
+- Artwork, MP3 and WAV asset cards now show current assigned state. Artwork shows a thumbnail when available; all media cards show a filename/path-style label when available or a clear unassigned state.
+- Replace controls use the existing file upload inputs. Existing assignments are preserved until a replacement upload succeeds and the same Firestore document is saved.
+- Remove controls are explicit and confirmed. Remove clears only the selected assignment family: artwork fields, MP3/preview fields or WAV/master fields.
+- Blank file inputs continue to mean keep, not remove.
+- Storage deletion is explicitly deferred. Remove clears the Firestore assignment only; uploaded files remain in Storage for a later maintenance/orphan cleanup phase.
+- Track identity, slug, title, visibility flags, preview timing and unrelated media assignments are preserved unless deliberately changed.
+- Preview deployment completed for Phase E.1. Deployed assets were verified to contain the media action save guards, remove confirmations, current-state UI and remove-button styling.
+- Read-only public preview smoke passed for Homepage, Browse Music, Track Detail, DJ Access, Let’s Work and Promo Crate routes.
+- Preview tests still requiring authorised admin/user-supplied test assets: inspect real media state in the editor, safe replace/remove on user-approved test records, identity regression after media actions and approved-DJ MP3 download checks.
+
+Phase E.2 upload progress implementation in preview candidate:
+
+- Phase E.1 remains part of the combined uncommitted preview stack.
+- Upload owner confirmed: `public/admin-platform.js` uses Firebase `uploadBytesResumable`, so E.2 uses real Storage upload snapshots and real percentages rather than fake progress.
+- UI owner confirmed: `public/track-admin-foundation.js` adds per-asset progress bars/status text for Artwork, MP3 and WAV cards; `public/track-admin-foundation.css` styles compact progress states.
+- Overall save stages now report Preparing track, per-asset upload progress, optional MP3 preview generation from WAV, Saving track details and Track saved successfully.
+- Double-submit protection remains in place and now also disables media file inputs plus Replace/Remove controls while upload/save is active.
+- Failure semantics: failed upload names the affected asset, keeps the existing assignment in the payload, restores controls and does not claim Firestore success. If Firestore save fails after upload, the error is shown and Storage cleanup remains deferred.
+- Cancellation support is not implemented in this slice because the existing admin does not yet have a robust cancellation workflow; treat Cancel Upload as future work.
+- Tests completed: JS syntax, protected diff, preview asset-code verification and read-only public route smoke.
+- Tests deferred to combined Phase E acceptance: real artwork/MP3/WAV upload progress with user-approved files, failure/cancel-interruption behaviour, identity regression after media actions and approved-DJ download checks.
+- Next Phase E slice: Catalogue Defaults.
+
+Phase E.3 catalogue defaults implementation in preview candidate:
+
+- Added a Settings-tab `Catalogue defaults` card for new-track defaults: default artist, default price, default status, preview start, preview duration, Store visibility, DJ Promo visibility, purchase enabled, Latest, Featured and Release date TBC.
+- Defaults are stored through the existing `playBusinessSettings` / `settings/business` save path. Existing tracks are not altered by changing defaults.
+- Add Track now consumes catalogue defaults only in new-track mode. Edit mode continues to load the selected track values and keeps the E.1 media preservation rules.
+- Media defaults are deliberately not included. Artwork, MP3, WAV/master and preview assets remain blank in Add Track unless explicitly uploaded or assigned.
+- Safe defaults remain conservative: draft status, Store off, DJ Promo off, purchase off, Latest off and Featured off unless changed in Settings.
+- Settings tabs now derive labels from their card headings, so the new Catalogue Defaults panel is visible rather than hidden behind the older fixed tab list.
+- Preview verification found the active settings-tab owner is the RC5 settings layer. The E.3 candidate now marks the Catalogue Defaults card with `data-settings-section="catalogue-defaults"` and adds a matching RC5 Settings tab entry instead of adding another overlay.
+- Preview tests still required after copying to the real project: Settings card visibility, save/reload defaults, Add Track default application, edit-mode non-regression and E.1/E.2 media-progress non-regression.
+
+Phase E.4 admin workflow cleanup implementation in preview candidate:
+
+- Added lightweight workflow guidance to the Track Editor Availability, Release Admin, Promo / Notification Tracking and All Data / Advanced groups.
+- This is a UX clarity pass only. It does not change save payloads, Firestore writes, upload handling, media preservation, archive/delete behaviour, admin startup or backend code.
+- Availability guidance clarifies that toggles control where a track may appear, while readiness still depends on status/assets/price checks.
+- Release guidance clarifies the intended order: rights/admin checks, distribution metadata, release confirmation and public website updates.
+- Promo guidance clarifies that notification tracking is manual only and does not send email or post to social media.
+- Advanced guidance clarifies that legacy/direct MP3/WAV references are compatibility fields and should not be changed during ordinary edits.
+- Preview tests still required after copying to the real project: workflow notes visible in the editor, no form-save regression, E.1 media controls still present, E.2 idle progress hidden and E.3 Add Track defaults still applying only in new mode.
 
 Admin track save/edit identity fix:
 

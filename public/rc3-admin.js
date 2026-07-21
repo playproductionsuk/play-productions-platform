@@ -44,25 +44,4 @@ setTimeout(()=>{
   }
 },800);
 
-const djList=document.querySelector("#moduleDjList");
-const enhanceDjExport=()=>{
-  const view=document.querySelector('[data-page="djAccess"]');
-  if(!view||view.querySelector("[data-export-djs]"))return;
-  view.querySelector(".admin-section-title")?.insertAdjacentHTML("beforeend",'<button type="button" data-export-djs>Export DJs + notes</button>');
-};
-enhanceDjExport();
-window.addEventListener("play-admin-module-ready",enhanceDjExport);
-[250,750,1500].forEach(delay=>setTimeout(enhanceDjExport,delay));
-
-document.addEventListener("click",event=>{
-  if(!event.target.closest("[data-export-djs]"))return;
-  const rows=[...djList.querySelectorAll("tr")].map(row=>[...row.children].map(cell=>`"${cell.textContent.trim().replaceAll('"','""')}"`).join(","));
-  const blob=new Blob([rows.join("\n")],{type:"text/csv"});
-  const link=document.createElement("a");
-  link.href=URL.createObjectURL(blob);
-  link.download="play-productions-dj-database.csv";
-  link.click();
-  URL.revokeObjectURL(link.href);
-});
-
 await import("./rc4-admin.js");

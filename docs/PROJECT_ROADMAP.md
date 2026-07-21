@@ -1,10 +1,92 @@
-# Play Productions Project Roadmap
+﻿# Play Productions Project Roadmap
 
-## Phase E combined release readiness — Admin Media Management and Catalogue Defaults
+## Current direction â€” Play Productions HQ / Release Management
 
-Status: preview accepted and ready for production Hosting release.
+Status: design-first. No runtime implementation has started.
 
-- Phase E.1–E.4 preview acceptance passed across Admin Media Management, Upload Progress / Save-State Feedback, Catalogue Defaults and Admin Workflow Guidance.
+The next-generation admin should be treated as **Play Productions HQ**: a cloud-based release management system that also powers the public website, DJ Promo Crate, customer store and future marketing tools.
+
+Recommended top-level admin structure:
+
+- Dashboard
+- Tracks
+- Release Centre
+- DJ Promotion
+- Marketing
+- Customers
+- Analytics
+- Settings
+
+Key design references:
+
+- `docs/RELEASE_MANAGEMENT_BLUEPRINT.md`
+- `docs/RELEASE_DATA_MODEL.md`
+- `docs/RELEASE_WORKFLOW_STATES.md`
+- `docs/ADMIN_STARTUP_AUDIT.md`
+
+Recommended next order:
+
+1. Complete the remaining manual live checks for the accepted Phase E release and create a stable-live tag only after those pass.
+2. Run an admin-safe Phase B startup/cycling cleanup before building the new Release Centre.
+3. Begin Release Management Phase R.1: Distribution Mode, controlled Genre/Mood Settings, calculated public state and release-record concept.
+
+Important principle: build around workflows rather than making the Track Editor larger.
+
+## Release Management programme backlog
+
+- Distribution Mode selector: Official Release, DJ Exclusive / Bootleg, Private Test, Archive.
+- Track Creation workflow for the core music asset only.
+- Release Centre for official release metadata, distributor state, streaming links and release readiness.
+- DJ Promotion workflow for promo dates, approved-DJ MP3 access, favourites, optional feedback and promo packs.
+- Commercial Store workflow for direct MP3/WAV sales, purchase flags, fulfilment state and commercial enquiry routing.
+- Marketing module for separated lists, campaigns, drafts, approval flow and release-day/DJ promo emails.
+- Dashboard assistant for todayâ€™s tasks, missing assets/metadata, releases due soon, DJ applications, commercial enquiries and overdue release actions.
+- Release calendar/timeline with configurable cadence target.
+- Settings-managed genres, subgenres/styles and moods.
+- Rights/Tracklib/royalty obligation tracking without pretending to automate legal/accounting decisions.
+- Streaming links feeding public track pages with no broken buttons.
+- Optional support/donation route that is never a download gate.
+- Automation with preview/approval, manual override and future audit logging.
+
+Recommended initial genre list:
+
+- UK Garage
+- Bassline
+- 140
+- Grime
+- Jungle
+- Drum & Bass
+- House
+- Hip Hop
+- Experimental
+
+Recommended initial mood list:
+
+- Energetic
+- Dark
+- Emotional
+- Atmospheric
+- Late Night
+- Driving
+- Aggressive
+- Uplifting
+- Dancefloor
+
+## Phase E release state â€” Admin Media Management and Catalogue Defaults
+
+Status: committed and stable-preview tagged. Production Hosting has been deployed locally; final stable-live tag awaits manual live checks.
+
+- Phase E combined release was committed as `b4548a4 Add admin media management and catalogue defaults`.
+- Stable-preview tag: `stable-preview-phase-e-admin-management-20260716-1307`.
+- Preview and automated live smoke passed for the non-destructive routes that were tool-verifiable.
+- Manual live media checks are still required before a stable-live tag.
+- Do not create the stable-live tag until manual live media checks pass.
+
+## Phase E combined release â€” Admin Media Management and Catalogue Defaults
+
+Status: released through production Hosting. Functions were not required for the Phase E Hosting release.
+
+- Phase E.1â€“E.4 preview acceptance passed across Admin Media Management, Upload Progress / Save-State Feedback, Catalogue Defaults and Admin Workflow Guidance.
 - Artwork upload, replace and remove passed on a disposable preview test track. Real upload progress appeared, the saved assignment reloaded correctly, replacement worked and removal returned the track to placeholder artwork.
 - MP3 upload and replace passed. Real progress appeared, the assignment saved/reloaded correctly and replacement changed the existing assignment without duplicating the track.
 - WAV upload and replace passed. Real progress appeared, the assignment saved/reloaded correctly and replacement changed the existing assignment without affecting unrelated media.
@@ -15,12 +97,12 @@ Status: preview accepted and ready for production Hosting release.
 - Media-control remediation preview accepted: Upload/Replace buttons open the correct hidden file input, missing assets use Upload labels, assigned assets use Replace labels, pending keep/replace/remove state resets on Cancel/X/new track/track switch/save, explicit Cancel/Discard is present and Release Title follows the full Track Title until manually edited.
 - Remaining media preview/open controls are backlog, not blockers: preview/play assigned MP3, preview/play or inspect assigned WAV, open/download assigned media safely from admin and keep private Storage paths protected.
 - Existing backlog remains: upload cancellation if safely supported later, previous asset/history view, Storage/orphan cleanup tools, catalogue defaults refinement and placeholder artwork review.
-- Phase E combined release is ready for production Hosting only. Do not deploy Functions for this release.
-- Next development decision should be based on this refreshed roadmap after the release and live smoke/manual checks.
+- Phase E combined release was a Hosting-only release. Functions/backend deployment was not part of this release.
+- Next development focus has moved to Phase B.4 admin startup and legacy cycling cleanup before Release Management / HQ runtime work begins.
 
-## Active next task — Phase E.1 Admin Media Management
+## Historical Phase E notes — Admin Media Management
 
-Status: The stable-live admin Add Track containment release is complete and accepted. The active preview-first task is now Phase E.1: safe admin media management for artwork, MP3 and WAV assignments.
+Status: historical implementation notes retained for evidence. Phase E.1–E.4 are no longer the active next task.
 
 Phase E.1 media owner map:
 
@@ -38,7 +120,7 @@ Phase E.1 implementation in preview candidate:
 - Storage deletion is explicitly deferred. Remove clears the Firestore assignment only; uploaded files remain in Storage for a later maintenance/orphan cleanup phase.
 - Track identity, slug, title, visibility flags, preview timing and unrelated media assignments are preserved unless deliberately changed.
 - Preview deployment completed for Phase E.1. Deployed assets were verified to contain the media action save guards, remove confirmations, current-state UI and remove-button styling.
-- Read-only public preview smoke passed for Homepage, Browse Music, Track Detail, DJ Access, Let’s Work and Promo Crate routes.
+- Read-only public preview smoke passed for Homepage, Browse Music, Track Detail, DJ Access, Letâ€™s Work and Promo Crate routes.
 - Preview tests still requiring authorised admin/user-supplied test assets: inspect real media state in the editor, safe replace/remove on user-approved test records, identity regression after media actions and approved-DJ MP3 download checks.
 
 Phase E.2 upload progress implementation in preview candidate:
@@ -85,10 +167,10 @@ Admin track save/edit identity fix:
 - Persistence confirmed: preview start/duration changed from 28s / 30s to 29s / 31s, saved successfully, reopened correctly, then reverted to 28s / 30s and confirmed again.
 - Required Title validation confirmed: Add Track save was blocked, red/error state appeared, and the required tooltip was shown.
 - Add New Track draft creation was intentionally not tested to avoid creating clutter.
-- Public B.2/B.3 regression remained healthy: Homepage, Browse Music, track detail, DJ Access, Let’s Work and logged-out Promo Crate protection passed.
+- Public B.2/B.3 regression remained healthy: Homepage, Browse Music, track detail, DJ Access, Letâ€™s Work and logged-out Promo Crate protection passed.
 - Note: existing/published tracks use the button label `Save Track`; this is accepted and not a blocker.
 - Live blocker after production deploy: Add Track was reported to reuse/overwrite an existing track identity, affecting `I Had a Feeling` artwork/visibility and a newly added track in the DJ Promo Crate.
-- Root cause found in code: `findTrackByIdentity("")` could match the first track because missing alias fields such as `docId` / `documentId` were coerced to an empty string. A blank Add Track `editingId` could therefore be treated as an existing track, preserving that track’s artwork/media and saving back to that document.
+- Root cause found in code: `findTrackByIdentity("")` could match the first track because missing alias fields such as `docId` / `documentId` were coerced to an empty string. A blank Add Track `editingId` could therefore be treated as an existing track, preserving that trackâ€™s artwork/media and saving back to that document.
 - Containment fix accepted: blank identity now returns no match; identity matching ignores null/undefined aliases; blank Add Track mode is treated as new mode, stale edit IDs block save, and new-track slug/document collisions block save instead of overwriting.
 - Existing-track edit/save remains accepted: One Fam was opened and saved; it stayed as the same track, no duplicate was created, and Update/Edit reopened the same saved record.
 - Add Track clean form confirmed: after editing an existing track, Add Track opened a genuinely blank new-track form. It did not inherit previous artwork, MP3 path, WAV path, preview/audio path, slug or title. Intentional defaults remain accepted for now: Artist `Play Productions`, price/site default, and preview-duration default.
@@ -101,7 +183,7 @@ Current polish:
 
 - Homepage About heading removed while preserving its image, copy and mobile More Info / Show Less behaviour.
 - Homepage trust/banner icons aligned to the established site lime.
-- Request DJ Access and Let’s Work hero social lines finalised as `You can also reach me through the social links below.` and matched to the surrounding hero copy.
+- Request DJ Access and Letâ€™s Work hero social lines finalised as `You can also reach me through the social links below.` and matched to the surrounding hero copy.
 - Request DJ Access `Already approved? DJ Login` now inherits the same button treatment as the homepage hero CTAs.
 - Final public polish is live and accepted.
 - The final trusted DJ invite journey remains passed.
@@ -136,7 +218,7 @@ Backlog captured during the test:
 - Email branding: create and host a dedicated black version of the Play Productions logo for email use, preserving the accepted dimensions and placement beneath `Enjoy the music. / Chris`. Continue using a hosted HTTPS image rather than an attachment or base64 data.
 - Phase C: add deliberate DJ download tracking/metrics after the invite path is stable.
 
-## Phase A.4.8 — Commercial Enquiry Panel Consistency
+## Phase A.4.8 â€” Commercial Enquiry Panel Consistency
 
 Status: completed and live accepted.
 
@@ -149,25 +231,25 @@ Status: completed and live accepted.
 - Next: run the final trusted DJ invitation journey from application through protected MP3 download.
 - Phase B speed and legacy-cycling audit remains after the trusted DJ journey.
 
-## Phase A.4.7 — Social Link Editor UX and Enquiry Spelling
+## Phase A.4.7 â€” Social Link Editor UX and Enquiry Spelling
 
 Status: completed and live accepted.
 
-- Use one shared add/confirm/remove social-link experience on Request DJ Access and Let’s Work.
+- Use one shared add/confirm/remove social-link experience on Request DJ Access and Letâ€™s Work.
 - Start with a compact Add social link trigger instead of an empty editor row.
 - Convert added links into confirmed display rows while preserving the existing `{type, url}` JSON payload.
-- Align Let’s Work form typography with Request DJ Access.
+- Align Letâ€™s Work form typography with Request DJ Access.
 - Correct visible public copy from Inquiry to UK English Enquiry without renaming routes or stored fields.
 - Keep close/remove controls lightweight, accessible and keyboard-operable.
 - DJ approval invitation template is prepared but awaits a separately approved Functions deployment.
 - Next: run the final trusted DJ invitation journey from application through protected MP3 download.
 - Phase B speed and legacy-cycling audit remains after the trusted DJ journey.
 
-## Phase A.4.6 — Social Link Controls Polish
+## Phase A.4.6 â€” Social Link Controls Polish
 
 Status: completed and live accepted.
 
-- Align DJ Access and Let’s Work labels to `Social and web links (optional)`.
+- Align DJ Access and Letâ€™s Work labels to `Social and web links (optional)`.
 - Present Platform, URL, Add social link and remove controls as one compact desktop row.
 - Use the lime primary style for compact Add social link controls on both forms.
 - Use the lime primary style for the Already approved? DJ Login hero action.
@@ -176,7 +258,7 @@ Status: completed and live accepted.
 - Next: run the final trusted DJ invitation journey from application through protected MP3 download.
 - Phase B speed and legacy-cycling audit remains after the trusted DJ journey.
 
-## Phase A.4.5 — DJ Access and Transparent Logo Refinement
+## Phase A.4.5 â€” DJ Access and Transparent Logo Refinement
 
 Status: completed and live accepted.
 
@@ -190,14 +272,14 @@ Status: completed and live accepted.
 - Next: run the final trusted DJ invitation journey from application through protected MP3 download.
 - Phase B speed and legacy-cycling audit remains after the trusted DJ journey.
 
-## Phase A.4.4 — Forms, Logo and DJ Email Refinement
+## Phase A.4.4 â€” Forms, Logo and DJ Email Refinement
 
 Status: completed and live accepted for the safe Hosting subset. The approval-email template is prepared in `functions/index.js` but remains undeployed pending a separate Functions approval.
 
 - Remove the duplicate Customer Portal label from Customer Login.
 - Finalise mobile About collapse spacing.
-- Restore responsive social links and full-width form alignment on Request DJ Access and Let’s Work.
-- Restore the Commercial Enquiry panel below the Let’s Work form.
+- Restore responsive social links and full-width form alignment on Request DJ Access and Letâ€™s Work.
+- Restore the Commercial Enquiry panel below the Letâ€™s Work form.
 - Pending: prepare a clean transparent version of the supplied lime Play Productions logo before replacing the shared header/footer identity. Do not use the `gpt-image-1.5` CLI fallback unless explicitly approved later.
 - Centre public-only DJ/Admin footer access beneath the logo.
 - Pending: DJ approval invitation copy is owned by `functions/index.js`; do not edit it until explicitly approved. Any later change requires a separate Functions review and deployment.
@@ -205,7 +287,7 @@ Status: completed and live accepted for the safe Hosting subset. The approval-em
 - Next: run the final trusted DJ invitation journey from application through protected MP3 download.
 - Phase B speed and legacy-cycling audit remains after the trusted DJ journey.
 
-## Phase A.4.3 — Login and Contact Layout Refinement
+## Phase A.4.3 â€” Login and Contact Layout Refinement
 
 Status: completed and live accepted.
 
@@ -213,41 +295,41 @@ Status: completed and live accepted.
 - Add safe Firebase customer password-reset support.
 - Finalise the compact mobile About collapse spacing.
 - Move the complete Request DJ Access message into its hero and tighten the application form.
-- Move the complete Let’s Work message into its hero and tighten the enquiry form.
+- Move the complete Letâ€™s Work message into its hero and tighten the enquiry form.
 - Keep customer newsletter consent separate from DJ promo consent.
 - Correct DJ Login terminology to `Open Promo Crate`.
 - Next: run the final trusted DJ invitation journey from application through protected MP3 download.
 - Phase B speed and legacy-cycling audit remains after the trusted DJ journey.
 
-## Phase A.4.2 — Customer Actions, Content + Public Heroes
+## Phase A.4.2 â€” Customer Actions, Content + Public Heroes
 
 Status: completed and live accepted.
 
 - Refinement completed on top of A.4.1.
-- Customer account actions now have an explicit Cart → Checkout → My Account → Sign Out visual order on desktop and mobile.
+- Customer account actions now have an explicit Cart â†’ Checkout â†’ My Account â†’ Sign Out visual order on desktop and mobile.
 - Mobile About collapsed copy is shorter, with More Info positioned closer to the visible content while preserving Show Less.
-- Applied `Play_Productions_Website_Content_Updates.md` to Browse Music, Request DJ Access and Let’s Work.
-- Added supplied Request DJ Access and Let’s Work hero artwork under `public/assets/`.
-- Home, Browse Music, Request DJ Access and Let’s Work now share a compact responsive hero-height system.
+- Applied `Play_Productions_Website_Content_Updates.md` to Browse Music, Request DJ Access and Letâ€™s Work.
+- Added supplied Request DJ Access and Letâ€™s Work hero artwork under `public/assets/`.
+- Home, Browse Music, Request DJ Access and Letâ€™s Work now share a compact responsive hero-height system.
 - Next: complete the final trusted DJ journey smoke test, then begin the Phase B audit-first speed/legacy cycling review.
 
-## Phase A.4.1 — Auth-Aware Navigation, CTA + About Refinement
+## Phase A.4.1 â€” Auth-Aware Navigation, CTA + About Refinement
 
 Status: completed and live accepted.
 
 - Phase A.4 passed live smoke testing and is tagged `stable-live-dj-invite-logged-in-experience-20260705-1053`.
 - Preview-only correction started:
   - Approved-DJ Latest Tracks CTA routes to `Promo Crate`.
-  - Authenticated customers omit DJ Login and retain Cart → Checkout → My Account → Sign Out.
+  - Authenticated customers omit DJ Login and retain Cart â†’ Checkout â†’ My Account â†’ Sign Out.
   - Public DJ Login and Admin Login moved from the header to the footer identity area and remain hidden from customer/DJ states.
   - About now uses the supplied portrait image and approved personal copy in a responsive image-left/text-right layout.
 - Next: complete the trusted DJ journey smoke test, then begin the Phase B audit-first speed/legacy cycling review.
 
-## Phase A.4 — DJ Invite + Logged-In Experience
+## Phase A.4 â€” DJ Invite + Logged-In Experience
 
 Status: completed and live accepted. The final fresh-account invitation journey remains the next test.
 
-- Request DJ Access and Let’s Work pages have a new shared public-enquiry presentation, clearer copy and improved form/status treatment.
+- Request DJ Access and Letâ€™s Work pages have a new shared public-enquiry presentation, clearer copy and improved form/status treatment.
 - Approved-DJ homepage Latest Tracks now switch from price/cart actions to the shared protected `Download MP3` flow while retaining Preview and More Details.
 - Promo Crate and homepage DJ downloads share one protected client utility and never expose private Storage paths.
 - Promo-only diagnosis: public-shop visibility is not required by `/api/dj-download`. The client could send a public slug even when the Firestore document ID differed, while the endpoint performs an exact document lookup. Firestore-loaded tracks now retain `firestoreId`, and protected downloads use it before slug/legacy ID. Allowed status, DJ visibility and `mp3Path/previewPath` still require authenticated verification on the affected record.
@@ -269,7 +351,7 @@ Status: completed and live accepted. The final fresh-account invitation journey 
 - Footer DJ/Admin buttons are centred beneath the logo and remain public-only.
 - About uses the accepted portrait image and personal Play Productions copy.
 - Customer Login styling and Firebase forgot-password support are live accepted.
-- Request DJ Access and Let’s Work use the accepted heroes, forms and shared social-link editor.
+- Request DJ Access and Letâ€™s Work use the accepted heroes, forms and shared social-link editor.
 - Visible public copy consistently uses UK `Enquiry`.
 - Commercial Enquiry panels are present on Home, Browse Music, public detail, DJ detail and Promo Crate.
 - Approved-DJ homepage Latest Tracks hide prices and use protected `Download MP3`.
@@ -283,7 +365,7 @@ Status: completed and live accepted. The final fresh-account invitation journey 
   - Commercial Enquiry.
 - The Browse Music hero is live accepted. Its confirmed release reference is `stable-preview-browse-music-hero-20260704-2042`; no separate stable-live hero tag exists.
 - The Browse Music catalogue layout is live accepted and stable:
-  - `Home › Browse Music` breadcrumb.
+  - `Home â€º Browse Music` breadcrumb.
   - One `Catalogue` heading.
   - Internal approximately five-track scroll window.
   - Sticky desktop column header.
@@ -300,7 +382,7 @@ DJ approval email status:
 
 ### DJ-first growth
 
-Prepare Play Productions for the first 1–3 trusted DJ invites by completing one clean fresh-account end-to-end invitation journey.
+Prepare Play Productions for the first 1â€“3 trusted DJ invites by completing one clean fresh-account end-to-end invitation journey.
 
 DJ access, delivery, tracking, outreach and useful promo metrics remain ahead of the full paid customer account journey.
 
@@ -352,7 +434,7 @@ Confirmed release references:
 
 ## 5. Priority roadmap
 
-### Phase A — Final DJ Invite + Public Site Quality
+### Phase A â€” Final DJ Invite + Public Site Quality
 
 Completed Phase A public polish:
 
@@ -369,7 +451,7 @@ Completed Phase A public polish:
 Remaining Phase A work:
 
 - Request DJ Access page polish.
-- Let’s Work / Commercial Enquiry page polish.
+- Letâ€™s Work / Commercial Enquiry page polish.
 - Approved-DJ homepage Latest Tracks behaviour.
 - Promo-only protected MP3 download fix.
 - Logged-in DJ homepage, Promo Crate and detail experience polish.
@@ -377,7 +459,7 @@ Remaining Phase A work:
 - Final trusted DJ invite smoke test.
 - Trusted DJ invite pack.
 
-### Next sprint — DJ Invite + Logged-In Experience
+### Next sprint â€” DJ Invite + Logged-In Experience
 
 - Tidy Request DJ Access:
   - Hero/header style, copy, form labels and mobile layout.
@@ -385,7 +467,7 @@ Remaining Phase A work:
   - Clear application, approval and invitation expectations.
   - Remove stale `DJ Promo` terminology where `Request DJ Access` or `Promo Crate` is correct.
   - Preserve the existing application, approval/rejection and invitation-email flow.
-- Tidy Let’s Work / Commercial Enquiry:
+- Tidy Letâ€™s Work / Commercial Enquiry:
   - Hero/header style, wording, form labels and mobile layout.
   - Submit/validation, success and error states.
   - Align copy with Commercial Enquiry panels on Home, Browse Music and detail pages.
@@ -417,7 +499,7 @@ Remaining Phase A work:
   - Mobile view plus empty, error and loading states.
   - No accidental customer/shop controls, WAV or buy buttons.
 - Run the full journey:
-  - Request access → approve → invite → set password → login → Promo Crate → preview/download → detail page → sign out.
+  - Request access â†’ approve â†’ invite â†’ set password â†’ login â†’ Promo Crate â†’ preview/download â†’ detail page â†’ sign out.
 - Prepare the trusted DJ invite pack:
   - Short email/message.
   - What to do after login.
@@ -425,7 +507,7 @@ Remaining Phase A work:
   - Friendly social/support ask.
   - Contact route if something breaks.
 
-### Phase B — Speed, Legacy Cycling + Performance Cleanup
+### Phase B â€” Speed, Legacy Cycling + Performance Cleanup
 
 Starts after the DJ invite/logged-in sprint unless a major blocker appears.
 
@@ -443,16 +525,16 @@ Goal: stop stale screens and old layouts flashing while improving perceived spee
 #### Phase B.1 audit findings
 
 - Public pages initially load `style.css`, `platform.css` and `design-v2.css`. `site-nav.js` then appends `current-ui.css` after parsing has reached the end of the page.
-- `current-ui.css` imports twelve later stylesheet generations from `design-v3.css` through `rc7-fixes.css`. `design-v3.css` and `rc6-fixes.css` hide `html:not(.ui-ready)`, while `site-nav.js` adds `ui-ready` on stylesheet load or after a 1.5-second fallback. This creates a credible old-layout → hidden/black → final-layout sequence on a cold or delayed load.
-- The public settings chain imports fourteen shared enhancement modules on every public page: sprint/module layers, footer/cart polish and RC1–RC7. Several append stylesheets already present through `current-ui.css`; `rc4-fixes.js` later removes some of those duplicate link nodes.
-- Homepage measurement in an authenticated warm browser session observed 25 scripts and 17 styles; Browse Music observed 24 scripts and 18 styles; Track detail observed 30 scripts and 18 styles. DOM-ready wall time was approximately 1.9–2.1 seconds in that sample.
+- `current-ui.css` imports twelve later stylesheet generations from `design-v3.css` through `rc7-fixes.css`. `design-v3.css` and `rc6-fixes.css` hide `html:not(.ui-ready)`, while `site-nav.js` adds `ui-ready` on stylesheet load or after a 1.5-second fallback. This creates a credible old-layout â†’ hidden/black â†’ final-layout sequence on a cold or delayed load.
+- The public settings chain imports fourteen shared enhancement modules on every public page: sprint/module layers, footer/cart polish and RC1â€“RC7. Several append stylesheets already present through `current-ui.css`; `rc4-fixes.js` later removes some of those duplicate link nodes.
+- Homepage measurement in an authenticated warm browser session observed 25 scripts and 17 styles; Browse Music observed 24 scripts and 18 styles; Track detail observed 30 scripts and 18 styles. DOM-ready wall time was approximately 1.9â€“2.1 seconds in that sample.
 - The current public final owners are:
   - Global header, role-aware navigation, homepage role CTAs and footer: `site-nav.js`.
   - Page visibility and social settings: `site-settings.js`, with final social-link presentation in `rc4-fixes.js`.
   - Homepage catalogue/content: `index.html` + `home.js`; trust icons from `rc3-fixes.js`; final visual rules in `rc7-fixes.css`.
   - Browse Music data/render: `music.js`; final hero replacement in `rc4-fixes.js`; accumulated catalogue controls in RC1/polish/RC6/RC7.
   - Track detail base render: `beat.js`; cart/related/player/detail responsibilities split across `track-enhancements.js`, `track-launch.js`, `track-polish.js` and `track-detail-flow.js`; final auth/back-link state in `site-nav.js` and `rc7-fixes.js`.
-  - Request DJ Access / Let’s Work forms: their page modules; final hero/form structure in `rc3-fixes.js`; social links in `rc4-fixes.js`; final layout in `rc7-fixes.css`.
+  - Request DJ Access / Letâ€™s Work forms: their page modules; final hero/form structure in `rc3-fixes.js`; social links in `rc4-fixes.js`; final layout in `rc7-fixes.css`.
   - Customer Portal data/render: `account.js`; auth-panel cleanup in `customer-portal-cleanup.js`; global account navigation in `site-nav.js`.
   - Promo Crate data/access/downloads: `dj-promo.js`; global approved-DJ navigation in `site-nav.js`; final presentation spread across `sprint-dj.js`, RC4, RC6 and RC7.
 - Confirmed duplicate public render paths include repeated header/footer rebuilding, repeated hero copy replacement, repeated catalogue column/action enhancement, repeated track commercial/related ordering and repeated breadcrumb/back-link correction.
@@ -491,40 +573,97 @@ Goal: stop stale screens and old layouts flashing while improving perceived spee
 | `dj-polish-loader.js` | Every public/customer/DJ page through `site-settings.js` | Promo Crate-only `dj-polish-02.css` loader | Import only from `dj-promo.js` |
 | `footer-icons.js` | Every public page | Shared footer social icons | Keep global |
 | `polish-01.js` / `polish-02.js` | Every public page | Shared cart/footer/logo/audio polish plus homepage/music behaviour | Keep global pending responsibility split |
-| RC1–RC7 public modules | Every public page | Mixed shared and page-specific compatibility responsibilities | Keep global until each final owner is proven separately |
+| RC1â€“RC7 public modules | Every public page | Mixed shared and page-specific compatibility responsibilities | Keep global until each final owner is proven separately |
 
 - Keep all module files; only relocate their imports to the page entry modules that own their behaviour.
 - Preserve Phase B.2 early stylesheet loading.
 - Preview deployment passed structural and route smoke checks on 6 July 2026. No production deployment was made.
 - Measured module reductions:
-  - Homepage: 25 → 23 scripts; retains only `sprint-pages.js`.
-  - Browse Music: 24 → 21 scripts; loads none of the three gated modules.
-  - Track detail: 30 → 27 scripts; loads none of the three gated modules.
+  - Homepage: 25 â†’ 23 scripts; retains only `sprint-pages.js`.
+  - Browse Music: 24 â†’ 21 scripts; loads none of the three gated modules.
+  - Track detail: 30 â†’ 27 scripts; loads none of the three gated modules.
   - Request DJ Access and DJ Login retain only `module1-pages.js`.
   - Services and Vinyl retain only `sprint-pages.js`.
   - Promo Crate retains only `dj-polish-loader.js`.
-  - Let’s Work and Customer Portal load none of the three gated modules.
+  - Letâ€™s Work and Customer Portal load none of the three gated modules.
 - All measured pages reached `ui-ready` without horizontal overflow. Browse Music retained search, More Details and Add to Cart controls; Request DJ Access retained its form/social-field enhancement; logged-out Promo Crate access still redirects to DJ Login.
 - Do not alter Firestore reads, data models, auth, protected downloads, CSS generations or final visual output in this slice.
 - No MutationObserver or timing-loop fix is introduced; existing module internals remain unchanged.
 - Next candidate after preview acceptance: separate shared RC behaviour from catalogue/track/form/portal-specific behaviour one owner at a time.
 - Admin startup remains a separate protected pass.
 
-### Phase C — DJ Contacts, Download Tracking + Promo Metrics
+#### Phase B.4 admin startup and legacy cycling cleanup
+
+- Owner-map document added: `docs/ADMIN_STARTUP_OWNER_MAP.md`.
+- Before measurement captured on preview admin `admin.html?live=1` in an unauthenticated/read-only automation session:
+  - login panel visible and dashboard hidden;
+  - no console errors/warnings in the login shell;
+  - 6 top-level document scripts observed;
+  - 15 stylesheet/style nodes observed after module loading;
+  - authenticated dashboard state-change timing could not be measured from this restricted session.
+- Current owner finding: `admin-live-login.js` remains the protected live auth/final-visibility owner; `admin-platform.js` remains the base dashboard/Music Library/Track Editor owner; `admin-dj-workflow.js` remains the final DJ Applications/export owner.
+- Chosen narrow slice: remove the obsolete RC3 `Export DJs + notes` button injection, click handler and delayed `250/750/1500ms` retries. The accepted DJ Applications CSV export remains owned by `admin-dj-workflow.js`.
+- `rc3-admin.js` remains loaded for its current non-export responsibilities, and the RC4-RC7 chain remains in place. No broad legacy deletion was attempted.
+- No protected startup files should change in this slice: `public/admin.html`, `public/admin-entry.js` and `public/admin-live-login.js` stay untouched.
+- Deferred candidates:
+  - gate case-study editor code until Case Studies opens;
+  - gate settings-only enhancements until Settings opens;
+  - prove and remove older DJ table/status enhancers after `admin-dj-workflow.js` parity is confirmed;
+  - centralise one repeated admin dataset only after the render-owner boundaries are clean.
+- Release Management / Play Productions HQ runtime work remains paused until B.4 preview acceptance.
+
+#### Phase B.4.1 preview acceptance
+
+- The obsolete RC3 `Export DJs + notes` injection was removed and preview-tested.
+- Accepted DJ Applications CSV export remained present as the sole DJ export action.
+- Dashboard, Music Library, DJ Database and Settings remained healthy.
+- No console errors were observed.
+- Broader admin startup cycling remained, with the next owner identified as duplicate live auth/status handling in `admin-platform.js`.
+
+#### Phase B.4.2 admin live auth ownership cleanup
+
+- Target: keep `admin-live-login.js` as the sole live Firebase auth, admin-permission and final visibility owner.
+- Competing `admin-platform.js` paths identified:
+  - legacy `#loginForm` submit handler;
+  - `#loginStatus` live-test copy;
+  - duplicate `onAuthStateChanged` listener;
+  - direct `login.hidden` / `portal.hidden` reveal and hide calls;
+  - duplicate dispatch of `play-admin-live-authenticated`.
+- Chosen guard:
+  - legacy login submit handling runs only outside live mode;
+  - live mode skips `admin-platform.js` auth/status/visibility handling;
+  - live mode still runs `loadAll()` after successful admin permission because modules are only loaded by `admin-live-login.js` after auth passes;
+  - `admin-platform.js` then dispatches the existing dashboard-ready event for `admin-live-login.js` to perform the final reveal.
+- Safe preview must remain on the existing preview/fallback path.
+- No protected startup files should change in this slice.
+- Release Management / Play Productions HQ runtime remains paused until this B.4.2 preview path is accepted.
+
+#### Phase B.4.3 remove remaining live login title flash
+
+- B.4.2 preview verification reduced the precise visible startup states from 7 to 5.
+- `Live test mode...` no longer appeared and actual nav/login overlap was gone.
+- Remaining visible defect: `Business Dashboard sign in` still flashed during live authenticated startup.
+- Exact owner confirmed: `public/sprint-admin.js` rewrote `#loginPanel h1` immediately on import.
+- Guard applied: the Sprint admin login-title rewrite now runs only when `playAdminLiveMode !== true`.
+- Preserved: Sprint admin stylesheet, nav label changes, dashboard stat enhancement, Settings cards and safe-preview behaviour.
+- Protected files remain untouched.
+- Required preview check after copying to real project: repeated authenticated hard refresh should no longer show `Business Dashboard sign in`; Dashboard, Music Library, DJ Database, Settings and safe preview must remain healthy.
+
+### Phase C â€” DJ Contacts, Download Tracking + Promo Metrics
 
 - Expand contacts for DJs, radio, labels, blogs and playlist curators.
 - Track DJ downloads and download history by DJ/contact.
 - Add track interest, DJ engagement, campaign and outreach metrics.
 - Track consent/source, support notes, plays, feedback, social tags and follow-up status.
 
-### Phase D — SEO, Analytics + Search Setup
+### Phase D â€” SEO, Analytics + Search Setup
 
 - Audit titles, descriptions, canonical URLs and indexing.
 - Improve track-detail SEO and Open Graph/social previews.
 - Generate and submit a sitemap and review `robots.txt`.
 - Configure Search Console and agreed privacy-conscious analytics.
 
-### Phase E — Admin Productivity + Catalogue Management
+### Phase E â€” Admin Productivity + Catalogue Management
 
 - Admin asset open/copy/export/download actions.
 - Admin-only full MP3 preview where useful.
@@ -538,27 +677,27 @@ Goal: stop stale screens and old layouts flashing while improving perceived spee
 - Define clearer workflows for the Release Admin, Promo/Notification Tracking and Order Data/Advanced admin sections; they currently behave more like placeholders than finished workflows.
 - Newsletter admin/export workflow while keeping customer newsletter and DJ promo lists separate.
 
-### Phase F — Customer Purchase + Account Flow
+### Phase F â€” Customer Purchase + Account Flow
 
 - Smoke-test and harden customer registration, login/logout, cart and checkout.
 - Complete Stripe/payment and fulfilment only when deliberately scheduled.
 - Add purchase history, account downloads and paid MP3/WAV delivery.
 - Store licence/order records and reporting.
 
-### Phase G — Storage + Maintenance
+### Phase G â€” Storage + Maintenance
 
 - Storage usage and orphan-asset audits.
 - Asset replacement history and safe cleanup tools.
 - Firebase API-key restrictions and GitHub/dependency alert cleanup.
 - Firestore/Storage rules and operational health reviews.
 
-### Phase H — Custom Vinyl Record Cutting
+### Phase H â€” Custom Vinyl Record Cutting
 
 - Build before Mixing & Mastering.
 - Public service page, content/pricing and quote/project-intake flow.
 - Admin project tracking.
 
-### Phase I — Mixing & Mastering
+### Phase I â€” Mixing & Mastering
 
 - Launch only when ready to present and fulfil professionally.
 - Public stereo mixing, mastering and mix-plus-master page.
@@ -572,8 +711,8 @@ Goal: stop stale screens and old layouts flashing while improving perceived spee
 - Remaining public style/button consistency.
 - Additional storytelling and social proof.
 - About imagery:
-  - Foreground square image, ideally at least 1200 × 1200.
-  - Optional wide background image, 1920 × 1080 or larger, with a dark readability treatment.
+  - Foreground square image, ideally at least 1200 Ã— 1200.
+  - Optional wide background image, 1920 Ã— 1080 or larger, with a dark readability treatment.
 
 ### DJ and promotion
 

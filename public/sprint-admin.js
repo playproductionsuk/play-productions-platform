@@ -9,7 +9,7 @@ document.head.appendChild(css);
 document.title = "Business Dashboard — Play Productions";
 
 const title = document.querySelector("#loginPanel h1");
-if (title) title.textContent = "Business Dashboard sign in";
+if (title && globalThis.playAdminLiveMode !== true) title.textContent = "Business Dashboard sign in";
 
 const nav = document.querySelector(".admin-nav");
 const tracks = nav?.querySelector('[data-view="tracks"]');
